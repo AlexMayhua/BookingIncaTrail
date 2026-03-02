@@ -1,0 +1,5 @@
+export default {
+    title: 'Oferta De Viajes a Perú',
+    content: '<p>&iexcl;Bienvenido a Lifexpeditions.com! Nuestros viajes est&aacute;n dise&ntilde;ados para ofrecerle una experiencia inolvidable. Tanto si prefiere unirse a un grupo compartido como si opta por un viaje privado, tenemos todo lo que necesita. Nuestros viajes regulares y personalizados se adaptan a sus preferencias e intereses particulares.</p> <p>Adem&aacute;s, ofrecemos descuentos exclusivos para reservas de grupos de hasta 6 personas. No dude en ponerse en contacto con nosotros directamente en <a href="mailto:sales@bookingincatrail.com">sales@bookingincatrail.com</a> o WhatsApp <a href="tel:+51 970811976">+51 970811976</a> para obtener m&aacute;s informaci&oacute;n o para reservar su viaje de ensue&ntilde;o hoy mismo. Emb&aacute;rquese en un viaje que le dejar&aacute; recuerdos para toda la vida.</p> <p>Elija Lifexpeditions.com para vivir una experiencia de viaje sin igual.</p>',
+    content_1: 'Plazas limitadas !Reserve ahora¡'
+}

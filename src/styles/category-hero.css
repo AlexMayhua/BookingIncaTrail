@@ -1,0 +1,547 @@
+/* ============================================
+   CATEGORY HERO SECTION - ESTILOS MODERNOS
+   ============================================ */
+
+/* Contenedor principal del Category Hero */
+.category-hero-section {
+    position: relative;
+    width: 100%;
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+    margin-bottom: 12rem;
+    padding-bottom: 4rem;
+}
+
+/* Imagen de fondo con efecto parallax */
+.category-hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 0;
+    transition: transform 0.3s ease-out;
+}
+
+/* Overlay gradiente más suave para ver mejor la imagen */
+.category-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg,
+            rgba(0, 82, 73, 0.35) 0%,
+            rgba(0, 82, 73, 0.25) 40%,
+            rgba(13, 17, 23, 0.4) 100%);
+    z-index: 1;
+}
+
+/* Contenedor del contenido */
+.category-hero-content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+}
+
+.category-hero-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+    max-width: 700px;
+}
+
+/* Breadcrumbs integrado en hero */
+.category-hero-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.breadcrumb-link {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.breadcrumb-link:hover {
+    color: #e6c200;
+}
+
+.breadcrumb-separator {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.breadcrumb-current {
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* Badge de categoría */
+.category-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(230, 194, 0, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(230, 194, 0, 0.3);
+    border-radius: 50px;
+    color: #e6c200;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+/* Título principal */
+.category-hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.25rem, 5vw, 4rem);
+    font-weight: 700;
+    color: white;
+    line-height: 1.15;
+    margin: 0;
+    text-shadow: 0 2px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Descripción */
+.category-hero-description {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(0.95rem, 2vw, 1.15rem);
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.7;
+    margin: 0;
+    max-width: 600px;
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Stats compactos en el hero */
+.category-hero-stats {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-top: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.category-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.category-stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #e6c200;
+    line-height: 1;
+}
+
+.category-stat-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: center;
+}
+
+.category-stat-divider {
+    width: 1px;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Botón CTA en hero */
+.category-hero-cta {
+    margin-top: 0.5rem;
+}
+
+.category-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.9rem 1.75rem;
+    background: linear-gradient(135deg, #e6c200 0%, #d4b000 100%);
+    color: #0d1117;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 20px rgba(230, 194, 0, 0.4);
+}
+
+.category-cta-btn svg {
+    width: 1rem;
+    height: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.category-cta-btn:hover {
+    background: linear-gradient(135deg, #FFD700 0%, #e6c200 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(230, 194, 0, 0.5);
+}
+
+.category-cta-btn:hover svg {
+    transform: translateY(3px);
+}
+
+/* Quick Stats flotante - Mejorado con mejor visibilidad */
+.category-quick-stats-container {
+    position: absolute;
+    bottom: -5rem;
+    left: 0;
+    right: 0;
+    z-index: 15;
+    display: flex;
+    justify-content: center;
+    padding: 0 1.5rem;
+    transform: translateY(50%);
+}
+
+.category-quick-stats {
+    width: 100%;
+    max-width: 1200px;
+    background: white;
+    border-radius: 1.25rem;
+    padding: 2rem 2.5rem;
+    box-shadow: 0 10px 60px rgba(0, 0, 0, 0.15);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2.5rem;
+    border: 1px solid rgba(230, 194, 0, 0.2);
+}
+
+.quick-stat-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.quick-stat-item img {
+    flex-shrink: 0;
+    filter: opacity(0.9);
+}
+
+.quick-stat-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.quick-stat-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.quick-stat-value {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #005249;
+}
+
+/* ============================================
+   FILTERS SECTION - ESTILOS MODERNOS
+   ============================================ */
+
+.filters-container {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 2rem;
+    border: 1px solid rgba(230, 194, 0, 0.1);
+}
+
+.filters-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.filter-controls {
+    display: flex;
+    gap: 1rem;
+    flex: 1;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 180px;
+    flex: 1;
+}
+
+.filter-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.filter-icon {
+    width: 1rem;
+    height: 1rem;
+    color: #e6c200;
+}
+
+.filter-select {
+    padding: 0.75rem 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.75rem;
+    background: white;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #1f2937;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.filter-select:hover {
+    border-color: #e6c200;
+}
+
+.filter-select:focus {
+    border-color: #e6c200;
+    box-shadow: 0 0 0 3px rgba(230, 194, 0, 0.1);
+}
+
+.filter-results {
+    display: flex;
+    align-items: center;
+}
+
+.results-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, #e6c200 0%, #d4b000 100%);
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(230, 194, 0, 0.3);
+}
+
+.results-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: #0d1117;
+}
+
+.results-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.results-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0d1117;
+    line-height: 1;
+}
+
+.results-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: rgba(13, 17, 23, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ============================================
+   RESPONSIVE - CATEGORY HERO
+   ============================================ */
+
+@media (max-width: 1024px) {
+    .category-hero-section {
+        min-height: 75vh;
+        margin-bottom: 12rem;
+    }
+
+    .category-quick-stats {
+        padding: 1.5rem 1.5rem;
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .category-hero-section {
+        min-height: 65vh;
+        margin-bottom: 14rem;
+    }
+
+    .category-hero-content {
+        padding: 1.5rem 1rem;
+    }
+
+    .category-hero-inner {
+        gap: 1rem;
+    }
+
+    .category-hero-title {
+        font-size: 2rem;
+    }
+
+    .category-hero-description {
+        font-size: 0.9rem;
+    }
+
+    .category-hero-stats {
+        gap: 0.75rem;
+        padding: 0.6rem 1rem;
+    }
+
+    .category-stat-number {
+        font-size: 1.5rem;
+    }
+
+    .category-stat-label {
+        font-size: 0.6rem;
+    }
+
+    .category-quick-stats-container {
+        bottom: -4rem;
+        padding: 0 1rem;
+        transform: translateY(50%);
+    }
+
+    .category-quick-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        padding: 1.5rem 1.25rem;
+    }
+
+    /* Filtros responsive */
+    .filters-container {
+        padding: 1.25rem;
+    }
+
+    .filters-inner {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-controls {
+        width: 100%;
+    }
+
+    .filter-group {
+        min-width: 100%;
+    }
+
+    .filter-results {
+        justify-content: center;
+        width: 100%;
+    }
+
+    .results-badge {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .category-hero-section {
+        min-height: 60vh;
+        margin-bottom: 16rem;
+    }
+
+    .category-hero-title {
+        font-size: 1.75rem;
+    }
+
+    .category-hero-stats {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .category-stat-divider {
+        display: none;
+    }
+
+    .category-cta-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .category-quick-stats-container {
+        bottom: -3rem;
+        transform: translateY(50%);
+    }
+
+    .category-quick-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .quick-stat-item {
+        padding: 1rem;
+        background: #f9fafb;
+        border-radius: 0.75rem;
+    }
+
+    .quick-stat-text {
+        gap: 0.25rem;
+    }
+
+    .quick-stat-label {
+        font-size: 0.65rem;
+    }
+
+    .quick-stat-value {
+        font-size: 0.85rem;
+    }
+}

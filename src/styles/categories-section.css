@@ -1,0 +1,616 @@
+/* ============================================
+   CATEGORIES SECTION - LUXURY ADVENTURE THEME
+   ============================================ */
+
+:root {
+    --gold-accent: #e6c200;
+    --dark-overlay: rgba(10, 10, 10, 0.4);
+    --dark-overlay-hover: rgba(0, 0, 0, 0.7);
+    --text-primary: #1a1a1a;
+    --text-light: #ffffff;
+    --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.categories-section {
+    position: relative;
+    padding: 6rem 0;
+    background-color: #fcfcfc;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+/* Texture Noise Background */
+.categories-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.05;
+    z-index: -1;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    pointer-events: none;
+}
+
+.categories-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* Header Design */
+.categories-header {
+    text-align: left;
+    margin-bottom: 4rem;
+    position: relative;
+    padding-left: 1rem;
+    border-left: 3px solid var(--gold-accent);
+}
+
+.categories-header .section-label {
+    display: block;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--gold-accent);
+    margin-bottom: 1rem;
+}
+
+.categories-header .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 400;
+    /* Lighter weight for elegance */
+    color: var(--text-primary);
+    margin: 0 0 1rem 0;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+.categories-header .section-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #666;
+    max-width: 600px;
+    font-weight: 300;
+}
+
+/* Carousel Wrapper */
+.categories-carousel-wrapper {
+    position: relative;
+    margin: 0 -1rem;
+    padding: 1rem;
+}
+
+/* ============================================
+   KEYFRAMES - Definir primero
+   ============================================ */
+
+@keyframes fadeInOnly {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* ============================================
+   SLIDES BASE - Sin escala
+   ============================================ */
+
+.categories-carousel .keen-slider__slide,
+.services-slider .keen-slider__slide {
+    transition: all 0.5s ease;
+    transform: scale(1);
+    opacity: 1;
+    filter: none;
+}
+
+.categories-carousel .keen-slider__slide.center-slide,
+.services-slider .keen-slider__slide.center-slide {
+    transform: scale(1);
+    opacity: 1;
+    filter: none;
+    z-index: 10;
+}
+
+/* ============================================
+   ANIMACIONES DE ENTRADA - Desktop
+   ============================================ */
+
+/* Desktop: Fade-in staggered (sin transform para no interferir con hover) */
+@media (min-width: 769px) {
+    .categories-carousel .keen-slider__slide {
+        animation: fadeInOnly 0.6s ease-out backwards;
+    }
+
+    .categories-carousel .keen-slider__slide:nth-child(1) { animation-delay: 0.1s; }
+    .categories-carousel .keen-slider__slide:nth-child(2) { animation-delay: 0.2s; }
+    .categories-carousel .keen-slider__slide:nth-child(3) { animation-delay: 0.3s; }
+    .categories-carousel .keen-slider__slide:nth-child(4) { animation-delay: 0.4s; }
+    .categories-carousel .keen-slider__slide:nth-child(n+5) { animation-delay: 0.5s; }
+}
+
+/* Mobile: Fade-in simple */
+@media (max-width: 768px) {
+    .categories-carousel .keen-slider__slide {
+        animation: fadeInOnly 0.5s ease-out backwards;
+    }
+
+    .categories-carousel .keen-slider__slide:nth-child(1) { animation-delay: 0.1s; }
+    .categories-carousel .keen-slider__slide:nth-child(2) { animation-delay: 0.2s; }
+    .categories-carousel .keen-slider__slide:nth-child(3) { animation-delay: 0.3s; }
+}
+
+/* Card Design - The "Portal" Look */
+.category-card {
+    position: relative;
+    display: block;
+    height: 450px;
+    /* Taller cards */
+    border-radius: 4px;
+    /* Minimal radius */
+    overflow: hidden;
+    text-decoration: none;
+    background: #000;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    filter: none;
+    transition: transform 0.4s var(--ease-out-expo);
+    will-change: transform;
+}
+
+@media (max-width: 768px) {
+    .category-card {
+        height: 350px;
+    }
+}
+
+.category-card-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: scale(1.05);
+    /* Slight zoom initially */
+    transition: transform 0.7s var(--ease-out-expo);
+}
+
+.category-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.9;
+}
+
+/* Hover Effect: Parallax Zoom */
+.category-card:hover .category-card-image {
+    transform: scale(1.15);
+}
+
+/* Eliminar overlay oscuro (sombreado interno) */
+.category-card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: transparent;
+    /* Removed gradients */
+    transition: opacity 0.6s ease;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* También quitar overlay en servicios */
+.services-slider .tour-card-overlay {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.services-slider .services-tour-card:hover .tour-card-overlay {
+    background: transparent !important;
+}
+
+.category-card-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 2.5rem 2rem;
+    z-index: 2;
+    transform: translateY(0);
+    transition: transform 0.4s var(--ease-out-expo);
+}
+
+.category-card:hover .category-card-content {
+    transform: translateY(-10px);
+}
+
+/* Typography on Card */
+.category-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.75rem;
+    font-weight: 500;
+    color: var(--text-light);
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.01em;
+    transform-origin: left;
+    transition: transform 0.4s var(--ease-out-expo);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+    /* Ensure readability without overlay */
+}
+
+/* Títulos de servicios */
+.services-slider .tour-card-title {
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+    color: #fff !important;
+}
+
+.category-card:hover .category-card-title {
+    transform: scale(1.02);
+}
+
+.category-card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-light);
+    opacity: 0.8;
+    margin-top: 1rem;
+    position: relative;
+    padding-bottom: 5px;
+}
+
+.category-card-cta::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0%;
+    height: 1px;
+    background-color: var(--gold-accent);
+    transition: width 0.4s var(--ease-out-expo);
+}
+
+.category-card:hover .category-card-cta::after {
+    width: 100%;
+}
+
+.category-card-cta svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.4s var(--ease-out-expo);
+}
+
+.category-card:hover .category-card-cta svg {
+    transform: translateX(5px);
+}
+
+/* Category Index Number (Decorative) */
+.category-card-index {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 3rem;
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.1);
+    line-height: 1;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Navigation Dots - Only dots, no arrows */
+.categories-carousel-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 2.5rem;
+}
+
+.categories-carousel-nav .nav-arrow {
+    display: none;
+}
+
+/* Navigation Dots for Categories - Style like Why Us section */
+.categories-carousel-nav .nav-dots {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.categories-carousel-nav .nav-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.categories-carousel-nav .nav-dot:hover {
+    border-color: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.categories-carousel-nav .nav-dot.active {
+    background: linear-gradient(135deg, #e6c200, #d4a600);
+    border-color: #e6c200;
+    transform: scale(1.2);
+    box-shadow: 0 0 12px rgba(230, 194, 0, 0.5);
+}
+
+/* Responsive - Mobile: Navigation smaller and tighter */
+@media (max-width: 768px) {
+    .categories-header {
+        text-align: center;
+        border-left: none;
+        padding-left: 0;
+    }
+
+    .categories-header .section-label {
+        display: inline-block;
+        border-bottom: 2px solid var(--gold-accent);
+        padding-bottom: 5px;
+    }
+
+    .categories-carousel-nav {
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .categories-carousel-nav .nav-arrow {
+        width: 36px;
+        height: 36px;
+    }
+
+    .categories-carousel-nav .nav-arrow svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .category-card-index {
+        font-size: 2rem;
+    }
+
+    /* Mobile: Transiciones más rápidas para touch */
+    .category-card {
+        transition: transform 0.3s ease-out;
+    }
+
+    .category-card-image {
+        transition: transform 0.5s ease-out;
+    }
+
+    .category-card-content {
+        transition: transform 0.3s ease-out;
+    }
+
+    .category-card-title {
+        transition: transform 0.3s ease-out;
+    }
+
+    /* Mobile: Active state para touch feedback */
+    .category-card:active {
+        transform: scale(0.98);
+    }
+
+    .category-card:active .category-card-image {
+        transform: scale(1.08);
+    }
+
+    /* Mobile: CTA más visible siempre */
+    .category-card-cta {
+        opacity: 1;
+    }
+
+    .category-card-cta::after {
+        width: 30%;
+        transition: width 0.3s ease-out;
+    }
+
+    .category-card:active .category-card-cta::after {
+        width: 100%;
+    }
+}
+
+
+/* ============================================
+   SERVICES CAROUSEL SECTION (RESTORED & UPGRADED)
+   ============================================ */
+
+.services-carousel-section {
+    padding: 6rem 0;
+    background-color: #fff;
+    /* Subtle separation from categories */
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    overflow: visible;
+    /* Fix clipping issues */
+}
+
+.services-carousel-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.services-carousel-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.services-carousel-header .section-label {
+    display: inline-block;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--gold-accent);
+    margin-bottom: 1rem;
+}
+
+.services-carousel-header .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 500;
+    color: var(--text-primary);
+    margin: 0 0 1rem 0;
+}
+
+.services-carousel-header .section-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    color: #666;
+    margin: 0 auto;
+    max-width: 600px;
+    line-height: 1.6;
+}
+
+.services-slider-wrapper {
+    padding: 1rem 0;
+}
+
+.services-slider {
+    overflow: visible !important;
+    /* Allow shadows to breathe */
+}
+
+/* Services Tour Card Overrides - High Specificity to avoid !important */
+.services-slider .services-tour-card {
+    height: 400px;
+    border-radius: 8px;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    filter: none;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.services-slider .services-tour-card:hover {
+    transform: translateY(-5px);
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    filter: none;
+}
+
+/* Navigation for Services */
+.services-carousel-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+}
+
+.services-carousel-nav .nav-arrow {
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--text-primary);
+}
+
+.services-carousel-nav .nav-arrow svg {
+    width: 20px;
+    height: 20px;
+}
+
+.services-carousel-nav .nav-arrow:hover {
+    background: var(--text-primary);
+    color: white;
+    border-color: var(--text-primary);
+    transform: scale(1.05);
+}
+
+/* Navigation Dots for Services */
+.services-carousel-nav .nav-dots {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.services-carousel-nav .nav-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.15);
+    border: none;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 0;
+}
+
+.services-carousel-nav .nav-dot:hover {
+    background: rgba(0, 0, 0, 0.3);
+    transform: scale(1.2);
+}
+
+.services-carousel-nav .nav-dot.active {
+    background: var(--gold-accent);
+    width: 28px;
+    border-radius: 10px;
+}
+
+.services-carousel-cta {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+}
+
+.view-all-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 2rem;
+    background: transparent;
+    border: 1px solid var(--text-primary);
+    color: var(--text-primary);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    transition: all 0.3s ease;
+}
+
+.view-all-btn:hover {
+    background: var(--text-primary);
+    color: var(--text-light);
+}
+
+.view-all-btn svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Responsive Services */
+@media (max-width: 768px) {
+    .services-tour-card {
+        height: 340px !important;
+    }
+
+    .services-carousel-section {
+        padding: 4rem 0;
+    }
+}

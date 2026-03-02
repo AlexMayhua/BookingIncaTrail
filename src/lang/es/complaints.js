@@ -1,0 +1,20 @@
+export default {
+    h1title: 'Queremos Escucharte',
+    tellUs: 'Por favor, cuéntanos qué ocurrió y cómo podemos mejorar. Estamos aquí para ayudarte.',
+    expert: 'Experto:',
+    h2Opinion: '¡Tu opinión nos importa!',
+    pDescriptionOp: 'En BookingIncatrail, queremos brindarte siempre la mejor experiencia. Si algo no fue como esperabas o tienes una sugerencia, háznoslo saber. Tu comentario nos ayuda a mejorar y ofrecer un mejor servicio.',
+    thanks: 'Gracias por ayudarnos a ser mejores.',
+    f_fullname: 'Nombre completo',
+    f_numDocument:'Número de documento de identidad',
+    f_writename:'Escribe tu nombre',
+    f_writedocument:"Ingresa tu N° de documento",
+    f_mail: 'Correo electrónico',
+    f_writemail: 'Escribe tu correo electrónico',
+    f_phone: 'Teléfono',
+    f_writephone: 'Escribe tu número de teléfono',
+    f_details: '¿Qué sucedió? Cuéntanos los detalles',
+    f_writedetails: 'Describa su reclamo o sugerencia con el mayor detalle posible',
+    f_response: '¿Cómo prefieres recibir nuestra respuesta?',
+    f_btnSend: 'Enviar una queja o sugerencia'
+}

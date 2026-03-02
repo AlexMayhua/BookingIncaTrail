@@ -1,0 +1,442 @@
+/* =============================================
+   FOOTER - MODERN PREMIUM DESIGN
+   ============================================= */
+
+.footer-modern {
+    background: linear-gradient(180deg, #0D1117 0%, #0a0e12 100%);
+    color: #E6EDF3;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Fondo decorativo */
+.footer-modern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        radial-gradient(circle at 15% 85%, rgba(230, 194, 0, 0.04) 0%, transparent 40%),
+        radial-gradient(circle at 85% 15%, rgba(72, 114, 148, 0.03) 0%, transparent 40%);
+    pointer-events: none;
+}
+
+/* Línea superior dorada */
+.footer-top-accent {
+    height: 4px;
+    background: linear-gradient(90deg, transparent 0%, #e6c200 30%, #d4a600 70%, transparent 100%);
+}
+
+/* Contenido principal */
+.footer-content {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+@media (min-width: 768px) {
+    .footer-content {
+        padding: 3.5rem 2rem 2.5rem;
+    }
+}
+
+/* Grid de columnas */
+.footer-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+}
+
+@media (min-width: 640px) {
+    .footer-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .footer-grid {
+        grid-template-columns: 1.3fr 1fr 1fr 1.2fr;
+        gap: 2.5rem;
+    }
+}
+
+/* Columna de marca */
+.footer-brand-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.footer-logo img {
+    height: 3.5rem;
+    width: auto;
+    transition: opacity 0.3s ease;
+}
+
+.footer-logo:hover img {
+    opacity: 0.85;
+}
+
+.footer-description {
+    color: #8B949E;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    max-width: 300px;
+    margin: 0;
+}
+
+/* Iconos de redes sociales */
+.footer-social-icons {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+}
+
+/* Columnas de enlaces */
+.footer-links-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-column-title {
+    color: #e6c200;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.title-accent {
+    width: 20px;
+    height: 2px;
+    background: #e6c200;
+    border-radius: 1px;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.footer-link {
+    color: #8B949E;
+    text-decoration: none;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.25s ease;
+    padding: 0.25rem 0;
+}
+
+.footer-link:hover {
+    color: #e6c200;
+    padding-left: 6px;
+}
+
+.footer-link .link-arrow {
+    width: 14px;
+    height: 14px;
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: all 0.25s ease;
+    color: #e6c200;
+}
+
+.footer-link:hover .link-arrow {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Columna de contacto */
+.footer-contact-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-contact-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.footer-contact-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.9rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: #E6EDF3;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.footer-contact-card:hover {
+    background: rgba(230, 194, 0, 0.08);
+    border-color: rgba(230, 194, 0, 0.25);
+    transform: translateX(4px);
+}
+
+.contact-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    flex-shrink: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Estado por defecto: plateado/gris */
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #8B949E;
+}
+
+.contact-icon svg {
+    width: 18px;
+    height: 18px;
+    transition: all 0.3s ease;
+}
+
+/* Hover states - mostrar colores de marca */
+.footer-contact-card:hover .phone-icon {
+    background: linear-gradient(135deg, #e6c200 0%, #d4a600 100%);
+    border-color: #e6c200;
+    color: #0D1117;
+    transform: scale(1.05);
+    box-shadow: 0 4px 16px rgba(230, 194, 0, 0.4);
+}
+
+.footer-contact-card:hover .whatsapp-icon {
+    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+    border-color: #25D366;
+    color: #ffffff;
+    transform: scale(1.05);
+    box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4);
+}
+
+.footer-contact-card:hover .email-icon {
+    background: linear-gradient(135deg, #487294 0%, #3a5c78 100%);
+    border-color: #487294;
+    color: #ffffff;
+    transform: scale(1.05);
+    box-shadow: 0 4px 16px rgba(72, 114, 148, 0.4);
+}
+
+.footer-contact-card:hover .location-icon {
+    background: linear-gradient(135deg, #EA4335 0%, #c5382e 100%);
+    border-color: #EA4335;
+    color: #ffffff;
+    transform: scale(1.05);
+    box-shadow: 0 4px 16px rgba(234, 67, 53, 0.4);
+}
+
+.contact-text {
+    font-size: 0.85rem;
+    color: #c9d1d9;
+    transition: color 0.3s ease;
+}
+
+.footer-contact-card:hover .contact-text {
+    color: #ffffff;
+}
+
+/* WhatsApp card especial */
+.whatsapp-card:hover {
+    background: rgba(37, 211, 102, 0.08);
+    border-color: rgba(37, 211, 102, 0.25);
+}
+
+.whatsapp-card:hover .contact-text {
+    color: #25D366;
+}
+
+/* Info de empresa */
+.footer-company-info {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    background: rgba(230, 194, 0, 0.05);
+    border-radius: 10px;
+    border-left: 3px solid #e6c200;
+}
+
+.company-name {
+    margin: 0;
+    font-size: 0.75rem;
+    color: #E6EDF3;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.company-ruc {
+    margin: 0.2rem 0 0;
+    font-size: 0.7rem;
+    color: #8B949E;
+}
+
+/* Separador */
+.footer-separator {
+    height: 1px;
+    background: linear-gradient(90deg, transparent 5%, rgba(230, 194, 0, 0.2) 50%, transparent 95%);
+    margin: 0 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .footer-separator {
+        margin: 0 2rem;
+    }
+}
+
+/* Métodos de pago */
+.footer-payment {
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+@media (min-width: 768px) {
+    .footer-payment {
+        padding: 1rem 2rem;
+    }
+}
+
+.payment-label {
+    color: #e6c200;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.payment-methods-img {
+    height: 2.5rem;
+    opacity: 0.9;
+    transition: all 0.3s ease;
+}
+
+@media (min-width: 768px) {
+    .payment-methods-img {
+        height: 3rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .payment-methods-img {
+        height: 3.5rem;
+    }
+}
+
+.payment-methods-img:hover {
+    opacity: 1;
+    transform: scale(1.02);
+}
+
+/* Copyright */
+.footer-copyright {
+    padding: 1rem 5.5rem 1rem 5.5rem;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .footer-copyright {
+        padding: 1rem 6rem 1rem 6rem;
+    }
+}
+
+@media (max-width: 767px) {
+    .footer-copyright {
+        padding: 1rem 1.5rem 5rem 1.5rem;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .copyright-text {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+.copyright-text {
+    margin: 0;
+    color: #6e7681;
+    font-size: 0.75rem;
+}
+
+.copyright-links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.copyright-link {
+    color: #6e7681;
+    font-size: 0.7rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.copyright-link:hover {
+    color: #e6c200;
+}
+
+/* Animación de entrada */
+@keyframes footerFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.footer-brand-column,
+.footer-links-column,
+.footer-contact-column {
+    animation: footerFadeIn 0.6s ease forwards;
+}
+
+.footer-brand-column {
+    animation-delay: 0.1s;
+}
+
+.footer-links-column:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.footer-links-column:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.footer-contact-column {
+    animation-delay: 0.4s;
+}

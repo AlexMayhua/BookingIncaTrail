@@ -1,0 +1,516 @@
+/* =============================================
+   SECTION 1 - POR QUÉ NOSOTROS / WHY US - CAROUSEL
+   ============================================= */
+
+.why-us-carousel-section {
+    position: relative;
+    padding: 4rem 0;
+    overflow: hidden;
+    background: linear-gradient(180deg, #fffdf8 0%, #fff 50%, #fefbf3 100%);
+}
+
+@media (min-width: 768px) {
+    .why-us-carousel-section {
+        padding: 5rem 0;
+    }
+}
+
+@media (min-width: 1024px) {
+    .why-us-carousel-section {
+        padding: 6rem 0;
+    }
+}
+
+/* Fondo decorativo */
+.why-us-carousel-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.why-us-carousel-bg::before {
+    content: '';
+    position: absolute;
+    top: 10%;
+    left: -10%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(72, 114, 148, 0.06) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.why-us-carousel-bg::after {
+    content: '';
+    position: absolute;
+    bottom: 5%;
+    right: -5%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(230, 194, 0, 0.08) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+/* Contenedor */
+.why-us-carousel-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+/* Encabezado */
+.why-us-carousel-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding: 0 1rem;
+}
+
+@media (min-width: 768px) {
+    .why-us-carousel-header {
+        margin-bottom: 3rem;
+    }
+}
+
+.why-us-carousel-label {
+    display: inline-block;
+    padding: 0.5rem 1.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #487294;
+    background: linear-gradient(135deg, rgba(72, 114, 148, 0.1) 0%, rgba(72, 114, 148, 0.05) 100%);
+    border: 1px solid rgba(72, 114, 148, 0.2);
+    border-radius: 50px;
+    font-family: 'Montserrat', sans-serif;
+    margin-bottom: 1rem;
+}
+
+.why-us-carousel-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1a365d;
+    margin-bottom: 0.75rem;
+    line-height: 1.2;
+}
+
+@media (min-width: 640px) {
+    .why-us-carousel-title {
+        font-size: 2.25rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .why-us-carousel-title {
+        font-size: 2.75rem;
+    }
+}
+
+.why-us-carousel-subtitle {
+    font-size: 0.95rem;
+    color: #5a6b7a;
+    max-width: 600px;
+    margin: 0 auto 1.5rem;
+    line-height: 1.6;
+    font-family: 'Montserrat', sans-serif;
+}
+
+@media (min-width: 768px) {
+    .why-us-carousel-subtitle {
+        font-size: 1.05rem;
+    }
+}
+
+.why-us-carousel-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.why-us-carousel-divider .divider-line {
+    height: 4px;
+    border-radius: 2px;
+}
+
+.why-us-carousel-divider .divider-line.long {
+    width: 50px;
+    background: linear-gradient(90deg, #e6c200, #d4a600);
+}
+
+.why-us-carousel-divider .divider-line.medium {
+    width: 30px;
+    background: linear-gradient(90deg, #e6c200, #d4a600);
+    opacity: 0.6;
+}
+
+.why-us-carousel-divider .divider-line.short {
+    width: 15px;
+    background: linear-gradient(90deg, #e6c200, #d4a600);
+    opacity: 0.3;
+}
+
+/* Slider wrapper */
+.why-us-slider-wrapper {
+    position: relative;
+    padding: 1rem 0;
+}
+
+/* Slider */
+.why-us-slider {
+    overflow: visible !important;
+}
+
+/* Slides */
+.why-us-slide {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: scale(0.85);
+    opacity: 0.6;
+    filter: blur(1px);
+}
+
+.why-us-slide.center-slide {
+    transform: scale(1);
+    opacity: 1;
+    filter: blur(0);
+    z-index: 10;
+}
+
+/* Tarjetas del carrusel */
+.why-us-carousel-card {
+    position: relative;
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 2rem 1.5rem;
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.04),
+        0 1px 4px rgba(0, 0, 0, 0.02);
+    border: 2px solid rgba(230, 194, 0, 0.15);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    min-height: 420px;
+    width: 100%;
+    max-width: 320px;
+}
+
+@media (min-width: 768px) {
+    .why-us-carousel-card {
+        min-height: 480px;
+        max-width: 340px;
+        padding: 2.5rem 1.75rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .why-us-carousel-card {
+        min-height: 500px;
+        max-width: 360px;
+    }
+}
+
+/* Tarjeta activa (centro) */
+.why-us-carousel-card.active {
+    transform: translateY(-12px);
+    box-shadow:
+        0 25px 50px rgba(72, 114, 148, 0.15),
+        0 12px 24px rgba(0, 0, 0, 0.08),
+        0 0 0 3px rgba(230, 194, 0, 0.3);
+    border-color: #e6c200;
+}
+
+.why-us-carousel-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #e6c200, #d4a600, #e6c200);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.3s ease;
+}
+
+.why-us-carousel-card.active::before {
+    transform: scaleX(1);
+}
+
+/* Número decorativo */
+.carousel-card-number {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #487294;
+    background: linear-gradient(135deg, rgba(72, 114, 148, 0.12) 0%, rgba(72, 114, 148, 0.05) 100%);
+    padding: 0.4rem 0.75rem;
+    border-radius: 20px;
+    font-family: 'Montserrat', sans-serif;
+    letter-spacing: 0.05em;
+    border: 1px solid rgba(72, 114, 148, 0.2);
+    transition: all 0.25s ease;
+}
+
+.why-us-carousel-card.active .carousel-card-number {
+    background: linear-gradient(135deg, #e6c200, #d4a600);
+    color: #ffffff;
+    border-color: #e6c200;
+    box-shadow: 0 4px 12px rgba(230, 194, 0, 0.4);
+}
+
+/* Contenedor del icono */
+.carousel-icon-wrapper {
+    position: relative;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+}
+
+.carousel-icon-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, rgba(230, 194, 0, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    transition: all 0.25s ease;
+    transform: scale(1);
+}
+
+.why-us-carousel-card.active .carousel-icon-wrapper::before {
+    background: radial-gradient(circle, rgba(230, 194, 0, 0.2) 0%, rgba(72, 114, 148, 0.05) 70%);
+    transform: scale(1.3);
+}
+
+.carousel-icon {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    transition: transform 0.25s ease;
+}
+
+@media (min-width: 768px) {
+    .carousel-icon {
+        width: 120px;
+        height: 120px;
+    }
+}
+
+.why-us-carousel-card.active .carousel-icon {
+    transform: scale(1.15);
+}
+
+.carousel-svg-icon {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain;
+    transition: all 0.25s ease;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+}
+
+.why-us-carousel-card.active .carousel-svg-icon {
+    filter: drop-shadow(0 8px 16px rgba(230, 194, 0, 0.3));
+}
+
+/* Contenido de la tarjeta */
+.carousel-card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.carousel-card-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1a365d;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    line-height: 1.4;
+    transition: color 0.25s ease;
+}
+
+@media (min-width: 768px) {
+    .carousel-card-title {
+        font-size: 1rem;
+    }
+}
+
+.why-us-carousel-card.active .carousel-card-title {
+    color: #487294;
+}
+
+.carousel-card-description {
+    font-size: 0.85rem;
+    color: #5a6b7a;
+    line-height: 1.7;
+    font-family: 'Montserrat', sans-serif;
+    flex: 1;
+    transition: all 0.25s ease;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+@media (min-width: 768px) {
+    .carousel-card-description {
+        font-size: 0.875rem;
+        -webkit-line-clamp: 6;
+    }
+}
+
+.why-us-carousel-card.active .carousel-card-description {
+    color: #3d4f5f;
+    -webkit-line-clamp: unset;
+}
+
+/* Línea decorativa inferior */
+.carousel-accent-line {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, #e6c200, transparent);
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+.why-us-carousel-card.active .carousel-accent-line {
+    width: 80%;
+}
+
+/* Flechas de navegación */
+.why-us-nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid rgba(72, 114, 148, 0.2);
+    color: #487294;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 20;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.why-us-nav-arrow:hover {
+    background: #487294;
+    color: #ffffff;
+    border-color: #487294;
+    box-shadow: 0 6px 20px rgba(72, 114, 148, 0.3);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.why-us-nav-arrow svg {
+    width: 24px;
+    height: 24px;
+}
+
+.why-us-nav-arrow.prev {
+    left: 1rem;
+}
+
+.why-us-nav-arrow.next {
+    right: 1rem;
+}
+
+@media (min-width: 768px) {
+    .why-us-nav-arrow {
+        width: 56px;
+        height: 56px;
+    }
+
+    .why-us-nav-arrow svg {
+        width: 28px;
+        height: 28px;
+    }
+
+    .why-us-nav-arrow.prev {
+        left: 2rem;
+    }
+
+    .why-us-nav-arrow.next {
+        right: 2rem;
+    }
+}
+
+@media (min-width: 1280px) {
+    .why-us-nav-arrow.prev {
+        left: 3rem;
+    }
+
+    .why-us-nav-arrow.next {
+        right: 3rem;
+    }
+}
+
+/* Indicadores de puntos */
+.why-us-carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 2rem;
+    padding: 0 1rem;
+}
+
+.carousel-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid rgba(72, 114, 148, 0.3);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.carousel-dot:hover {
+    border-color: #487294;
+    background: rgba(72, 114, 148, 0.1);
+}
+
+.carousel-dot.active {
+    background: linear-gradient(135deg, #e6c200, #d4a600);
+    border-color: #e6c200;
+    transform: scale(1.2);
+    box-shadow: 0 0 12px rgba(230, 194, 0, 0.5);
+}
+
+/* Animación de entrada */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.why-us-carousel-section {
+    animation: slideIn 0.5s ease forwards;
+}

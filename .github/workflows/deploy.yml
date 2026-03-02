@@ -1,0 +1,44 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          script: |
+            export NVM_DIR=~/.nvm
+            source ~/.nvm/nvm.sh
+            
+            cd /root/projects/BookingIncaTRail
+            echo "🚀 Iniciando despliegue automático..."
+            
+            # Limpiar cambios locales (como sitemaps autogenerados)
+            git reset --hard HEAD
+            git clean -df
+            
+            echo "📥 Bajando últimos cambios de GitHub..."
+            git pull origin main --rebase
+            
+            echo "📦 Instalando dependencias..."
+            npm install
+            
+            echo "🏗️ Construyendo aplicación..."
+            npm run build
+            
+            echo "🧹 Liberando puerto 3000 si está ocupado..."
+            fuser -k 3000/tcp || true
+            
+            echo "🔄 Reiniciando servicio en PM2..."
+            pm2 restart booking-inca-trail || pm2 start ecosystem.config.js
+            
+            echo "✅ ¡Despliegue completado con éxito!"

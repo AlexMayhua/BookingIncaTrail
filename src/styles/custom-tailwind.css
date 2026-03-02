@@ -1,0 +1,36 @@
+@tailwind components;
+
+.custom-tailwind h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+}
+
+.custom-tailwind h3 {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+@layer components {
+    .custom-tailwind ul {
+        list-style: initial;
+        /* Remove list bullets */
+        padding-left: 1rem;
+        list-style-type: square;
+        margin: 0.3rem;
+        @apply text-stone-900;
+        padding-bottom: 1rem;
+    }
+
+    .custom-tailwind strong {
+        @apply text-stone-700;
+    }
+
+    .custom-tailwind a {
+        color: #0022ff;
+    }
+}
+
+.custom-tailwind strong {
+    font-size: 15px;
+}

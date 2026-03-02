@@ -1,0 +1,5 @@
+export default {
+    title: 'Peru Trips Packages Deal BookingIncatrail',
+    content: '<p>Welcome to Lifexpeditions.com! Our tours are designed to offer you an unforgettable travel experience. Whether you prefer to join a shared group or opt for a private tour, we have got you covered. Our Regular and Customized tours cater to your unique preferences and interests.</p> <p>As a bonus, we offer exclusive discounts for group bookings of up to 6 people. Don&#39;t hesitate to contact us directly at <a href="mailto:sales@bookingincatrail.com">sales@bookingincatrail.com</a> or WhatsApp <a href="tel:+51 970811976">+51 970811976</a> for more information or to book your dream tour today.</p> <p>Embark on a journey that will leave you with memories to last a lifetime. Choose Lifexpeditions.com for a travel experience like no other.</p>',
+    content_1: 'Limited spaces Book now!'
+}

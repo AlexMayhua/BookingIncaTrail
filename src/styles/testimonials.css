@@ -1,0 +1,427 @@
+/* ============================================
+   TESTIMONIALS SECTION - ESTILOS MODERNOS
+   ============================================ */
+
+/* Sección principal - Fondo claro */
+.testimonials-section {
+    position: relative;
+    padding: 4rem 0;
+    background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+    overflow: hidden;
+}
+
+/* Fondo decorativo sutil */
+.testimonials-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        radial-gradient(circle at 10% 20%, rgba(230, 194, 0, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 90% 80%, rgba(13, 17, 23, 0.03) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.testimonials-container {
+    position: relative;
+    z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+/* Encabezado */
+.testimonials-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.testimonials-header .section-label {
+    display: inline-block;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #0d1117;
+    background: rgba(230, 194, 0, 0.15);
+    padding: 0.35rem 1rem;
+    border-radius: 20px;
+    margin-bottom: 0.75rem;
+}
+
+.testimonials-header .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+    color: #0d1117;
+    margin: 0 0 1rem 0;
+    line-height: 1.2;
+}
+
+/* TripAdvisor Badge */
+.tripadvisor-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #0d1117;
+    border: 1px solid rgba(230, 194, 0, 0.3);
+    border-radius: 50px;
+    margin-top: 0.75rem;
+}
+
+.ta-logo {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: #00aa6c;
+}
+
+.ta-logo svg {
+    width: 100%;
+    height: 100%;
+}
+
+.ta-info {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.ta-rating {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #e6c200;
+}
+
+.ta-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Slider */
+.testimonials-slider {
+    overflow: visible !important;
+    padding: 0.5rem 0;
+}
+
+/* ============================================
+   TESTIMONIAL CARD - Diseño oscuro elegante
+   ============================================ */
+
+.testimonial-card {
+    position: relative;
+    height: 100%;
+    min-height: 280px;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+    border: 1px solid rgba(230, 194, 0, 0.15);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.testimonial-card:hover {
+    border-color: rgba(230, 194, 0, 0.4);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Quote icon */
+.quote-icon {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 2rem;
+    height: 2rem;
+    color: rgba(230, 194, 0, 0.2);
+}
+
+.quote-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Stars */
+.testimonial-stars {
+    display: flex;
+    gap: 0.15rem;
+    margin-bottom: 0.75rem;
+}
+
+.testimonial-stars .star {
+    width: 1rem;
+    height: 1rem;
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.testimonial-stars .star.filled {
+    color: #e6c200;
+}
+
+/* Title */
+.testimonial-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: white;
+    margin: 0 0 0.75rem 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Comment */
+.testimonial-comment {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.6;
+    margin: 0;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Footer */
+.testimonial-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.testimonial-user {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.user-avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: linear-gradient(135deg, #e6c200 0%, #d4b000 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #0d1117;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.user-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: white;
+}
+
+.user-meta {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Read more link */
+.read-more-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+}
+
+.read-more-link svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.read-more-link:hover {
+    background: #e6c200;
+    color: #0d1117;
+}
+
+/* ============================================
+   NAVEGACIÓN
+   ============================================ */
+
+.testimonials-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.testimonials-nav .nav-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: #0d1117;
+    border: 1px solid rgba(230, 194, 0, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.testimonials-nav .nav-arrow svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: white;
+}
+
+.testimonials-nav .nav-arrow:hover {
+    background: #e6c200;
+    border-color: #e6c200;
+}
+
+.testimonials-nav .nav-arrow:hover svg {
+    color: #0d1117;
+}
+
+.testimonials-nav .nav-dots {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.testimonials-nav .nav-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #d1d5db;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.testimonials-nav .nav-dot:hover {
+    background: #9ca3af;
+}
+
+.testimonials-nav .nav-dot.active {
+    background: #e6c200;
+    width: 24px;
+    border-radius: 10px;
+}
+
+/* CTA */
+.testimonials-cta {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.view-all-reviews {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #0d1117;
+    background: transparent;
+    border: 2px solid #0d1117;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.view-all-reviews svg {
+    width: 1rem;
+    height: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.view-all-reviews:hover {
+    background: #0d1117;
+    color: white;
+}
+
+.view-all-reviews:hover svg {
+    transform: translate(3px, -3px);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+    .testimonials-section {
+        padding: 3rem 0;
+    }
+
+    .testimonial-card {
+        min-height: 260px;
+        padding: 1.25rem;
+    }
+
+    .testimonial-title {
+        font-size: 0.9rem;
+    }
+
+    .testimonial-comment {
+        font-size: 0.8rem;
+        -webkit-line-clamp: 3;
+    }
+
+    .testimonials-nav {
+        gap: 1rem;
+    }
+
+    .testimonials-nav .nav-arrow {
+        width: 2rem;
+        height: 2rem;
+    }
+
+    .testimonials-nav .nav-arrow svg {
+        width: 1rem;
+        height: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .tripadvisor-badge {
+        padding: 0.4rem 0.75rem;
+    }
+
+    .ta-rating {
+        font-size: 0.9rem;
+    }
+
+    .user-avatar {
+        width: 2rem;
+        height: 2rem;
+        font-size: 0.65rem;
+    }
+
+    .user-name {
+        font-size: 0.8rem;
+    }
+}

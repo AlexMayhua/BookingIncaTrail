@@ -1,0 +1,505 @@
+/* ============================================
+   FEATURED TOURS SECTION - ESTILOS MODERNOS
+   ============================================ */
+
+/* Contenedor principal */
+.featured-tours-section {
+    padding: 3rem 0;
+    background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+    overflow: hidden;
+}
+
+/* Contenedor del slider de tours */
+.featured-tours-container {
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Encabezado de la sección */
+.featured-tours-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 0 1.5rem;
+}
+
+.section-label {
+    display: inline-block;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #e6c200;
+    background: rgba(230, 194, 0, 0.1);
+    padding: 0.35rem 1rem;
+    border-radius: 20px;
+    margin-bottom: 0.75rem;
+}
+
+.section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+    color: #0d1117;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.2;
+}
+
+.section-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin: 0;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* Slider container */
+.featured-tours-slider {
+    overflow: visible !important;
+    padding: 0.5rem 1.5rem;
+}
+
+/* ============================================
+   TOUR CARD - DISEÑO CON IMAGEN COMPLETA
+   ============================================ */
+
+.tour-card {
+    display: block;
+    position: relative;
+    height: 340px;
+    border-radius: 16px;
+    overflow: hidden;
+    text-decoration: none;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tour-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Imagen de fondo */
+.tour-card-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.tour-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tour-card:hover .tour-card-image img {
+    transform: scale(1.08);
+}
+
+/* Overlay gradiente */
+.tour-card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(0, 0, 0, 0.1) 40%,
+            rgba(0, 0, 0, 0.7) 80%,
+            rgba(0, 0, 0, 0.85) 100%);
+    transition: background 0.3s ease;
+    z-index: 1;
+}
+
+.tour-card:hover .tour-card-overlay {
+    background: linear-gradient(180deg,
+            rgba(0, 0, 0, 0.1) 0%,
+            rgba(0, 0, 0, 0.2) 30%,
+            rgba(0, 0, 0, 0.75) 70%,
+            rgba(0, 0, 0, 0.9) 100%);
+}
+
+/* Badge de descuento */
+.tour-card-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.35rem 0.75rem;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border-radius: 20px;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+}
+
+/* Contenido de la tarjeta */
+.tour-card-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.25rem;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* Información básica */
+.tour-card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.tour-card-category {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #e6c200;
+}
+
+.tour-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: white;
+    margin: 0;
+    line-height: 1.25;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.tour-card-description {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    opacity: 0.9;
+}
+
+/* Footer con precio y duración */
+.tour-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.tour-card-duration {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+.tour-card-duration svg {
+    width: 1rem;
+    height: 1rem;
+    color: #e6c200;
+}
+
+.tour-card-price {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.1rem;
+}
+
+.price-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.6rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+}
+
+.price-old {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: line-through;
+}
+
+.price-current {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #e6c200;
+    line-height: 1;
+}
+
+/* Botón de acción (aparece en hover) */
+.tour-card-action {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem 1.25rem;
+    transform: translateY(100%);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: linear-gradient(135deg, #e6c200 0%, #d4b000 100%);
+    z-index: 10;
+}
+
+.tour-card:hover .tour-card-action {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.tour-card-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #0d1117;
+}
+
+.tour-card-btn svg {
+    width: 1rem;
+    height: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.tour-card:hover .tour-card-btn svg {
+    transform: translateX(4px);
+}
+
+/* ============================================
+   NAVEGACIÓN
+   ============================================ */
+
+.featured-tours-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    padding: 0 1.5rem;
+}
+
+.nav-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: white;
+    border: 1px solid #e5e7eb;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.nav-arrow svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: #374151;
+}
+
+.nav-arrow:hover {
+    background: #e6c200;
+    border-color: #e6c200;
+    transform: scale(1.1);
+}
+
+.nav-arrow:hover svg {
+    color: #0d1117;
+}
+
+.nav-dots {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.nav-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #d1d5db;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.nav-dot:hover {
+    background: #9ca3af;
+}
+
+.nav-dot.active {
+    background: #e6c200;
+    width: 24px;
+    border-radius: 10px;
+}
+
+/* CTA Ver todos */
+.featured-tours-cta {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.view-all-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #0d1117;
+    background: transparent;
+    border: 2px solid #0d1117;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.view-all-btn svg {
+    width: 1rem;
+    height: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.view-all-btn:hover {
+    background: #0d1117;
+    color: white;
+}
+
+.view-all-btn:hover svg {
+    transform: translateX(4px);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+    .featured-tours-section {
+        padding: 2rem 0;
+    }
+
+    .featured-tours-header {
+        margin-bottom: 1.5rem;
+    }
+
+    .tour-card {
+        height: 300px;
+    }
+
+    .tour-card-title {
+        font-size: 1rem;
+    }
+
+    .tour-card-description {
+        -webkit-line-clamp: 1;
+    }
+
+    .nav-arrow {
+        width: 2rem;
+        height: 2rem;
+    }
+
+    .nav-arrow svg {
+        width: 1rem;
+        height: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .tour-card {
+        height: 280px;
+    }
+
+    .tour-card-content {
+        padding: 1rem;
+    }
+
+    .featured-tours-nav {
+        gap: 1rem;
+    }
+}
+
+/* ============================================
+   BLOG CARD TOUR - ESTILOS ESPECÍFICOS
+   ============================================ */
+
+.blog-card-tour {
+    height: 360px;
+}
+
+.blog-badge {
+    background: linear-gradient(135deg, #1e5631 0%, #2d7a47 100%) !important;
+    font-size: 0.65rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.blog-author {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.blog-author-name {
+    font-size: 0.85rem !important;
+    color: #e6c200;
+}
+
+/* Grid de blog */
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+    .blog-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .blog-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+    }
+}
+
+@media (min-width: 1400px) {
+    .blog-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
+    }
+}

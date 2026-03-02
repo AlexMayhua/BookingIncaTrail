@@ -1,0 +1,9 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+	<title>icons8-españa-2-48</title>
+	<defs>
+		<image  width="44" height="30" id="img1" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAeCAMAAABg6AyVAAAAAXNSR0IB2cksfwAAAXFQTFRF3SwA/8EH/sAJ0a8d1bAb8LsN4bQQxKIUyZkTyJUNxaIU4LQQ9LsN1KkOsDkUnUITpUQVo0IVnEISsz8S2KwO8a8I0pAKunoMpnQNqHsKp3sKp3EMv30M4KMJ+LgIxZYHnH8H8qwJyl8Qs1IOtEMSxKRwwalt0rhw9b8bn38HypkI6bkpyrRt6JwLoDcQhmIFoyIWvqu1wXqWvKSo7b0szbdv5bYo0YoptWVDyGIPnD0WeXQloB8VuaOpxIKgyKu4zoYvuGtAz4govWwkt5l7zHsMmDQPgF8oX0JMXklVtaSmtqOn0pkqupx+u20jy3YosWBRy5IeqloMp1AOZEBMZz9MtkoRtkwQ1pEntGRTyXQp158zx7uWz5YdqFAOqV4LsEETsGsQuE4Q2pcnzMCa0psy2qwWvqM14KYSqFgNo1sVs1MguFAPt1ES6KgVv6Q12asWk41OfoRbz6kmxIgmr2s2o5NxpJN+um4/z4oukotNcNG1PAAAAHpJREFUeJxjZCABMI4qJlsxKaqRFTMyMv77T5xiFkYI+EqMYh6o4reEFYswvhYDq30qw/iYkGI5RgS4TkixFpLi04QUmyEp3k9IsROS4s2EFPshKV5OSHEUMIBhgTeHkOJURoTqiYQUF8Dc8Os/RzshxUSBwZL4h7tiAJhgEy3Bh6L/AAAAAElFTkSuQmCC"/>
+	</defs>
+	<style>
+	</style>
+	<use id="Background" href="#img1" x="2" y="9"/>
+</svg>

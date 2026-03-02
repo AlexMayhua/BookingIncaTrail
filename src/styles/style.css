@@ -1,0 +1,63 @@
+::selection {
+  background: #e6c200;
+  color: #0d1117;
+}
+@media (min-width: 1535px) {
+  .layoud-spacing{
+    padding-top: 151px;
+  }
+}
+@media (max-width: 1535px) {
+  .layoud-spacing{
+    padding-top: 147px;
+  }
+}
+@media (max-width: 1362px) {
+  .layoud-spacing{
+    padding-top: 167px;
+  }
+}
+@media (max-width: 1279px) {
+  .layoud-spacing{
+    padding-top: 147px;
+  }
+}
+@media (max-width: 1145px) {
+  .layoud-spacing{
+    padding-top: 159px;
+  }
+}
+@media (max-width: 1024px) {
+  .layoud-spacing{
+    padding-top: 64px;
+  }
+}
+
+.custom-text{
+  text-shadow: 0 0 10px #0d1117, 0 0 10px #0d1117, 0 0 10px #0d1117, 0 0 10px #0d1117, 0 0 10px #0d1117, 0 0 10px #0d1117, 0 0 10px #0d1117, 0 0 10px #0d1117, 0 0 10px #0d1117, 0 0 10px #0d1117, 0 0 10px #0d1117, 0 0 10px #0d1117, 0 0 10px #0d1117, 0 0 10px #0d1117, 0 0 10px #0d1117;
+  font-family: tanker, Arial, Helvetica, sans-serif;
+  letter-spacing: 4px;
+}
+
+.custom-overlay-negro {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.20);
+}
+
+.custom-overlay-degrade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, white 0%, rgba(255, 255, 255, 0) 1%, transparent 100%);
+}
+
+.custom-quick-stats{
+  background: #fff;
+  border-radius: 1rem 1rem 0 0;
+  padding: 1.25rem;
+  box-shadow: 0 0 25px #fff;
+}
+
+.text-shadow{
+  text-shadow: -5px 3px 10px #000;
+}
