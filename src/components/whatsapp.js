@@ -6,7 +6,7 @@ const WhatsAppChat = () => {
     const [showChat, setShowChat] = useState(false);
 
     return (
-        <div className="relative w-full">
+        <div className="relative w-full z-50">
             {/* Botón principal de WhatsApp */}
             <div className="fixed bottom-2 right-4">
                 <button onClick={() => setShowChat(!showChat)} className="whatsapp-button group">
