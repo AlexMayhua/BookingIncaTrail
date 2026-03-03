@@ -1,168 +1,228 @@
 import { useRouter } from 'next/router';
 import en from '../../lang/en/home';
 import es from '../../lang/es/home';
-import { useEffect, useState } from 'react';
-import { getVideoUrl, getImageUrl } from '../../utils/cacheHelpers';
 import Link from 'next/link';
-import HeroToursCarousel from './HeroToursCarousel';
+import Image from 'next/image';
+
+const cards = {
+  left: [
+    {
+      img: '/img/hero/hero-slider-inca-trail.webp',
+      alt: 'Inca Trail trek group',
+      badge: 'Inca Trail',
+      position:
+        'top-[5%] left-[15%] 2xl:top-[5%] 2xl:left-[13%] 3xl:top-[5%] 3xl:left-[18%]',
+      w: 'w-28 xl:w-36 2xl:w-48 3xl:w-64',
+      h: 'h-36 xl:h-44 2xl:h-52 3xl:h-72',
+      sizes: '(min-width: 1920px) 456px, (min-width: 1536px) 192px, (min-width: 1280px) 144px, 112px',
+    },
+    {
+      img: '/img/hero/salkantay.webp',
+      alt: 'Humantay Lake',
+      badge: 'Salkantay',
+      position:
+        'top-[34%] left-[25%] xl:top-[35%] 2xl:top-[34%] 2xl:left-[25%] 3xl:top-[38%] 3xl:left-[30%]',
+      w: 'w-24 xl:w-32 2xl:w-40 3xl:w-40',
+      h: 'h-32 xl:h-40 2xl:h-48 3xl:h-52',
+      sizes: '(min-width: 1536px) 260px, (min-width: 1280px) 128px, 96px',
+    },
+    {
+      img: '/img/hero/ausangate.webp',
+      alt: 'Salineras de Maras',
+      badge: 'Ausangate Trek',
+      position:
+        'bottom-[10%] left-[15%] xl:bottom-[14%] 2xl:bottom-[9%] 2xl:left-[15%] 3xl:bottom-[10%] 3xl:left-[20%]',
+      w: 'w-28 xl:w-36 2xl:w-52 3xl:w-60',
+      h: 'h-36 xl:h-44 2xl:h-56 3xl:h-72',
+      sizes: '(min-width: 1920px) 320px, (min-width: 1536px) 208px, (min-width: 1280px) 144px, 112px',
+    },
+  ],
+  right: [
+    {
+      img: '/img/hero/hero-slider-inca-jungle.webp',
+      alt: 'Inca Jungle adventure',
+      badge: 'Inca Jungle',
+      position:
+        'top-[5%] right-[15%] 2xl:top-[5%] 2xl:right-[15%] 3xl:top-[5%] 3xl:right-[20%]',
+      w: 'w-28 xl:w-36 2xl:w-48 3xl:w-60',
+      h: 'h-36 xl:h-44 2xl:h-52 3xl:h-72',
+      sizes: '(min-width: 1920px) 300px, (min-width: 1536px) 192px, (min-width: 1280px) 144px, 112px',
+    },
+    {
+      img: '/img/hero/cusco-tours.webp',
+      alt: 'Cusco Tours',
+      badge: 'Cusco Tours',
+      position:
+        'top-[35%] right-[25%] xl:top-[38%] 2xl:top-[34%] 2xl:right-[25%] 3xl:top-[38%] 3xl:right-[30%]',
+      w: 'w-24 xl:w-32 2xl:w-40 3xl:w-52',
+      h: 'h-32 xl:h-40 2xl:h-48 3xl:h-60',
+      sizes: '(min-width: 1920px) 240px, (min-width: 1536px) 192px, (min-width: 1280px) 144px, 112px',
+    },
+    {
+      img: '/img/hero/montaña-colores.webp',
+      alt: 'Rainbow Mountain',
+      badge: 'Rainbow Mountain',
+      position:
+        'bottom-[10%] right-[15%] xl:bottom-[14%] 2xl:bottom-[9%] 2xl:right-[15%] 3xl:bottom-[15%] 3xl:right-[16%]',
+      w: 'w-28 xl:w-36 2xl:w-48 3xl:w-60',
+      h: 'h-36 xl:h-44 2xl:h-56 3xl:h-72',
+      sizes: '(min-width: 1920px) 280px, (min-width: 1536px) 192px, (min-width: 1280px) 144px, 112px',
+    },
+  ],
+};
+
+function FloatingCard({ img, alt, badge, position, w, h, rotate, hidden, sizes }) {
+  return (
+    <div
+      className={`absolute z-[2] ${position} ${w} ${h} ${rotate || ''} rounded-2xl overflow-hidden ${hidden || ''}`}>
+      <Image
+        fill
+        src={img}
+        alt={alt}
+        loading='lazy'
+        sizes={sizes }
+        className='w-full h-full object-cover'
+      />
+      <span className='absolute bottom-2 left-2 bg-white text-black text-xs 2xl:text-sm font-bold px-2 py-0.5 rounded-full'>
+        {badge}
+      </span>
+    </div>
+  );
+}
 
 export default function FrontPage({ topTours = [] }) {
-    const router = useRouter();
-    const { locale } = router;
-    const t = locale === 'en' ? en : es;
+  const { locale } = useRouter();
+  const t = locale === 'en' ? en : es;
 
-    const [isMobile, setIsMobile] = useState(false);
-    const [videoSrc, setVideoSrc] = useState(null);
-    const [posterSrc, setPosterSrc] = useState(null);
+  return (
+    <section className='relative w-full h-[90vh] overflow-hidden flex flex-col'>
+      <Image
+        src='/img/hero/machu-imge.jpeg'
+        alt='Machu Picchu background'
+        fill
+        priority
+        fetchPriority='high'
+        className='object-cover object-center'
+        sizes='100vw'
+      />
+      <div className='absolute inset-0 bg-black/50 z-[1]' />
 
-    useEffect(() => {
-        const checkMobile = () => {
-            const mobile = window.innerWidth <= 767;
-            setIsMobile(mobile);
+      {cards.left.map((c, i) => (
+        <FloatingCard key={`l${i}`} {...c} hidden='hidden lg:block' />
+      ))}
+      {cards.right.map((c, i) => (
+        <FloatingCard key={`r${i}`} {...c} hidden='hidden lg:block' />
+      ))}
 
-            // Lazy load: solo establecer URLs de video después de un delay
-            // Priorizar la carga de poster primero
-            setPosterSrc(
-                mobile
-                    ? getImageUrl('/img/other/FrontPageMobile.webp', true)
-                    : getImageUrl('/img/other/FrontPage.webp', true)
-            );
+      <div className='relative z-10 flex-1 flex flex-col items-center justify-center text-center px-5 max-w-2xl md:max-w-3xl mx-auto gap-3 md:gap-5 lg:gap-4 xl:gap-6'>
+        <h1 className='text-white font-extrabold text-3xl md:text-3xl lg:text-4xl xl:text-6xl leading-[0.95] tracking-tight'>
+          {locale === 'en' ? (
+            <>
+              Trek the Inca Trail
+              <br />
+              powered by
+              <br />
+              <span className='text-secondary'>local experts</span>
+            </>
+          ) : (
+            <>
+              Camino Inca
+              <br />
+              impulsado por
+              <br />
+              <span className='text-secondary'>expertos locales</span>
+            </>
+          )}
+        </h1>
 
-            // Retrasar carga de video para priorizar contenido crítico
-            setTimeout(() => {
-                setVideoSrc(
-                    mobile
-                        ? getVideoUrl('/img/other/FrontPageMobile.mp4')
-                        : getVideoUrl('/img/other/FrontPage.mp4')
-                );
-            }, 1000); // 1 segundo de delay
-        };
+        <Link
+          href='/contact'
+          className='inline-flex items-center bg-secondary text-primary font-bold text-xs md:text-sm uppercase tracking-wide px-6 py-2 xl:py-3 rounded-full'>
+          {locale === 'en' ? 'Check Availability' : 'Ver Disponibilidad'}
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            viewBox='0 0 20 20'
+            fill='currentColor'
+            className='w-4 h-4'>
+            <path
+              fillRule='evenodd'
+              d='M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z'
+              clipRule='evenodd'
+            />
+          </svg>
+        </Link>
 
-        checkMobile();
-        window.addEventListener('resize', checkMobile);
-        return () => window.removeEventListener('resize', checkMobile);
-    }, []);
+        <div className='flex flex-col items-center gap-1 md:gap-2'>
+          <p className='text-white text-sm'>
+            {locale === 'en'
+              ? 'Official government permits · Small groups only'
+              : 'Permisos oficiales del gobierno · Solo grupos pequeños'}
+          </p>
+          <Link
+            href='/inca-trail'
+            className='text-secondary text-sm md:text-sm font-semibold underline underline-offset-2'>
+            {locale === 'en'
+              ? 'Explore all tours →'
+              : 'Explorar todos los tours →'}
+          </Link>
+          <div className='flex items-center gap-1.5'>
+            <span className='text-white text-[11px] md:text-xs font-medium'>
+              4.9 · 8,900+ {locale === 'en' ? 'travelers' : 'viajeros'}
+            </span>
+          </div>
+        </div>
 
-    const safeTours = Array.isArray(topTours) ? topTours : [];
+        <div className='relative w-full max-w-[140px] md:max-w-[200px] lg:max-w-[160px] 2xl:max-w-[200px] 3xl:max-w-[280px]'>
+          <div className='relative aspect-[4/5] rounded-2xl overflow-hidden'>
+            <Image
+              fill
+              src='/img/hero/salineras-maras.webp'
+              alt='Salineras de Maras panoramic view'
+              fetchPriority='high'
+              sizes='(min-width: 1920px) 440px, (min-width: 1536px) 360px, (min-width: 1024px) 160px, (min-width: 768px) 200px, 140px'
+              className='w-full h-full object-cover'
+            />
+          </div>
 
-    return (
-        <section className="hero-section hero-split-layout">
-            {/* Video de fondo sin overlay oscuro */}
-            {videoSrc && (
-                <video
-                    autoPlay
-                    muted
-                    loop
-                    preload="metadata"
-                    poster={posterSrc}
-                    className="hero-video"
-                    aria-label="Inca Trail To Machu Picchu"
-                    playsInline
-                    onError={(e) => {
-                        console.warn('Error cargando video:', e.target.src);
-                        e.target.style.display = 'none';
-                    }}
-                >
-                    <source src={videoSrc} type="video/mp4" />
-                    <img
-                        src={posterSrc}
-                        alt="Inca Trail To Machu Picchu"
-                        className="hero-video"
-                        onError={(e) => {
-                            console.warn('Error cargando imagen poster:', e.target.src);
-                            e.target.src = '/home/hero.jpg';
-                        }}
-                    />
-                </video>
-            )}
+          <div className='absolute -bottom-3 left-1/2 -translate-x-1/2 bg-white rounded-full px-3 py-1 lg:py-2 flex items-center gap-1.5  shadow-lg'>
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              viewBox='0 0 24 24'
+              fill='currentColor'
+              className='w-4 h-4 lg:w-5 lg:h-5 text-secondary'>
+              <path
+                fillRule='evenodd'
+                d='M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z'
+                clipRule='evenodd'
+              />
+            </svg>
+            <span className='text-primary font-bold text-xs lg:text-sm text-nowrap'>
+              {locale === 'en' ? 'Since 2014' : 'Desde 2014'}
+            </span>
+          </div>
+        </div>
 
-            {/* Overlay muy sutil solo para legibilidad */}
-            <div className="hero-overlay"></div>
-
-            {/* Contenido dividido en dos columnas */}
-            <div className="hero-content hero-content-split">
-                {/* Columna Izquierda - Contenido Principal */}
-                <div className="hero-left-column">
-                    <div className="hero-content-inner hero-content-left">
-                        {/* Badge de confianza */}
-                        <div className="hero-badge">
-                            <span className="hero-badge-dot"></span>
-                            {locale === 'en' ? '100% Local Peruvian Agency' : '100% Agencia Local Peruana'}
-                        </div>
-
-                        {/* Título principal */}
-                        <h1 className="hero-title">
-                            {locale === 'en'
-                                ? 'Discover the Magic of Peru'
-                                : 'Descubre la Magia de Perú'
-                            }
-                        </h1>
-
-                        {/* Subtítulo */}
-                        <p className="hero-subtitle">
-                            {locale === 'en'
-                                ? 'Expert Inca Trail & Machu Picchu Adventures'
-                                : 'Expertos en Camino Inca y Aventuras a Machu Picchu'
-                            }
-                        </p>
-
-                        {/* Botones CTA */}
-                        <div className="hero-cta-group">
-                            <Link href="/contact" className="hero-btn-primary">
-                                {locale === 'en' ? 'Book Your Adventure' : 'Reserva Tu Aventura'}
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                                </svg>
-                            </Link>
-                            <Link href="/inca-trail" className="hero-btn-secondary">
-                                {locale === 'en' ? 'View Tours' : 'Ver Tours'}
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                                </svg>
-                            </Link>
-                        </div>
-
-                        {/* Stats compactos */}
-                        <div className="hero-stats">
-                            <div className="hero-stat">
-                                <span className="hero-stat-number">10+</span>
-                                <span className="hero-stat-label">{locale === 'en' ? 'Years' : 'Años'}</span>
-                            </div>
-                            <div className="hero-stat-divider"></div>
-                            <div className="hero-stat">
-                                <span className="hero-stat-number">8.9K+</span>
-                                <span className="hero-stat-label">{locale === 'en' ? 'Travelers' : 'Viajeros'}</span>
-                            </div>
-                            <div className="hero-stat-divider"></div>
-                            <div className="hero-stat">
-                                <span className="hero-stat-number">4.9</span>
-                                <span className="hero-stat-label">★ Rating</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Columna Derecha - Carrusel de Top Tours */}
-                <div className="hero-right-column">
-                    {safeTours.length > 0 && (
-                        <div className="hero-tours-wrapper">
-                            <div className="hero-tours-header">
-                                <span className="hero-tours-label">
-                                    {locale === 'en' ? 'Featured Tours' : 'Tours Destacados'}
-                                </span>
-                            </div>
-                            <HeroToursCarousel tours={safeTours} t={t} />
-                        </div>
-                    )}
-                </div>
+        <div className='flex gap-2 mt-4 lg:hidden w-full justify-center'>
+          {[cards.left[0], cards.right[2], cards.left[2]].map((c, i) => (
+            <div
+              key={i}
+              className='w-24 h-28 md:w-32 md:h-40 rounded-xl overflow-hidden shrink-0 relative'>
+              <Image
+                fill
+                src={c.img}
+                alt={c.alt}
+                loading='lazy'
+                fetchPriority='low'
+                sizes='(min-width: 768px) 128px, 96px'
+                className='w-full h-full object-cover'
+              />
+              <span className='absolute bottom-1 left-1 bg-white/90 text-primary text-[8px] md:text-[9px] font-bold px-1.5 py-0.5 rounded-full'>
+                {c.badge}
+              </span>
             </div>
-
-            {/* Indicador de scroll */}
-            <div className="hero-scroll-indicator">
-                <div className="hero-scroll-mouse">
-                    <div className="hero-scroll-wheel"></div>
-                </div>
-            </div>
-        </section>
-    );
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 }
