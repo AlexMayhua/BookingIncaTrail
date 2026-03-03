@@ -55,20 +55,11 @@ export default function Navbar() {
   // Usar datos dinámicos de la base de datos en lugar de datos hardcodeados
   const incaTrail = loading ? [] : getToursByCategory('inca-trail');
   const salkantay = loading ? [] : getToursByCategory('salkantay');
-  const machupicchu = loading ? [] : getToursByCategory('machupicchu');
   const ausangate = loading ? [] : getToursByCategory('ausangate');
   const perupackages = loading ? [] : getToursByCategory('peru-packages');
   const cuscoTours = loading ? [] : getToursByCategory('day-tours');
   const raimbow = loading ? [] : getToursByCategory('rainbow-mountain');
   const incaJungle = loading ? [] : getToursByCategory('inca-jungle');
-  // Nuevas categorías 2026
-  const choquequirao = loading ? [] : getToursByCategory('choquequirao');
-  const sacredLakes = loading ? [] : getToursByCategory('sacred-lakes');
-  const luxuryGlamping = loading ? [] : getToursByCategory('luxury-glamping');
-  const familyTours = loading ? [] : getToursByCategory('family-tours');
-  const sustainableTours = loading
-    ? []
-    : getToursByCategory('sustainable-tours');
 
   // Configuración dinámica de todas las categorías para el navbar
   // ⚠️ Solo mostrar categorías con tours en DB y con rutas válidas
@@ -167,13 +158,9 @@ export default function Navbar() {
     };
   }, [isSmallScreen]);
 
-  // Funciones para manejar el hover dinámico
+  // Funciones para manejar el hover dinámico (selección persistente)
   const handleServiceHover = (serviceSlug) => {
     setHoveredService(serviceSlug);
-  };
-
-  const handleServiceLeave = () => {
-    setHoveredService(null);
   };
 
   // Funciones para scroll manual del navbar
@@ -202,12 +189,20 @@ export default function Navbar() {
     }
     // Abrir inmediatamente
     setOpenCategory(categorySlug);
+    // Auto-seleccionar el primer tour de la categoría
+    const cat = navbarCategories.find((c) => c.slug === categorySlug);
+    if (cat && cat.data.length > 0) {
+      setHoveredService(cat.data[0].slug);
+    } else {
+      setHoveredService(null);
+    }
   };
 
   const handleCategoryMouseLeave = () => {
     // Delay antes de cerrar para dar tiempo al usuario de mover el mouse al menú
     closeTimeoutRef.current = setTimeout(() => {
       setOpenCategory(null);
+      setHoveredService(null);
     }, 300); // 300ms de delay
   };
 
@@ -222,6 +217,7 @@ export default function Navbar() {
   const handleMegaMenuMouseLeave = () => {
     // Cerrar el menú cuando el mouse sale del mega menú
     setOpenCategory(null);
+    setHoveredService(null);
   };
 
   // Cleanup del timeout cuando el componente se desmonte
@@ -442,7 +438,7 @@ export default function Navbar() {
             <CachedImage
               src='/assets/logo-Booking.svg'
               alt={BRAND.logo.alt}
-              className='h-14 w-auto transform origin-center scale-[1.15]'
+              className='h-10 w-auto transform origin-center scale-[1.15]'
             />
           </Link>
           <ul className='flex gap-2 xs:gap-4'>
@@ -557,7 +553,7 @@ export default function Navbar() {
                 {/* Acciones rápidas de contacto */}
                 <div className='compact-quick-actions'>
                   {BRAND.contactPhone && (
-                    <a
+                    <Link
                       href={`tel:${BRAND.contactPhone}`}
                       className='compact-action-btn phone'>
                       <svg
@@ -570,10 +566,10 @@ export default function Navbar() {
                           clipRule='evenodd'
                         />
                       </svg>
-                    </a>
+                    </Link>
                   )}
                   {BRAND.whatsapp && (
-                    <a
+                    <Link
                       href={`https://wa.me/${BRAND.whatsapp?.replace(/\D/g, '')}`}
                       target='_blank'
                       rel='noopener noreferrer'
@@ -584,9 +580,9 @@ export default function Navbar() {
                         fill='currentColor'>
                         <path d='M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z' />
                       </svg>
-                    </a>
+                    </Link>
                   )}
-                  <a
+                  <Link
                     href={`mailto:${BRAND.contactEmail}`}
                     className='compact-action-btn email'>
                     <svg
@@ -596,7 +592,7 @@ export default function Navbar() {
                       <path d='M1.5 8.67v8.58a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V8.67l-8.928 5.493a3 3 0 0 1-3.144 0L1.5 8.67Z' />
                       <path d='M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z' />
                     </svg>
-                  </a>
+                  </Link>
                 </div>
 
                 {/* Selector de idioma compacto */}
@@ -643,7 +639,7 @@ export default function Navbar() {
             {/* Top Bar - Una sola fila con distribución optimizada */}
             <div className='header-topbar-row'>
               {/* Columna Izquierda: Logo con slogan */}
-              <div className='header-logo-section'>
+              <div className='header-logo-section py-2'>
                 <Link
                   href='/'
                   aria-label='Inicio'
@@ -651,7 +647,7 @@ export default function Navbar() {
                   <CachedImage
                     src='/assets/logo-Booking.svg'
                     alt={BRAND.logo.alt}
-                    className='h-12 w-auto transform origin-center scale-[1.15]'
+                    className='h-8 xl:h-10 3xl:h-12  w-auto transform origin-center'
                   />
                   <span className='brand-slogan'>
                     {t.slogan || 'Your adventure starts here'}
@@ -662,7 +658,7 @@ export default function Navbar() {
               {/* Columna Centro: Información de contacto */}
               <div className='header-contact-section'>
                 {BRAND.contactPhone ? (
-                  <a
+                  <Link
                     href={`tel:${BRAND.contactPhone}`}
                     className='contact-info-item'>
                     <span className='contact-icon-wrapper'>
@@ -678,13 +674,13 @@ export default function Navbar() {
                       </svg>
                     </span>
                     <span className='contact-text'>{BRAND.contactPhone}</span>
-                  </a>
+                  </Link>
                 ) : null}
 
                 <div className='contact-divider'></div>
 
                 {BRAND.contactEmail ? (
-                  <a
+                  <Link
                     href={`mailto:${BRAND.contactEmail}`}
                     className='contact-info-item'>
                     <span className='contact-icon-wrapper'>
@@ -697,7 +693,7 @@ export default function Navbar() {
                       </svg>
                     </span>
                     <span className='contact-text'>{BRAND.contactEmail}</span>
-                  </a>
+                  </Link>
                 ) : null}
               </div>
 
@@ -755,7 +751,7 @@ export default function Navbar() {
                   {/* Redes sociales horizontal arriba */}
                   <div className='social-icons-top '>
                     {BRAND.social?.facebook && (
-                      <a
+                      <Link
                         href={BRAND.social.facebook}
                         target='_blank'
                         rel='noopener noreferrer'
@@ -767,10 +763,10 @@ export default function Navbar() {
                           fill='currentColor'>
                           <path d='M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z' />
                         </svg>
-                      </a>
+                      </Link>
                     )}
                     {BRAND.social?.instagram && (
-                      <a
+                      <Link
                         href={BRAND.social.instagram}
                         target='_blank'
                         rel='noopener noreferrer'
@@ -782,10 +778,10 @@ export default function Navbar() {
                           fill='currentColor'>
                           <path d='M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z' />
                         </svg>
-                      </a>
+                      </Link>
                     )}
                     {BRAND.social?.tiktok && (
-                      <a
+                      <Link
                         href={BRAND.social.tiktok}
                         target='_blank'
                         rel='noopener noreferrer'
@@ -797,10 +793,10 @@ export default function Navbar() {
                           fill='currentColor'>
                           <path d='M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z' />
                         </svg>
-                      </a>
+                      </Link>
                     )}
                     {BRAND.social?.youtube && (
-                      <a
+                      <Link
                         href={BRAND.social.youtube}
                         target='_blank'
                         rel='noopener noreferrer'
@@ -812,7 +808,7 @@ export default function Navbar() {
                           fill='currentColor'>
                           <path d='M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z' />
                         </svg>
-                      </a>
+                      </Link>
                     )}
                   </div>
                 </div>
@@ -830,7 +826,7 @@ export default function Navbar() {
           {!isSmallScreen && (
             <div
               id='navbarDesktop'
-              className='bg-primary/95 border-t border-stone-700/30 relative'>
+              className=' border-t border-stone-700/30 relative'>
               <div className='px-12 w-full'>
                 {/* Navbar dinámico con scroll - muestra 7 categorías, scroll para ver las demás */}
 
@@ -883,8 +879,7 @@ export default function Navbar() {
                                     className={`mega-menu-service-item ${hoveredService === item.slug ? 'active' : ''}`}
                                     onMouseEnter={() =>
                                       handleServiceHover(item.slug)
-                                    }
-                                    onMouseLeave={handleServiceLeave}>
+                                    }>
                                     <Link
                                       href={`/${item.category}/${item.slug}`}
                                       className='mega-menu-service-link'>
@@ -990,7 +985,7 @@ export default function Navbar() {
             </li>
           ) : null}
           <li className='flex items-center justify-center gap-2'>
-            <a
+            <Link
               href={`tel:${BRAND.contactPhone}`}
               aria-label='Phone number'
               className='p-2 rounded-lg hover:bg-secondary/20 transition-all duration-300 group relative'>
@@ -1005,9 +1000,9 @@ export default function Navbar() {
                   clipRule='evenodd'
                 />
               </svg>
-            </a>
+            </Link>
 
-            <a
+            <Link
               href={`https://api.whatsapp.com/send?phone=${BRAND.contactPhone}&text=information%tours`}
               aria-label='Whatsapp'
               className='p-1 rounded-lg relative group'>
@@ -1036,7 +1031,7 @@ export default function Navbar() {
                   fill='#ffd700'
                 />
               </svg>
-            </a>
+            </Link>
           </li>
           <li className='flex items-center justify-center'>
             <button
@@ -1117,7 +1112,7 @@ export default function Navbar() {
         {/* Contenido del menú con mejor espaciado */}
         <ul className='px-4 pb-6 space-y-1 text-base font-medium'>
           <li className='accordion mb-2'>
-            <a
+            <Link
               href='#'
               onClick={toggle}
               className={
@@ -1165,7 +1160,7 @@ export default function Navbar() {
                   />
                 </svg>
               )}
-            </a>
+            </Link>
             <ul className={isShowing ? 'block mt-2 space-y-1' : 'hidden'}>
               {incaTrail.map((item, i) => (
                 <li className='flex' key={i}>
@@ -1181,7 +1176,7 @@ export default function Navbar() {
             </ul>
           </li>
           <li className='accordion mb-2'>
-            <a
+            <Link
               href='#'
               onClick={toggle1}
               className={
@@ -1227,7 +1222,7 @@ export default function Navbar() {
                   />
                 </svg>
               )}
-            </a>
+            </Link>
             <ul className={isShowing1 ? 'block mt-2 space-y-1' : 'hidden'}>
               {salkantay.map((item, i) => (
                 <li className='flex' key={i}>
@@ -1244,7 +1239,7 @@ export default function Navbar() {
           </li>
 
           <li className='accordion mb-2'>
-            <a
+            <Link
               href='#'
               onClick={toggle2}
               className={
@@ -1290,7 +1285,7 @@ export default function Navbar() {
                   />
                 </svg>
               )}
-            </a>
+            </Link>
             <ul className={isShowing2 ? 'block mt-2 space-y-1' : 'hidden'}>
               {ausangate.map((item, i) => (
                 <li className='flex' key={i}>
@@ -1307,70 +1302,7 @@ export default function Navbar() {
           </li>
 
           <li className='accordion mb-2'>
-            <a
-              href='#'
-              onClick={toggle3}
-              className={
-                isShowing3
-                  ? 'py-3 px-4 flex text-white rounded-xl shadow-lg justify-between items-center transition-all duration-300 border-2 border-secondary'
-                  : 'py-3 px-4 flex justify-between items-center rounded-xl transition-all duration-300 hover:bg-white/5 border-2 border-transparent hover:border-secondary/30 text-white/90 hover:text-white'
-              }
-              style={
-                isShowing3
-                  ? {
-                      background:
-                        'linear-gradient(135deg, rgba(230, 194, 0, 0.2) 0%, rgba(230, 194, 0, 0.1) 100%)',
-                    }
-                  : {}
-              }>
-              <span className='font-semibold'>{t.machupicchu}</span>
-              {isShowing3 ? (
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  strokeWidth='2'
-                  stroke='currentColor'
-                  className='h-5 w-5 transition-transform duration-300 text-secondary'>
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    d='m4.5 15.75 7.5-7.5 7.5 7.5'
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  strokeWidth='2'
-                  stroke='currentColor'
-                  className='h-5 w-5 transition-transform duration-300 text-white/60'>
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    d='m19.5 8.25-7.5 7.5-7.5-7.5'
-                  />
-                </svg>
-              )}
-            </a>
-            <ul className={isShowing3 ? 'block mt-2 space-y-1' : 'hidden'}>
-              {machupicchu.map((item, i) => (
-                <li className='flex' key={i}>
-                  <Link
-                    href={`/${item.category}/${item.slug}`}
-                    onClick={() => setGender(!gender)}
-                    className='py-2.5 pr-4 text-sm text-white/70 w-full rounded-md flex items-center group'>
-                    <span className='w-2 h-2 rounded-full bg-secondary mx-2'></span>
-                    {capitalizeWords(item.title)}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </li>
-
-          <li className='accordion mb-2'>
-            <a
+            <Link
               href='#'
               onClick={toggle4}
               className={
@@ -1416,7 +1348,7 @@ export default function Navbar() {
                   />
                 </svg>
               )}
-            </a>
+            </Link>
             <ul className={isShowing4 ? 'block mt-2 space-y-1' : 'hidden'}>
               {perupackages.map((item, i) => (
                 <li className='flex' key={i}>
@@ -1433,7 +1365,7 @@ export default function Navbar() {
           </li>
 
           <li className='accordion mb-2'>
-            <a
+            <Link
               href='#'
               onClick={toggle5}
               className={
@@ -1479,7 +1411,7 @@ export default function Navbar() {
                   />
                 </svg>
               )}
-            </a>
+            </Link>
             <ul className={isShowing5 ? 'block mt-2 space-y-1' : 'hidden'}>
               {cuscoTours.map((item, i) => (
                 <li className='flex' key={i}>
@@ -1496,7 +1428,7 @@ export default function Navbar() {
           </li>
 
           <li className='accordion mb-2'>
-            <a
+            <Link
               href='#'
               onClick={toggle7}
               className={
@@ -1542,7 +1474,7 @@ export default function Navbar() {
                   />
                 </svg>
               )}
-            </a>
+            </Link>
             <ul className={isShowing7 ? 'block mt-2 space-y-1' : 'hidden'}>
               {raimbow.map((item, i) => (
                 <li className='flex' key={i}>
@@ -1559,7 +1491,7 @@ export default function Navbar() {
           </li>
 
           <li className='accordion mb-2'>
-            <a
+            <Link
               href='#'
               onClick={toggle6}
               className={
@@ -1605,10 +1537,9 @@ export default function Navbar() {
                   />
                 </svg>
               )}
-            </a>
+            </Link>
 
-            <div
-              className={isShowing6 ? 'block mt-2 space-y-3' : 'hidden'}>
+            <div className={isShowing6 ? 'block mt-2 space-y-3' : 'hidden'}>
               <ul className='space-y-1'>
                 {incaJungle.map((item, i) => (
                   <li className='flex' key={i}>
