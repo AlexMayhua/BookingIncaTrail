@@ -163,23 +163,6 @@ export default function Navbar() {
     setHoveredService(serviceSlug);
   };
 
-  // Funciones para scroll manual del navbar
-  const scrollNavbar = (direction) => {
-    const scrollContainer = navbarScrollRef.current;
-    if (!scrollContainer) return;
-
-    const scrollAmount = 280; // Ancho aproximado de 2 categorías
-    const targetScroll =
-      direction === 'left'
-        ? scrollContainer.scrollLeft - scrollAmount
-        : scrollContainer.scrollLeft + scrollAmount;
-
-    scrollContainer.scrollTo({
-      left: targetScroll,
-      behavior: 'smooth',
-    });
-  };
-
   // Funciones para manejar la apertura/cierre del mega menú
   const handleCategoryMouseEnter = (categorySlug) => {
     // Cancelar cualquier timeout de cierre pendiente
