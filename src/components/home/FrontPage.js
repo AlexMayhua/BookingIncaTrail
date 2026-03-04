@@ -104,7 +104,7 @@ export default function FrontPage() {
   return (
     <section className='relative w-full h-[90vh] overflow-hidden flex flex-col'>
       <Image
-        src='/img/hero/machu-imge.jpeg'
+        src='/img/hero/machu-imge.webp'
         alt='Machu Picchu background'
         fill
         priority
