@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { getImageUrl } from '../../utils/cacheHelpers';
 
 /**
@@ -33,7 +34,7 @@ export default function CachedImage({
   };
 
   return (
-    <img
+    <Image
       src={cachedSrc}
       alt={alt || ''}
       className={className}
