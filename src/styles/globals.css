@@ -11,7 +11,7 @@ body {
 }
 
 main {
-  min-height: 100vh;
+
   font-family: 'Montserrat', sans-serif;
   font-weight: 400;
   line-height: 1.6;
@@ -30,10 +30,7 @@ footer {
 /* Jerarquía tipográfica rediseñada: Serif para títulos principales (h1, h2), Sans para el resto */
 h1 {
   font-family: 'Playfair Display', serif;
-  font-weight: 700;
-  margin-bottom: 1.25rem;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
+
 }
 
 h2 {
