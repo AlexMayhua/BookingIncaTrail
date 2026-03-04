@@ -8,89 +8,96 @@ const cards = {
   left: [
     {
       img: '/img/hero/hero-slider-inca-trail.webp',
+      href: '/inca-trail',
       alt: 'Inca Trail trek group',
       badge: 'Inca Trail',
       position:
-        'top-[5%] left-[15%] 2xl:top-[5%] 2xl:left-[13%] 3xl:top-[5%] 3xl:left-[18%]',
-      w: 'w-28 xl:w-36 2xl:w-48 3xl:w-64',
-      h: 'h-36 xl:h-44 2xl:h-52 3xl:h-72',
-      sizes: '(min-width: 1920px) 456px, (min-width: 1536px) 192px, (min-width: 1280px) 144px, 112px',
+        'top-[3%] left-[15%] 2xl:top-[5%] 2xl:left-[13%] 3xl:top-[5%] 3xl:left-[13%]',
+      w: 'w-28 xl:w-44 2xl:w-52 3xl:w-72',
+      sizes:
+        '(min-width: 1920px) 456px, (min-width: 1536px) 262px, (min-width: 1280px) 194px, 130px',
     },
     {
       img: '/img/hero/salkantay.webp',
-      alt: 'Humantay Lake',
+      href: '/salkantay',
+      alt: 'salkantay trek',
       badge: 'Salkantay',
       position:
-        'top-[34%] left-[25%] xl:top-[35%] 2xl:top-[34%] 2xl:left-[25%] 3xl:top-[38%] 3xl:left-[30%]',
-      w: 'w-24 xl:w-32 2xl:w-40 3xl:w-40',
-      h: 'h-32 xl:h-40 2xl:h-48 3xl:h-52',
-      sizes: '(min-width: 1536px) 260px, (min-width: 1280px) 128px, 96px',
+        'top-[31%] left-[20%] xl:top-[35%] 2xl:top-[32%] 2xl:left-[28%] 3xl:top-[35%] 3xl:left-[30%]',
+      w: 'w-36 xl:w-36 2xl:w-36 3xl:w-44',
+      sizes: '(min-width: 1536px) 260px, (min-width: 1280px) 128px, 116px',
     },
     {
       img: '/img/hero/ausangate.webp',
-      alt: 'Salineras de Maras',
+      href: '/ausangate',
+      alt: 'Ausangate Trek',
       badge: 'Ausangate Trek',
       position:
-        'bottom-[10%] left-[15%] xl:bottom-[14%] 2xl:bottom-[9%] 2xl:left-[15%] 3xl:bottom-[10%] 3xl:left-[20%]',
-      w: 'w-28 xl:w-36 2xl:w-52 3xl:w-60',
-      h: 'h-36 xl:h-44 2xl:h-56 3xl:h-72',
-      sizes: '(min-width: 1920px) 320px, (min-width: 1536px) 208px, (min-width: 1280px) 144px, 112px',
+        'bottom-[4%] left-[17%] xl:bottom-[10%] xl:left-[12%] 2xl:bottom-[9%] 2xl:left-[15%] 3xl:bottom-[10%] 3xl:left-[20%]',
+      w: 'w-32 xl:w-40 2xl:w-52 3xl:w-60',
+      sizes:
+        '(min-width: 1920px) 320px, (min-width: 1536px) 208px, (min-width: 1280px) 144px, 112px',
     },
   ],
   right: [
     {
       img: '/img/hero/hero-slider-inca-jungle.webp',
+      href: '/inca-jungle',
       alt: 'Inca Jungle adventure',
       badge: 'Inca Jungle',
       position:
-        'top-[5%] right-[15%] 2xl:top-[5%] 2xl:right-[15%] 3xl:top-[5%] 3xl:right-[20%]',
-      w: 'w-28 xl:w-36 2xl:w-48 3xl:w-60',
-      h: 'h-36 xl:h-44 2xl:h-52 3xl:h-72',
-      sizes: '(min-width: 1920px) 300px, (min-width: 1536px) 192px, (min-width: 1280px) 144px, 112px',
+        'top-[7%] right-[15%] 2xl:top-[3%] 2xl:right-[15%] 3xl:top-[5%] 3xl:right-[20%]',
+      w: 'w-36 xl:w-40 2xl:w-44 3xl:w-56',
+      sizes:
+        '(min-width: 1920px) 300px, (min-width: 1536px) 202px, (min-width: 1280px) 144px, 112px',
     },
     {
       img: '/img/hero/cusco-tours.webp',
+      href: '/day-tours',
       alt: 'Cusco Tours',
-      badge: 'Cusco Tours',
+      badge: 'Day Tours',
       position:
-        'top-[35%] right-[25%] xl:top-[38%] 2xl:top-[34%] 2xl:right-[25%] 3xl:top-[38%] 3xl:right-[30%]',
-      w: 'w-24 xl:w-32 2xl:w-40 3xl:w-52',
-      h: 'h-32 xl:h-40 2xl:h-48 3xl:h-60',
-      sizes: '(min-width: 1920px) 240px, (min-width: 1536px) 192px, (min-width: 1280px) 144px, 112px',
+        'top-[44%] right-[25%] xl:top-[38%] xl:right-[22%] 2xl:top-[38%] 2xl:right-[25%] 3xl:top-[38%] 3xl:right-[24%]',
+      w: 'w-32 xl:w-48 2xl:w-40 3xl:w-64',
+      sizes:
+        '(min-width: 1920px) 240px, (min-width: 1536px) 192px, (min-width: 1280px) 144px, 112px',
     },
     {
       img: '/img/hero/montaña-colores.webp',
+      href: '/rainbow-mountain',
       alt: 'Rainbow Mountain',
       badge: 'Rainbow Mountain',
       position:
-        'bottom-[10%] right-[15%] xl:bottom-[14%] 2xl:bottom-[9%] 2xl:right-[15%] 3xl:bottom-[15%] 3xl:right-[16%]',
-      w: 'w-28 xl:w-36 2xl:w-48 3xl:w-60',
-      h: 'h-36 xl:h-44 2xl:h-56 3xl:h-72',
-      sizes: '(min-width: 1920px) 280px, (min-width: 1536px) 192px, (min-width: 1280px) 144px, 112px',
+        'bottom-[5%] right-[13%] xl:bottom-[14%] xl:right-[10%] 2xl:bottom-[10%] 2xl:right-[8%] 3xl:bottom-[15%] 3xl:right-[12%]',
+      w: 'w-28 xl:w-32 2xl:w-56 3xl:w-48',
+      sizes:
+        '(min-width: 1920px) 280px, (min-width: 1536px) 292px, (min-width: 1280px) 144px, 112px',
     },
   ],
 };
 
-function FloatingCard({ img, alt, badge, position, w, h, rotate, hidden, sizes }) {
+function FloatingCard({ img, href, alt, badge, position, w, sizes }) {
   return (
     <div
-      className={`absolute z-[2] ${position} ${w} ${h} ${rotate || ''} rounded-2xl overflow-hidden ${hidden || ''}`}>
+      className={`absolute z-20 ${position} ${w} aspect-[4/5] rounded-2xl overflow-hidden`}>
       <Image
         fill
         src={img}
         alt={alt}
         loading='lazy'
-        sizes={sizes }
+        sizes={sizes}
         className='w-full h-full object-cover'
       />
       <span className='absolute bottom-2 left-2 bg-white text-black text-xs 2xl:text-sm font-bold px-2 py-0.5 rounded-full'>
-        {badge}
+        <Link href={href}>
+          {badge}
+        </Link>
       </span>
     </div>
   );
 }
 
-export default function FrontPage({ topTours = [] }) {
+export default function FrontPage() {
   const { locale } = useRouter();
   const t = locale === 'en' ? en : es;
 
