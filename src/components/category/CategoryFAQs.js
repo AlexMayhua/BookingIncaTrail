@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import DOMPurify from "isomorphic-dompurify"
 
 export default function CategoryFAQs({ category }) {
   const router = useRouter();
@@ -425,12 +426,12 @@ export default function CategoryFAQs({ category }) {
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "FAQPage",
-              "mainEntity": displayFaqs.map(faq => ({
+              mainEntity: displayFaqs.map((faq) => ({
                 "@type": "Question",
-                "name": faq.title,
-                "acceptedAnswer": {
+                name: DOMPurify.sanitize(faq.title, { ALLOWED_TAGS: [] }),
+                acceptedAnswer: {
                   "@type": "Answer",
-                  "text": faq.content
+                  text: DOMPurify.sanitize(faq.content, { ALLOWED_TAGS: [] })
                 }
               }))
             })
