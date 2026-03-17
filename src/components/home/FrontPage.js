@@ -7,7 +7,7 @@ import Image from 'next/image';
 const cards = {
   left: [
     {
-      img: '/img/hero/hero-slider-inca-trail.webp',
+      img: '/img/hero/inca-trail.webp',
       href: '/inca-trail',
       alt: 'Inca Trail trek group',
       badge: 'Inca Trail',
@@ -15,7 +15,7 @@ const cards = {
         'top-[3%] left-[15%] 2xl:top-[5%] 2xl:left-[13%] 3xl:top-[5%] 3xl:left-[13%]',
       w: 'w-28 xl:w-44 2xl:w-52 3xl:w-72',
       sizes:
-        '(min-width: 1920px) 456px, (min-width: 1536px) 262px, (min-width: 1280px) 194px, 130px',
+        '(min-width: 1920px) 216px, (min-width: 1536px) 216px, (min-width: 1280px) 194px, 130px',
     },
     {
       img: '/img/hero/salkantay.webp',
@@ -41,7 +41,7 @@ const cards = {
   ],
   right: [
     {
-      img: '/img/hero/hero-slider-inca-jungle.webp',
+      img: '/img/hero/inca-jungle.webp',
       href: '/inca-jungle',
       alt: 'Inca Jungle adventure',
       badge: 'Inca Jungle',
@@ -76,10 +76,10 @@ const cards = {
   ],
 };
 
-function FloatingCard({ img, href, alt, badge, position, w, sizes }) {
+function FloatingCard({ img, href, alt, badge, position, w, sizes, hidden }) {
   return (
     <div
-      className={`absolute z-20 ${position} ${w} aspect-[4/5] rounded-2xl overflow-hidden`}>
+      className={`absolute z-20 ${position} ${w} aspect-[4/5] rounded-2xl ${hidden ?? ''} overflow-hidden`}>
       <Image
         fill
         src={img}
@@ -166,7 +166,7 @@ export default function FrontPage() {
               : 'Permisos oficiales del gobierno · Solo grupos pequeños'}
           </p>
           <Link
-            href='/inca-trail'
+            href='#alltours'
             className='text-secondary text-sm md:text-sm font-semibold underline underline-offset-2'>
             {locale === 'en'
               ? 'Explore all tours →'

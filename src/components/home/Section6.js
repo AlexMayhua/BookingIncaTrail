@@ -4,6 +4,7 @@ import en from '../../lang/en/home';
 import es from '../../lang/es/home';
 import Link from 'next/link';
 import { useKeenSlider } from 'keen-slider/react';
+import Image from 'next/image';
 
 const reviews = [
     {
@@ -157,127 +158,162 @@ export default function Testimonials() {
     }, [instanceRef]);
 
     return (
-        <section className="testimonials-section">
-            {/* Fondo decorativo */}
-            <div className="testimonials-bg"></div>
+      <section className='testimonials-section'>
+        {/* Fondo decorativo */}
+        <div className='testimonials-bg'></div>
 
-            <div className="testimonials-container">
-                {/* Encabezado */}
-                <div className="testimonials-header">
-                    <span className="section-label">
-                        {locale === 'en' ? 'What Our Travelers Say' : 'Lo Que Dicen Nuestros Viajeros'}
-                    </span>
-                    <h2 className="section-title">{t.h2_title_testimonials}</h2>
+        <div className='testimonials-container'>
+          {/* Encabezado */}
+          <div className='testimonials-header'>
+            <span className='section-label'>
+              {locale === 'en'
+                ? 'What Our Travelers Say'
+                : 'Lo Que Dicen Nuestros Viajeros'}
+            </span>
+            <h2 className='section-title'>{t.h2_title_testimonials}</h2>
 
-                    {/* TripAdvisor badge */}
-                    <div className="tripadvisor-badge">
-                        <div className="ta-logo">
-                            <svg viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.418 0-8-3.582-8-8s3.582-8 8-8 8 3.582 8 8-3.582 8-8 8z" />
-                                <circle cx="12" cy="12" r="3" />
-                            </svg>
-                        </div>
-                        <div className="ta-info">
-                            <span className="ta-rating">4.9</span>
-                            <span className="ta-text">TripAdvisor</span>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Slider de testimonios */}
-                <div ref={sliderRef} className="keen-slider testimonials-slider">
-                    {reviews.map((review, i) => (
-                        <div key={i} className="keen-slider__slide">
-                            <div className="testimonial-card">
-                                {/* Cita decorativa */}
-                                <div className="quote-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M4.583 17.321C3.553 16.227 3 15 3 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179zm10 0C13.553 16.227 13 15 13 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179z" />
-                                    </svg>
-                                </div>
-
-                                {/* Rating */}
-                                <StarRating rating={review.rating} />
-
-                                {/* Título */}
-                                <h3 className="testimonial-title">{review.title}</h3>
-
-                                {/* Comentario */}
-                                <p className="testimonial-comment">{review.comment}</p>
-
-                                {/* Footer con info del usuario */}
-                                <div className="testimonial-footer">
-                                    <div className="testimonial-user">
-                                        <div className="user-avatar">{review.avatar}</div>
-                                        <div className="user-info">
-                                            <span className="user-name">{review.user}</span>
-                                            <span className="user-meta">{review.date} • {review.type}</span>
-                                        </div>
-                                    </div>
-                                    <Link
-                                        href={review.url}
-                                        target="_blank"
-                                        className="read-more-link"
-                                        aria-label="Read full review on TripAdvisor"
-                                    >
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fillRule="evenodd" d="M5.22 14.78a.75.75 0 001.06 0l7.22-7.22v5.69a.75.75 0 001.5 0v-7.5a.75.75 0 00-.75-.75h-7.5a.75.75 0 000 1.5h5.69l-7.22 7.22a.75.75 0 000 1.06z" clipRule="evenodd" />
-                                        </svg>
-                                    </Link>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {/* Navegación */}
-                <div className="testimonials-nav">
-                    <button
-                        onClick={() => instanceRef.current?.prev()}
-                        className="nav-arrow"
-                        aria-label="Previous"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path fillRule="evenodd" d="M7.72 12.53a.75.75 0 010-1.06l7.5-7.5a.75.75 0 111.06 1.06L9.31 12l6.97 6.97a.75.75 0 11-1.06 1.06l-7.5-7.5z" clipRule="evenodd" />
-                        </svg>
-                    </button>
-
-                    <div className="nav-dots">
-                        {dots.map((_, idx) => (
-                            <button
-                                key={idx}
-                                onClick={() => instanceRef.current?.moveToIdx(idx)}
-                                className={`nav-dot ${currentSlide === idx ? 'active' : ''}`}
-                                aria-label={`Go to slide ${idx + 1}`}
-                            />
-                        ))}
-                    </div>
-
-                    <button
-                        onClick={() => instanceRef.current?.next()}
-                        className="nav-arrow"
-                        aria-label="Next"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path fillRule="evenodd" d="M16.28 11.47a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 01-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 011.06-1.06l7.5 7.5z" clipRule="evenodd" />
-                        </svg>
-                    </button>
-                </div>
-
-                {/* CTA */}
-                <div className="testimonials-cta">
-                    <Link
-                        href="https://www.tripadvisor.com.pe/Attraction_Review-g294314-d12614123-Reviews-Life_Expeditions-Cusco_Cusco_Region.html"
-                        target="_blank"
-                        className="view-all-reviews"
-                    >
-                        {locale === 'en' ? 'View All Reviews on TripAdvisor' : 'Ver Todas las Reseñas en TripAdvisor'}
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M5.22 14.78a.75.75 0 001.06 0l7.22-7.22v5.69a.75.75 0 001.5 0v-7.5a.75.75 0 00-.75-.75h-7.5a.75.75 0 000 1.5h5.69l-7.22 7.22a.75.75 0 000 1.06z" clipRule="evenodd" />
-                        </svg>
-                    </Link>
-                </div>
+            {/* TripAdvisor badge */}
+            <div className='tripadvisor-badge'>
+              <div className='ta-logo'>
+                <Image
+                  src='/assets/Tripadvisor3-BookingIncatrail.webp'
+                  alt='TripAdvisor Logo'
+                  width={24}
+                  height={24}
+                />
+              </div>
+              <div className='ta-info'>
+                <span className='ta-rating'>4.9</span>
+                <span className='ta-text'>TripAdvisor</span>
+              </div>
             </div>
-        </section>
+          </div>
+
+          {/* Slider de testimonios */}
+          <div ref={sliderRef} className='keen-slider testimonials-slider'>
+            {reviews.map((review, i) => (
+              <div key={i} className='keen-slider__slide'>
+                <div className='testimonial-card'>
+                  {/* Cita decorativa */}
+                  <div className='quote-icon'>
+                    <svg
+                      xmlns='http://www.w3.org/2000/svg'
+                      viewBox='0 0 24 24'
+                      fill='currentColor'>
+                      <path d='M4.583 17.321C3.553 16.227 3 15 3 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179zm10 0C13.553 16.227 13 15 13 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179z' />
+                    </svg>
+                  </div>
+
+                  {/* Rating */}
+                  <StarRating rating={review.rating} />
+
+                  {/* Título */}
+                  <h3 className='testimonial-title'>{review.title}</h3>
+
+                  {/* Comentario */}
+                  <p className='testimonial-comment'>{review.comment}</p>
+
+                  {/* Footer con info del usuario */}
+                  <div className='testimonial-footer'>
+                    <div className='testimonial-user'>
+                      <div className='user-avatar'>{review.avatar}</div>
+                      <div className='user-info'>
+                        <span className='user-name'>{review.user}</span>
+                        <span className='user-meta'>
+                          {review.date} • {review.type}
+                        </span>
+                      </div>
+                    </div>
+                    <Link
+                      href={review.url}
+                      target='_blank'
+                      className='read-more-link'
+                      aria-label='Read full review on TripAdvisor'>
+                      <svg
+                        xmlns='http://www.w3.org/2000/svg'
+                        viewBox='0 0 20 20'
+                        fill='currentColor'>
+                        <path
+                          fillRule='evenodd'
+                          d='M5.22 14.78a.75.75 0 001.06 0l7.22-7.22v5.69a.75.75 0 001.5 0v-7.5a.75.75 0 00-.75-.75h-7.5a.75.75 0 000 1.5h5.69l-7.22 7.22a.75.75 0 000 1.06z'
+                          clipRule='evenodd'
+                        />
+                      </svg>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Navegación */}
+          <div className='testimonials-nav'>
+            <button
+              onClick={() => instanceRef.current?.prev()}
+              className='nav-arrow'
+              aria-label='Previous'>
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                viewBox='0 0 24 24'
+                fill='currentColor'>
+                <path
+                  fillRule='evenodd'
+                  d='M7.72 12.53a.75.75 0 010-1.06l7.5-7.5a.75.75 0 111.06 1.06L9.31 12l6.97 6.97a.75.75 0 11-1.06 1.06l-7.5-7.5z'
+                  clipRule='evenodd'
+                />
+              </svg>
+            </button>
+
+            <div className='nav-dots'>
+              {dots.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => instanceRef.current?.moveToIdx(idx)}
+                  className={`nav-dot ${currentSlide === idx ? 'active' : ''}`}
+                  aria-label={`Go to slide ${idx + 1}`}
+                />
+              ))}
+            </div>
+
+            <button
+              onClick={() => instanceRef.current?.next()}
+              className='nav-arrow'
+              aria-label='Next'>
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                viewBox='0 0 24 24'
+                fill='currentColor'>
+                <path
+                  fillRule='evenodd'
+                  d='M16.28 11.47a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 01-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 011.06-1.06l7.5 7.5z'
+                  clipRule='evenodd'
+                />
+              </svg>
+            </button>
+          </div>
+
+          {/* CTA */}
+          <div className='testimonials-cta'>
+            <Link
+              href='https://www.tripadvisor.com.pe/Attraction_Review-g294314-d12614123-Reviews-Life_Expeditions-Cusco_Cusco_Region.html'
+              target='_blank'
+              className='view-all-reviews'>
+              {locale === 'en'
+                ? 'View All Reviews on TripAdvisor'
+                : 'Ver Todas las Reseñas en TripAdvisor'}
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                viewBox='0 0 20 20'
+                fill='currentColor'>
+                <path
+                  fillRule='evenodd'
+                  d='M5.22 14.78a.75.75 0 001.06 0l7.22-7.22v5.69a.75.75 0 001.5 0v-7.5a.75.75 0 00-.75-.75h-7.5a.75.75 0 000 1.5h5.69l-7.22 7.22a.75.75 0 000 1.06z'
+                  clipRule='evenodd'
+                />
+              </svg>
+            </Link>
+          </div>
+        </div>
+      </section>
     );
 }

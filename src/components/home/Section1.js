@@ -1,155 +1,241 @@
+import { useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
-import { useState, useEffect } from 'react';
 import en from '../../lang/en/home';
 import es from '../../lang/es/home';
+import {
+  FiAward,
+  FiCompass,
+  FiGlobe,
+  FiMap,
+  FiMapPin,
+  FiSliders,
+} from 'react-icons/fi';
 import Image from 'next/image';
-import { useKeenSlider } from 'keen-slider/react';
-import 'keen-slider/keen-slider.min.css';
+
+const FEATURE_ITEMS = {
+  en: [
+    {
+      title: 'DIRECT AND FAIR RATES',
+      description: 'Transparent prices with no middlemen and no hidden fees.',
+      Icon: FiGlobe,
+    },
+    {
+      title: 'FIELD EXPERIENCE',
+      description: 'Years guiding real routes with on-the-ground local expertise.',
+      Icon: FiMapPin,
+    },
+    {
+      title: 'LOCAL AND DIRECT OPERATOR',
+      description: 'You book directly with our local team in Cusco.',
+      Icon: FiCompass,
+    },
+    {
+      title: 'SUSTAINABLE AND RESPONSIBLE TRAVEL',
+      description: 'Responsible operations that support communities and nature.',
+      Icon: FiMap,
+    },
+    {
+      title: 'SMALL AND PERSONALIZED GROUPS',
+      description: 'Small groups for better pacing, care, and personalized support.',
+      Icon: FiSliders,
+    },
+    {
+      title: 'EXCLUSIVE TRIPS AND ITINERARIES',
+      description: 'Handcrafted itineraries designed around your travel goals.',
+      Icon: FiAward,
+    },
+  ],
+  es: [
+    {
+      title: 'TARIFAS DIRECTAS Y JUSTAS',
+      description: 'Precios transparentes, sin intermediarios ni cargos ocultos.',
+      Icon: FiGlobe,
+    },
+    {
+      title: 'EXPERIENCIA EN EL CAMPO',
+      description: 'Anos guiando rutas reales con conocimiento local en terreno.',
+      Icon: FiMapPin,
+    },
+    {
+      title: 'OPERADOR LOCAL Y DIRECTO',
+      description: 'Reservas directamente con nuestro equipo local en Cusco.',
+      Icon: FiCompass,
+    },
+    {
+      title: 'VIAJES SOSTENIBLES Y RESPONSABLES',
+      description: 'Operamos de forma responsable con las comunidades y el entorno.',
+      Icon: FiMap,
+    },
+    {
+      title: 'GRUPOS PEQUENOS Y PERSONALIZADOS',
+      description: 'Grupos reducidos para una mejor experiencia y atencion cercana.',
+      Icon: FiSliders,
+    },
+    {
+      title: 'VIAJES E ITINERARIOS EXCLUSIVOS',
+      description: 'Itinerarios disenados a medida segun tu estilo de viaje.',
+      Icon: FiAward,
+    },
+  ],
+};
 
 export default function Section1() {
-    const router = useRouter();
-    const { locale } = router;
-    const t = locale === 'en' ? en : es;
-    const [currentSlide, setCurrentSlide] = useState(0);
-    const [loaded, setLoaded] = useState(false);
+  const { locale } = useRouter();
+  const isEnglish = locale === 'en';
+  const t = isEnglish ? en : es;
+  const features = useMemo(
+    () => (isEnglish ? FEATURE_ITEMS.en : FEATURE_ITEMS.es),
+    [isEnglish],
+  );
+  const [activeFeature, setActiveFeature] = useState(0);
+  const [expandedFeature, setExpandedFeature] = useState(0);
+  const currentFeature = features[activeFeature] || features[0];
 
-    const [sliderRef, instanceRef] = useKeenSlider({
-        initial: 0,
-        loop: true,
-        mode: "snap",
-        slides: {
-            origin: "center",
-            perView: 1.2,
-            spacing: 16,
-        },
-        breakpoints: {
-            "(min-width: 640px)": {
-                slides: { origin: "center", perView: 2.2, spacing: 20 },
-            },
-            "(min-width: 1024px)": {
-                slides: { origin: "center", perView: 3.5, spacing: 24 },
-            },
-            "(min-width: 1280px)": {
-                slides: { origin: "center", perView: 4, spacing: 28 },
-            },
-        },
-        slideChanged(slider) {
-            setCurrentSlide(slider.track.details.rel);
-        },
-        created() {
-            setLoaded(true);
-        },
-    });
+  const handleMobileToggle = (index) => {
+    setActiveFeature(index);
+    setExpandedFeature((prev) => (prev === index ? prev : index));
+  };
 
-    // Autoplay
-    useEffect(() => {
-        if (!instanceRef.current) return;
+  return (
+    <section className='relative overflow-hidden '>
+      <div className='relative mx-auto max-w-7xl px-5 lg:px-8'>
+        <div className='mx-auto max-w-2xl text-center '>
+          <span className='inline-flex rounded-full bg-[#E6C20026] px-4 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[#0d1117]'>
+            {isEnglish ? 'Your Trusted Partner' : 'Tu Socio de Confianza'}
+          </span>
+          <h2 className='mt-4 text-3xl font-semibold tracking-tight text-black md:text-4xl'>
+            {t.h2_title_why}
+          </h2>
+          <p className='mt-3 text-sm leading-relaxed text-gray-400 md:text-base'>
+            {t.h3_subtitle}
+          </p>
+        </div>
 
-        const interval = setInterval(() => {
-            instanceRef.current?.next();
-        }, 4000);
+        <div className='lg:hidden'>
+          <div className='flex flex-col gap-3 md:hidden'>
+            {features.map(({ title, description, Icon }, index) => {
+              const isExpanded = expandedFeature === index;
 
-        return () => clearInterval(interval);
-    }, [instanceRef]);
-
-    return (
-        <section className="why-us-carousel-section">
-            {/* Fondo decorativo */}
-            <div className="why-us-carousel-bg"></div>
-
-            <div className="why-us-carousel-container">
-                {/* Encabezado */}
-                <div className="why-us-carousel-header">
-                    <span className="why-us-carousel-label">
-                        {locale === 'en' ? 'Your Trusted Partner' : 'Tu Socio de Confianza'}
+              return (
+                <article
+                  key={title}
+                  className='overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm'>
+                  <button
+                    type='button'
+                    onClick={() => handleMobileToggle(index)}
+                    className='flex w-full items-center gap-3 px-4 py-3 text-left transition hover:border-amber-300 hover:shadow-md'
+                    aria-expanded={isExpanded}>
+                    <span className='inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-100 text-[#e6c200]'>
+                      <Icon size={20} />
                     </span>
-                    <h2 className="why-us-carousel-title">{t.h2_title_why}</h2>
-                    <p className="why-us-carousel-subtitle">{t.h3_subtitle}</p>
-                    <div className="why-us-carousel-divider">
-                        <div className="divider-line long"></div>
-                        <div className="divider-line medium"></div>
-                        <div className="divider-line short"></div>
+                    <span className='text-sm font-semibold text-slate-800'>
+                      {title}
+                    </span>
+                  </button>
+
+                  {isExpanded && (
+                    <div className='px-4 pb-4 text-sm leading-relaxed text-slate-600'>
+                      {description}
                     </div>
-                </div>
+                  )}
+                </article>
+              );
+            })}
+          </div>
 
-                {/* Carrusel */}
-                <div className="why-us-slider-wrapper">
-                    <div ref={sliderRef} className="keen-slider why-us-slider">
-                        {t.array.map((item, index) => {
-                            const isCenter = currentSlide === index;
-                            return (
-                                <div
-                                    key={index}
-                                    className={`keen-slider__slide why-us-slide ${isCenter ? 'center-slide' : ''}`}
-                                >
-                                    <div className={`why-us-carousel-card ${isCenter ? 'active' : ''}`}>
-                                        {/* Número decorativo */}
-                                        <span className="carousel-card-number">0{index + 1}</span>
+          <div className='mt-2 hidden grid-cols-2 gap-4 md:grid'>
+            {features.map(({ title, description, Icon }, index) => {
+              const isExpanded = expandedFeature === index;
 
-                                        {/* Icono SVG grande */}
-                                        <div className="carousel-icon-wrapper">
-                                            <div className="carousel-icon">
-                                                <Image
-                                                    src={item.img}
-                                                    alt={item.title}
-                                                    width={120}
-                                                    height={120}
-                                                    className="carousel-svg-icon"
-                                                />
-                                            </div>
-                                        </div>
+              return (
+                <article key={title} className='overflow-hidden'>
+                  <button
+                    type='button'
+                    onClick={() => handleMobileToggle(index)}
+                    className='w-full p-5 text-center transition hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-md'
+                    aria-expanded={isExpanded}>
+                    <span className='mx-auto inline-flex h-11 w-11 items-center justify-center rounded-full bg-amber-100 text-[#e6c200]'>
+                      <Icon size={22} />
+                    </span>
+                    <p className='mt-3 text-sm font-semibold text-slate-800'>
+                      {title}
+                    </p>
+                  </button>
 
-                                        {/* Contenido */}
-                                        <div className="carousel-card-content">
-                                            <h3 className="carousel-card-title">{item.title}</h3>
-                                            <p className="carousel-card-description">{item.content}</p>
-                                        </div>
-
-                                        {/* Línea decorativa */}
-                                        <div className="carousel-accent-line"></div>
-                                    </div>
-                                </div>
-                            );
-                        })}
+                  {isExpanded && (
+                    <div className='px-4 pb-4 text-center text-sm leading-relaxed text-slate-600'>
+                      {description}
                     </div>
+                  )}
+                </article>
+              );
+            })}
+          </div>
+        </div>
 
-                    {/* Controles de navegación */}
-                    {loaded && instanceRef.current && (
-                        <>
-                            <button
-                                className="why-us-nav-arrow prev"
-                                onClick={() => instanceRef.current?.prev()}
-                                aria-label="Anterior"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                    <path fillRule="evenodd" d="M7.72 12.53a.75.75 0 010-1.06l7.5-7.5a.75.75 0 111.06 1.06L9.31 12l6.97 6.97a.75.75 0 11-1.06 1.06l-7.5-7.5z" clipRule="evenodd" />
-                                </svg>
-                            </button>
-                            <button
-                                className="why-us-nav-arrow next"
-                                onClick={() => instanceRef.current?.next()}
-                                aria-label="Siguiente"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                    <path fillRule="evenodd" d="M16.28 11.47a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 01-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 011.06-1.06l7.5 7.5z" clipRule="evenodd" />
-                                </svg>
-                            </button>
-                        </>
-                    )}
-                </div>
+        <div className='relative mx-auto hidden h-[640px] w-[640px] lg:block'>
+          <div className='absolute left-1/2 top-1/2 h-[480px] w-[480px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-slate-200/90' />
 
-                {/* Indicadores de puntos */}
-                <div className="why-us-carousel-dots">
-                    {t.array.map((_, idx) => (
-                        <button
-                            key={idx}
-                            className={`carousel-dot ${currentSlide === idx ? 'active' : ''}`}
-                            onClick={() => instanceRef.current?.moveToIdx(idx)}
-                            aria-label={`Ir a slide ${idx + 1}`}
-                        />
-                    ))}
-                </div>
+          {features.map(({ title, Icon }, index) => {
+            const angle = (360 / features.length) * index - 90;
+            const radians = (angle * Math.PI) / 180;
+            const radius = 240;
+            const x = Math.cos(radians) * radius;
+            const y = Math.sin(radians) * radius;
+            const isActive = activeFeature === index;
+
+            return (
+              <button
+                key={title}
+                type='button'
+                onMouseEnter={() => setActiveFeature(index)}
+                onFocus={() => setActiveFeature(index)}
+                onClick={() => setActiveFeature(index)}
+                className='group absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center'
+                style={{
+                  transform: `translate(-50%, -50%) translate(${x}px, ${y}px)`,
+                }}>
+                <span
+                  className={`mx-auto inline-flex h-16 w-16 items-center justify-center rounded-full border transition ${
+                    isActive
+                      ? 'border-amber-300 bg-amber-100 text-[#e6c200] shadow-lg shadow-amber-200/70'
+                      : 'border-slate-200 bg-white text-slate-600 shadow-md group-hover:border-amber-300 group-hover:text-[#e6c200]'
+                  }`}>
+                  <Icon size={28} />
+                </span>
+                <span
+                  className={`mt-2 block w-40 text-sm font-semibold leading-tight transition ${
+                    isActive
+                      ? 'text-slate-900'
+                      : 'text-slate-700 group-hover:text-slate-900'
+                  }`}>
+                  {title}
+                </span>
+              </button>
+            );
+          })}
+
+          <div className='absolute left-1/2 top-1/2 w-[300px] -translate-x-1/2 -translate-y-1/2 p-6 text-center'>
+            <div className='relative mx-auto h-12 w-36 drop-shadow-[0_2px_4px_rgba(0,0,0,1)]'>
+              <Image
+                src='/assets/logo-Booking.svg'
+                alt='Logo BookingIncaTrail'
+                fill
+                sizes='48px'
+                className='object-contain'
+                priority
+              />
             </div>
-        </section>
-    );
+
+            <p className='mt-4 text-sm font-semibold uppercase text-[#F4B400]'>
+              {currentFeature?.title}
+            </p>
+            <p className='mt-2 text-base leading-relaxed text-slate-600'>
+              {currentFeature?.description}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }
