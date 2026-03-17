@@ -1,42 +1,40 @@
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-import Footer from '../components/navbar/Footer'
+import Footer from '../components/navbar/Footer';
 import Head from 'next/head';
 import Notify from '../components/Notify';
 import Modal from '../components/Modal';
 import Navbar from '../components/navbar/Navbar';
 import ScrollToTop from '../components/ScrollToTop';
 import WhatsAppChat from '../components/whatsapp';
-import AdminLayout from './AdminLayout';
+import Image from 'next/image';
 
 export default function Layout({ children }) {
-
-  const router = useRouter();
-  const isAdminRoute = router.pathname.startsWith('/admin');
-
-  // Si estamos en una ruta de admin, usamos AdminLayout
-  if (isAdminRoute) {
-    return <AdminLayout>{children}</AdminLayout>;
-  }
-
   return (
     <>
       <Head />
 
       <Navbar />
 
-      <main className="bg-fixed bg-[url('/home/bg25.webp')] lg:text-justify layoud-spacing">
+      <div className='fixed inset-0 -z-10 w-screen h-screen'>
+        <Image
+          src='/home/bg25.webp'
+          alt='Background'
+          fill
+          priority
+          sizes='100vw'
+          className='object-cover'
+        />
+      </div>
+
+      <main className='relative lg:text-justify layoud-spacing'>
         <Notify />
-        
         <Modal />
-        
         {children}
-        
       </main>
 
       <Footer />
-      <ScrollToTop/>
-      <WhatsAppChat/>
+      <ScrollToTop />
+      <WhatsAppChat />
     </>
-  )
+  );
 }
