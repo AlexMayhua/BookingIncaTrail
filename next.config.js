@@ -11,11 +11,23 @@ const nextConfig = {
   // i18n configuration for Pages Router
   i18n: {
     locales: ['es', 'en'],
-    defaultLocale: 'es',
+    defaultLocale: 'en',
   },
 
   // Image optimization configuration for Next.js 15
   images: {
+    localPatterns: [
+      {
+        pathname: '/assets/**',
+        // search omitted to allow query strings like ?v=2.0.0
+      },
+      {
+        pathname: '/img/**',
+      },
+      {
+        pathname: '/home/**',
+      },
+    ],
     remotePatterns: [
       {
         protocol: 'https',
