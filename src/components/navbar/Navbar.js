@@ -6,7 +6,6 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import parser from 'html-react-parser';
-import { trackCustomEvent } from '../../lib/facebookPixel';
 import { BRAND } from '../../lib/brandConfig';
 import useNavbarData from '../../hooks/useNavbarData';
 import CachedImage from '../general/CachedImage';
@@ -15,6 +14,7 @@ import { USFlag, ESFlag } from '../general/FlagSVG';
 
 export default function Navbar() {
   const [gender, setGender] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const isSmallScreen = useMediaQuery('(max-width: 1024px)');
 
   // Estado para controlar el hover dinámico de descripción e imagen
@@ -23,6 +23,8 @@ export default function Navbar() {
   // Estado para controlar qué categoría del mega menú está abierta
   const [openCategory, setOpenCategory] = useState(null);
   const closeTimeoutRef = useRef(null);
+  const isTouchRef = useRef(false);
+  const navbarDesktopRef = useRef(null);
 
   // Hook para obtener datos dinámicos de tours desde la base de datos
   const {
@@ -36,33 +38,21 @@ export default function Navbar() {
   const router = useRouter();
   const { locale } = router;
   const t = locale === 'en' ? en : es;
-  // Evitar href nulo en Link: usar fallback '/blog' si BRAND.blogUrl no está definido
-  const blogUrl = BRAND.blogUrl
-    ? locale === 'en'
-      ? BRAND.blogUrl
-      : `${BRAND.blogUrl}/es`
-    : '/blog';
 
   const changeLanguage = (language) => {
     if (language !== locale) {
       router.push(router.pathname, router.asPath, { locale: language });
-      // Idioma cambiado correctamente
     }
   };
 
-  const [navChange, setNavchange] = useState(false);
-
-  // Usar datos dinámicos de la base de datos en lugar de datos hardcodeados
   const incaTrail = loading ? [] : getToursByCategory('inca-trail');
   const salkantay = loading ? [] : getToursByCategory('salkantay');
   const ausangate = loading ? [] : getToursByCategory('ausangate');
   const perupackages = loading ? [] : getToursByCategory('peru-packages');
   const cuscoTours = loading ? [] : getToursByCategory('day-tours');
-  const raimbow = loading ? [] : getToursByCategory('rainbow-mountain');
+  const rainbowTours = loading ? [] : getToursByCategory('rainbow-mountain');
   const incaJungle = loading ? [] : getToursByCategory('inca-jungle');
 
-  // Configuración dinámica de todas las categorías para el navbar
-  // ⚠️ Solo mostrar categorías con tours en DB y con rutas válidas
   const navbarCategories = [
     {
       slug: 'inca-trail',
@@ -84,7 +74,7 @@ export default function Navbar() {
     },
     {
       slug: 'rainbow-mountain',
-      data: raimbow,
+      data: rainbowTours,
       label: t.rainbowmountain,
       subtitle: t.subtitle_rainbowmountain,
     },
@@ -108,89 +98,32 @@ export default function Navbar() {
     },
   ];
 
-  // Ref para el contenedor del navbar con auto-scroll
-  const navbarScrollRef = useRef(null);
 
-  // Auto-scroll del navbar - muestra 7 categorías, luego anima para mostrar las siguientes
-  useEffect(() => {
-    if (isSmallScreen) return; // Solo en desktop
-
-    const scrollContainer = navbarScrollRef.current;
-    if (!scrollContainer) return;
-
-    let scrollInterval;
-    let isPaused = false;
-
-    // Pausar animación cuando el mouse está sobre el navbar
-    const handleMouseEnter = () => {
-      isPaused = true;
-    };
-    const handleMouseLeave = () => {
-      isPaused = false;
-    };
-
-    scrollContainer.addEventListener('mouseenter', handleMouseEnter);
-    scrollContainer.addEventListener('mouseleave', handleMouseLeave);
-
-    // Animación: scroll suave cada 4 segundos
-    scrollInterval = setInterval(() => {
-      if (!isPaused && scrollContainer) {
-        const maxScroll =
-          scrollContainer.scrollWidth - scrollContainer.clientWidth;
-        const currentScroll = scrollContainer.scrollLeft;
-
-        // Si llegó al final, volver al inicio
-        if (currentScroll >= maxScroll - 10) {
-          scrollContainer.scrollTo({ left: 0, behavior: 'smooth' });
-        } else {
-          // Scroll suave hacia la derecha (mostrar siguiente categoría)
-          scrollContainer.scrollBy({ left: 180, behavior: 'smooth' });
-        }
-      }
-    }, 4000); // Cada 4 segundos
-
-    return () => {
-      clearInterval(scrollInterval);
-      if (scrollContainer) {
-        scrollContainer.removeEventListener('mouseenter', handleMouseEnter);
-        scrollContainer.removeEventListener('mouseleave', handleMouseLeave);
-      }
-    };
-  }, [isSmallScreen]);
-
-  // Funciones para manejar el hover dinámico (selección persistente)
   const handleServiceHover = (serviceSlug) => {
     setHoveredService(serviceSlug);
   };
 
-  // Funciones para manejar la apertura/cierre del mega menú
   const handleCategoryMouseEnter = (categorySlug) => {
-    // Cancelar cualquier timeout de cierre pendiente
+    if (isTouchRef.current) return;
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current);
       closeTimeoutRef.current = null;
     }
-    // Abrir inmediatamente
+    const category = navbarCategories.find((c) => c.slug === categorySlug);
     setOpenCategory(categorySlug);
-    // Auto-seleccionar el primer tour de la categoría
-    const cat = navbarCategories.find((c) => c.slug === categorySlug);
-    if (cat && cat.data.length > 0) {
-      setHoveredService(cat.data[0].slug);
-    } else {
-      setHoveredService(null);
-    }
+    setHoveredService(category?.data?.[0]?.slug || null);
   };
 
   const handleCategoryMouseLeave = () => {
-    // Delay antes de cerrar para dar tiempo al usuario de mover el mouse al menú
+    if (isTouchRef.current) return;
     closeTimeoutRef.current = setTimeout(() => {
       setOpenCategory(null);
       setHoveredService(null);
-    }, 300); // 300ms de delay
+    }, 300);
   };
 
   const handleMegaMenuMouseEnter = () => {
-    // Cancelar el cierre cuando el mouse entra al mega menú
+    if (isTouchRef.current) return;
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current);
       closeTimeoutRef.current = null;
@@ -198,21 +131,57 @@ export default function Navbar() {
   };
 
   const handleMegaMenuMouseLeave = () => {
-    // Cerrar el menú cuando el mouse sale del mega menú
+    if (isTouchRef.current) return;
     setOpenCategory(null);
     setHoveredService(null);
   };
 
-  // Cleanup del timeout cuando el componente se desmonte
+  const handleCategoryTouchStart = () => {
+    isTouchRef.current = true;
+  };
+
+  const handleDesktopCategoryToggle = (categorySlug) => {
+    if (openCategory === categorySlug) {
+      setOpenCategory(null);
+      setHoveredService(null);
+      isTouchRef.current = false;
+      return;
+    }
+    const category = navbarCategories.find((c) => c.slug === categorySlug);
+    setOpenCategory(categorySlug);
+    setHoveredService(category?.data?.[0]?.slug || null);
+  };
+
   useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (
+        isTouchRef.current &&
+        openCategory &&
+        navbarDesktopRef.current &&
+        !navbarDesktopRef.current.contains(e.target)
+      ) {
+        setOpenCategory(null);
+        setHoveredService(null);
+        isTouchRef.current = false;
+      }
+    };
+    document.addEventListener('touchstart', handleClickOutside);
     return () => {
+      document.removeEventListener('touchstart', handleClickOutside);
       if (closeTimeoutRef.current) {
         clearTimeout(closeTimeoutRef.current);
       }
     };
+  }, [openCategory]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 80);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Función para obtener la descripción específica del servicio
   const getServiceDescription = (category, serviceSlug) => {
     // SIEMPRE usar descripción desde la base de datos
     if (serviceSlug) {
@@ -222,30 +191,23 @@ export default function Navbar() {
       }
     }
 
-    // Fallback solo si no hay datos en BD - mensaje de carga
     return t.loading;
   };
 
-  // Función helper para obtener la categoría real de un tour desde la base de datos
   const getTourCategory = (serviceSlug) => {
     const tour = toursData.find((t) => t.slug === serviceSlug);
     return tour?.category || null;
   };
 
-  // Función para obtener la imagen específica del servicio con datos de la base de datos
   const getServiceImage = (category, serviceSlug) => {
-    // Si tenemos un slug, obtener su categoría real de la BD
     const realCategory = serviceSlug ? getTourCategory(serviceSlug) : category;
 
-    // Primero intentar obtener la imagen desde la base de datos
     const imageFromDB = getTourImage(serviceSlug);
 
-    // Las imágenes de Cloudinary no necesitan cache busting
     if (imageFromDB) {
       return imageFromDB;
     }
 
-    // Fallback: mapeo dinámico de slugs específicos a imágenes locales (solo si no hay imagen en BD)
     const serviceImageMap = {
       // Inca Trail
       'classic-inca-trail': '/img/navbar/inca-trail-post.jpg',
@@ -342,65 +304,7 @@ export default function Navbar() {
     }
   };
 
-  // Estado para el progreso de scroll (0-100)
-  const [scrollProgress, setScrollProgress] = useState(0);
-
-  const changeNavbar = () => {
-    // Cambio de navbar basado en scroll
-    if (window.scrollY >= 100) {
-      setNavchange(true);
-    } else {
-      setNavchange(false);
-    }
-
-    // Calcular progreso de scroll para la barra de progreso
-    const windowHeight =
-      document.documentElement.scrollHeight - window.innerHeight;
-    const scrolled = (window.scrollY / windowHeight) * 100;
-    setScrollProgress(Math.min(scrolled, 100));
-  };
-
-  useEffect(() => {
-    window.addEventListener('scroll', changeNavbar);
-    // Ejecutar una vez al cargar
-    changeNavbar();
-    return () => {
-      window.removeEventListener('scroll', changeNavbar);
-    };
-  }, []);
-
-  const [isShowing, setIsShowing] = useState();
-  const toggle = () => {
-    setIsShowing(!isShowing);
-  };
-  const [isShowing1, setIsShowing1] = useState();
-  const toggle1 = () => {
-    setIsShowing1(!isShowing1);
-  };
-  const [isShowing2, setIsShowing2] = useState();
-  const toggle2 = () => {
-    setIsShowing2(!isShowing2);
-  };
-  const [isShowing3, setIsShowing3] = useState();
-  const toggle3 = () => {
-    setIsShowing3(!isShowing3);
-  };
-  const [isShowing4, setIsShowing4] = useState();
-  const toggle4 = () => {
-    setIsShowing4(!isShowing4);
-  };
-  const [isShowing5, setIsShowing5] = useState();
-  const toggle5 = () => {
-    setIsShowing5(!isShowing5);
-  };
-  const [isShowing6, setIsShowing6] = useState();
-  const toggle6 = () => {
-    setIsShowing6(!isShowing6);
-  };
-  const [isShowing7, setIsShowing7] = useState();
-  const toggle7 = () => {
-    setIsShowing7(!isShowing7);
-  };
+  const [openMobileCategory, setOpenMobileCategory] = useState(null);
 
   const capitalizeWords = (str) => {
     return str
@@ -410,6 +314,41 @@ export default function Navbar() {
       .join(' ');
   };
 
+  const closeSideMenu = () => {
+    setGender(false);
+    setOpenMobileCategory(null);
+  };
+
+  const handleMobileCategoryToggle = (categorySlug) => {
+    setOpenMobileCategory((current) =>
+      current === categorySlug ? null : categorySlug,
+    );
+  };
+
+  const mobileAccordionTriggerBaseClass =
+    'w-full py-3 px-4 flex justify-between items-center rounded-xl transition-all duration-300 border-2 text-left';
+  const mobileAccordionTriggerInactiveClass =
+    'hover:bg-white/5 border-transparent hover:border-secondary/30 text-white/90 hover:text-white';
+  const mobileAccordionTriggerActiveClass =
+    'text-white shadow-lg border-secondary';
+  const mobileAccordionActiveStyle = {
+    background:
+      'linear-gradient(135deg, rgba(230, 194, 0, 0.2) 0%, rgba(230, 194, 0, 0.1) 100%)',
+  };
+
+  const mobileCategoryOrder = [
+    'inca-trail',
+    'salkantay',
+    'ausangate',
+    'peru-packages',
+    'day-tours',
+    'rainbow-mountain',
+    'inca-jungle',
+  ];
+  const mobileTourCategories = mobileCategoryOrder
+    .map((slug) => navbarCategories.find((category) => category.slug === slug))
+    .filter(Boolean);
+
   return (
     <nav className='fixed w-full z-50'>
       {/* Navbar para móvil */}
@@ -417,11 +356,11 @@ export default function Navbar() {
         <div
           id='navbarMobile'
           className='flex items-center justify-between bg-primary py-3 px-3'>
-          <Link href='/' onClick={() => setGender(false)}>
+          <Link href='/' onClick={closeSideMenu}>
             <CachedImage
               src='/assets/logo-Booking.svg'
               alt={BRAND.logo.alt}
-              className='h-10 w-auto transform origin-center scale-[1.15]'
+              className='h-12 w-auto transform origin-center'
             />
           </Link>
           <ul className='flex gap-2 xs:gap-4'>
@@ -452,7 +391,7 @@ export default function Navbar() {
             <li className='flex m-0 p-0 items-center justify-center'>
               <button
                 id='btn'
-                onClick={() => setGender(!gender)}
+                onClick={() => setGender((current) => !current)}
                 aria-label='Toggle Menu'
                 className='relative p-2 rounded-lg transition-all duration-300 hover:bg-secondary/20 active:scale-95 group'>
                 <svg
@@ -502,126 +441,14 @@ export default function Navbar() {
           </ul>
         </div>
       )}
-      {/* Navbar para desktop */}
       {!isSmallScreen && (
-        <div
-          className={
-            navChange
-              ? 'bg-primary/98 backdrop-blur-md w-full print:hidden lg:block hidden navbar-scrolled'
-              : 'bg-primary w-full print:hidden lg:block hidden'
-          }>
-          {/* Barra de progreso de scroll - Solo visible al hacer scroll */}
-          {navChange && (
-            <div className='scroll-progress-container'>
-              <div
-                className='scroll-progress-bar'
-                style={{ width: `${scrollProgress}%` }}
-              />
-            </div>
-          )}
-
-          {/* Header compacto cuando hay scroll - Muestra logo, acciones rápidas y CTA */}
-          {navChange && (
-            <div className='navbar-compact-header'>
-              <div className='compact-header-content'>
-                {/* Logo compacto */}
-                <Link href='/' className='compact-logo'>
-                  <CachedImage
-                    src='/assets/logo-Booking.svg'
-                    alt={BRAND.logo.alt}
-                    className='h-9 w-auto'
-                  />
-                </Link>
-
-                {/* Acciones rápidas de contacto */}
-                <div className='compact-quick-actions'>
-                  {BRAND.contactPhone && (
-                    <Link
-                      href={`tel:${BRAND.contactPhone}`}
-                      className='compact-action-btn phone'>
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        viewBox='0 0 24 24'
-                        fill='currentColor'>
-                        <path
-                          fillRule='evenodd'
-                          d='M1.5 4.5a3 3 0 0 1 3-3h1.372c.86 0 1.61.586 1.819 1.42l1.105 4.423a1.875 1.875 0 0 1-.694 1.955l-1.293.97c-.135.101-.164.249-.126.352a11.285 11.285 0 0 0 6.697 6.697c.103.038.25.009.352-.126l.97-1.293a1.875 1.875 0 0 1 1.955-.694l4.423 1.105c.834.209 1.42.959 1.42 1.82V19.5a3 3 0 0 1-3 3h-2.25C8.552 22.5 1.5 15.448 1.5 6.75V4.5Z'
-                          clipRule='evenodd'
-                        />
-                      </svg>
-                    </Link>
-                  )}
-                  {BRAND.whatsapp && (
-                    <Link
-                      href={`https://wa.me/${BRAND.whatsapp?.replace(/\D/g, '')}`}
-                      target='_blank'
-                      rel='noopener noreferrer'
-                      className='compact-action-btn whatsapp'>
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        viewBox='0 0 24 24'
-                        fill='currentColor'>
-                        <path d='M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z' />
-                      </svg>
-                    </Link>
-                  )}
-                  <Link
-                    href={`mailto:${BRAND.contactEmail}`}
-                    className='compact-action-btn email'>
-                    <svg
-                      xmlns='http://www.w3.org/2000/svg'
-                      viewBox='0 0 24 24'
-                      fill='currentColor'>
-                      <path d='M1.5 8.67v8.58a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V8.67l-8.928 5.493a3 3 0 0 1-3.144 0L1.5 8.67Z' />
-                      <path d='M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z' />
-                    </svg>
-                  </Link>
-                </div>
-
-                {/* Selector de idioma compacto */}
-                <div className='compact-language-selector'>
-                  <button
-                    onClick={() => changeLanguage('en')}
-                    className={`compact-lang-btn ${router.locale === 'en' ? 'active' : ''}`}
-                    aria-label='English'>
-                    <USFlag className='language-flag-mini' />
-                  </button>
-                  <button
-                    onClick={() => changeLanguage('es')}
-                    className={`compact-lang-btn ${router.locale === 'es' ? 'active' : ''}`}
-                    aria-label='Español'>
-                    <ESFlag className='language-flag-mini' />
-                  </button>
-                </div>
-
-                {/* CTA compacto */}
-                <Link href='/contact' className='compact-cta-btn'>
-                  {t.enquire}
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 20 20'
-                    fill='currentColor'
-                    className='compact-cta-arrow'>
-                    <path
-                      fillRule='evenodd'
-                      d='M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z'
-                      clipRule='evenodd'
-                    />
-                  </svg>
-                </Link>
-              </div>
-            </div>
-          )}
-
+        <div className='bg-primary w-full print:hidden lg:block hidden'>
           <div
-            className={
-              navChange
-                ? 'lg:hidden hidden'
-                : '2xl:container 2xl:mx-auto xl:mx-12 mx-3 nav-topbar'
-            }>
-            {/* Top Bar - Una sola fila con distribución optimizada */}
+            className={`transition-all duration-300 ease-in-out overflow-hidden ${
+              scrolled ? 'max-h-0 opacity-0' : 'max-h-[120px] opacity-100'
+            }`}>
+          <div className='2xl:container 2xl:mx-auto xl:mx-12 mx-3 nav-topbar'>
             <div className='header-topbar-row'>
-              {/* Columna Izquierda: Logo con slogan */}
               <div className='header-logo-section py-2'>
                 <Link
                   href='/'
@@ -630,7 +457,7 @@ export default function Navbar() {
                   <CachedImage
                     src='/assets/logo-Booking.svg'
                     alt={BRAND.logo.alt}
-                    className='h-8 xl:h-10 3xl:h-12  w-auto transform origin-center'
+                    className='h-8 xl:h-10 3xl:h-12 w-auto transform origin-center'
                   />
                   <span className='brand-slogan'>
                     {t.slogan || 'Your adventure starts here'}
@@ -638,7 +465,6 @@ export default function Navbar() {
                 </Link>
               </div>
 
-              {/* Columna Centro: Información de contacto */}
               <div className='header-contact-section'>
                 {BRAND.contactPhone ? (
                   <Link
@@ -680,9 +506,7 @@ export default function Navbar() {
                 ) : null}
               </div>
 
-              {/* Columna Derecha: Idiomas + Links + Redes + CTAs */}
               <div className='header-actions-section'>
-                {/* Selector de idioma */}
                 <div className='language-selector'>
                   <button
                     onClick={() => changeLanguage('en')}
@@ -708,14 +532,7 @@ export default function Navbar() {
 
                 <div className='header-divider'></div>
 
-                {/* Links secundarios */}
                 <div className='secondary-nav-links'>
-                  <Link
-                    href={blogUrl}
-                    target='_blank'
-                    className='nav-link-item'>
-                    Blog
-                  </Link>
                   <Link href='/about-us' className='nav-link-item'>
                     {t.about}
                   </Link>
@@ -805,127 +622,154 @@ export default function Navbar() {
               </div>
             </div>
           </div>
+          </div>
 
           {!isSmallScreen && (
             <div
               id='navbarDesktop'
-              className=' border-t border-stone-700/30 relative'>
-              <div className='px-12 w-full'>
-                {/* Navbar dinámico con scroll - muestra 7 categorías, scroll para ver las demás */}
-
-                <div className='w-full flex items-center justify-around py-2'>
-                  {/* Generación dinámica de todas las categorías */}
-                  {navbarCategories.map((category) => (
-                    <li key={category.slug} className='shrink-0'>
-                      <div
-                        className={`groups group px-3 xl:px-4 py-2 custom-hover-wrapper-activator ${openCategory === category.slug ? 'is-open' : ''}`}
-                        onMouseEnter={() =>
-                          handleCategoryMouseEnter(category.slug)
-                        }
-                        onMouseLeave={handleCategoryMouseLeave}>
-                        <Link
-                          href={`/${category.slug}`}
-                          className='flex items-center custom-hover-wrapper cursor-pointer nav-item-with-dropdown'>
-                          <span className='text-white text-xs xl:text-sm 2xl:text-base hover:text-stone-200 transition-colors duration-300 whitespace-nowrap'>
-                            {category.label}
-                          </span>
-                          <svg
-                            className='dropdown-indicator ml-1 text-stone-300 group-hover:text-primary transition-colors duration-300'
-                            fill='currentColor'
-                            viewBox='0 0 20 20'>
-                            <path
-                              fillRule='evenodd'
-                              d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z'
-                              clipRule='evenodd'
-                            />
-                          </svg>
-                          <span className='custom-hover-underline'></span>
-                        </Link>
-
+              ref={navbarDesktopRef}
+              className={`border-t border-stone-700/30 transition-all duration-300 ${scrolled ? 'shadow-lg shadow-black/40' : ''}`}>
+              <div className='max-w-7xl mx-auto px-4'>
+                <div className='w-full py-3 relative'>
+                  <ul className='flex flex-nowrap items-center justify-center gap-2 whitespace-nowrap'>
+                    {navbarCategories.map((category) => (
+                      <li key={category.slug} className='m-0 p-0'>
                         <div
-                          className='absolute mega-menu-container'
-                          onMouseEnter={handleMegaMenuMouseEnter}
-                          onMouseLeave={handleMegaMenuMouseLeave}>
-                          <div className='mega-menu-grid'>
-                            {/* Services List - Left Column */}
-                            <div className='mega-menu-services'>
-                              <div className='mega-menu-services-header'>
-                                <h3 className='mega-menu-category-title'>
-                                  {category.subtitle}
-                                </h3>
-                                <div className='mega-menu-divider'></div>
-                              </div>
-                              <ul className='mega-menu-services-list'>
-                                {category.data.map((item, i) => (
-                                  <li
-                                    key={i}
-                                    className={`mega-menu-service-item ${hoveredService === item.slug ? 'active' : ''}`}
-                                    onMouseEnter={() =>
-                                      handleServiceHover(item.slug)
-                                    }>
-                                    <Link
-                                      href={`/${item.category}/${item.slug}`}
-                                      className='mega-menu-service-link'>
-                                      <span className='mega-menu-service-bullet'></span>
-                                      <span className='mega-menu-service-title'>
-                                        {capitalizeWords(item.title)}
-                                      </span>
+                          className='px-1.5 xl:px-2 py-1'
+                          onMouseEnter={() =>
+                            handleCategoryMouseEnter(category.slug)
+                          }
+                          onMouseLeave={handleCategoryMouseLeave}>
+                          <button
+                            type='button'
+                            onTouchStart={handleCategoryTouchStart}
+                            onClick={() =>
+                              handleDesktopCategoryToggle(category.slug)
+                            }
+                            aria-expanded={openCategory === category.slug}
+                            aria-controls={`mega-menu-${category.slug}`}
+                            className='flex items-center gap-1 cursor-pointer'>
+                            <span className='text-white text-xs xl:text-sm 2xl:text-base hover:text-stone-200 transition-colors whitespace-nowrap'>
+                              {category.label}
+                            </span>
+                            <svg
+                              className={`w-2.5 h-2.5 text-stone-400 transition-transform duration-200 ${
+                                openCategory === category.slug
+                                  ? 'rotate-180'
+                                  : ''
+                              }`}
+                              fill='currentColor'
+                              viewBox='0 0 20 20'>
+                              <path
+                                fillRule='evenodd'
+                                d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z'
+                                clipRule='evenodd'
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* Mega Menu Dropdown - shared container outside the list */}
+                  {navbarCategories.map((category) => (
+                    <div
+                      key={`mega-${category.slug}`}
+                      id={`mega-menu-${category.slug}`}
+                      className={`absolute left-0 right-0 top-full z-50 transition-all duration-200 ${
+                        openCategory === category.slug
+                          ? 'visible opacity-100 translate-y-0'
+                          : 'invisible opacity-0 -translate-y-1 pointer-events-none'
+                      }`}
+                      onMouseEnter={handleMegaMenuMouseEnter}
+                      onMouseLeave={handleMegaMenuMouseLeave}>
+                      <div className='max-w-7xl mx-auto pt-2'>
+                        <div className='grid grid-cols-3 bg-white rounded-lg shadow-lg overflow-hidden border border-stone-200'>
+                          {/* Services List */}
+                          <div className='flex flex-col p-5 border-r border-stone-200 max-h-[400px]'>
+                            <div className='mb-3 shrink-0'>
+                              <h3 className='text-base font-bold text-stone-900 mb-1'>
+                                {category.subtitle}
+                              </h3>
+                              <div className='w-8 h-0.5 bg-secondary rounded-full' />
+                            </div>
+                            <ul className='flex-1 overflow-y-auto space-y-0.5'>
+                              {category.data.map((item, i) => (
+                                <li
+                                  key={i}
+                                  onMouseEnter={() =>
+                                    handleServiceHover(item.slug)
+                                  }>
+                                  <Link
+                                    href={`/${item.category}/${item.slug}`}
+                                    className={`flex items-center gap-2 px-3 py-2 rounded text-sm transition-colors ${
+                                      hoveredService === item.slug
+                                        ? 'bg-secondary/10 text-stone-900 font-medium border-l-2 border-secondary'
+                                        : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900'
+                                    }`}>
+                                    <span
+                                      className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                                        hoveredService === item.slug
+                                          ? 'bg-secondary'
+                                          : 'bg-stone-300'
+                                      }`}
+                                    />
+                                    <span className='flex-1 break-words whitespace-normal'>
+                                      {capitalizeWords(item.title)}
+                                    </span>
+                                    {hoveredService === item.slug && (
                                       <svg
-                                        className='mega-menu-service-arrow'
+                                        className='w-3.5 h-3.5 shrink-0 text-secondary'
                                         viewBox='0 0 24 24'
                                         fill='none'
                                         stroke='currentColor'
                                         strokeWidth='2'>
                                         <path d='M5 12h14M12 5l7 7-7 7' />
                                       </svg>
-                                    </Link>
-                                  </li>
-                                ))}
-                                {category.data.length === 0 && (
-                                  <li className='mega-menu-empty'>
-                                    {locale === 'en'
-                                      ? 'Coming soon...'
-                                      : 'Próximamente...'}
-                                  </li>
-                                )}
-                              </ul>
-                            </div>
+                                    )}
+                                  </Link>
+                                </li>
+                              ))}
+                              {category.data.length === 0 && (
+                                <li className='py-5 text-center text-stone-400 italic text-sm'>
+                                  {locale === 'en'
+                                    ? 'Coming soon...'
+                                    : 'Próximamente...'}
+                                </li>
+                              )}
+                            </ul>
+                          </div>
 
-                            {/* Description - Center Column */}
-                            <div className='mega-menu-description'>
-                              <div className='mega-menu-description-content'>
-                                <div className='mega-menu-description-label'>
-                                  Descripción
-                                </div>
-                                <div className='mega-menu-description-text'>
-                                  {parser(
-                                    getServiceDescription(
-                                      category.slug,
-                                      hoveredService,
-                                    ),
-                                  )}
-                                </div>
-                              </div>
+                          {/* Description */}
+                          <div className='p-5 border-r border-stone-100 overflow-y-auto max-h-[400px]'>
+                            <p className='text-[10px] uppercase tracking-widest text-stone-400 mb-3'>
+                              {locale === 'en' ? 'Description' : 'Descripción'}
+                            </p>
+                            <div className='text-sm leading-relaxed text-stone-600'>
+                              {parser(
+                                getServiceDescription(
+                                  category.slug,
+                                  hoveredService,
+                                ),
+                              )}
                             </div>
+                          </div>
 
-                            {/* Image - Right Column */}
-                            <div className='mega-menu-image'>
-                              <div className='mega-menu-image-wrapper'>
-                                <div className='mega-menu-image-overlay'></div>
-                                <LazyLoadImage
-                                  src={getServiceImage(
-                                    category.slug,
-                                    hoveredService,
-                                  )}
-                                  alt={`${category.label} tours`}
-                                  className='mega-menu-image-element'
-                                />
-                              </div>
-                            </div>
+                          {/* Image */}
+                          <div className='relative overflow-hidden bg-stone-900 min-h-[300px] max-h-[400px]'>
+                            <LazyLoadImage
+                              src={getServiceImage(
+                                category.slug,
+                                hoveredService,
+                              )}
+                              alt={`${category.label} tours`}
+                              className='w-full h-full object-cover absolute inset-0'
+                            />
                           </div>
                         </div>
                       </div>
-                    </li>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -955,10 +799,7 @@ export default function Navbar() {
           }}>
           {isSmallScreen ? (
             <li>
-              <Link
-                href='/'
-                onClick={() => setGender(false)}
-                aria-label='Inicio'>
+              <Link href='/' onClick={closeSideMenu} aria-label='Inicio'>
                 <CachedImage
                   src='/assets/logo-Booking.svg'
                   alt={BRAND.logo.alt}
@@ -1060,7 +901,6 @@ export default function Navbar() {
           </li>
         </ul>
 
-        {/* Separador decorativo con título */}
         <div className='px-4 pt-6 pb-2'>
           <div className='flex items-center gap-3 mb-4'>
             <div className='flex-1 h-px bg-gradient-to-r from-transparent via-secondary/50 to-transparent'></div>
@@ -1092,454 +932,69 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Contenido del menú con mejor espaciado */}
         <ul className='px-4 pb-6 space-y-1 text-base font-medium'>
-          <li className='accordion mb-2'>
-            <Link
-              href='#'
-              onClick={toggle}
-              className={
-                isShowing
-                  ? 'py-3 px-4 flex text-white rounded-xl shadow-lg justify-between items-center transition-all duration-300 border-2 border-secondary'
-                  : 'py-3 px-4 flex justify-between items-center rounded-xl transition-all duration-300 hover:bg-white/5 border-2 border-transparent hover:border-secondary/30 text-white/90 hover:text-white'
-              }
-              style={
-                isShowing
-                  ? {
-                      background:
-                        'linear-gradient(135deg, rgba(230, 194, 0, 0.2) 0%, rgba(230, 194, 0, 0.1) 100%)',
-                    }
-                  : {}
-              }>
-              <span className='font-bold text-sm uppercase tracking-wide'>
-                {t.inca_trail}
-              </span>
-              {isShowing ? (
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  strokeWidth='2.5'
-                  stroke='currentColor'
-                  className='h-5 w-5 transition-transform duration-300 text-secondary'>
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    d='m4.5 15.75 7.5-7.5 7.5 7.5'
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  strokeWidth='2.5'
-                  stroke='currentColor'
-                  className='h-5 w-5 transition-transform duration-300 text-white/60'>
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    d='m19.5 8.25-7.5 7.5-7.5-7.5'
-                  />
-                </svg>
-              )}
-            </Link>
-            <ul className={isShowing ? 'block mt-2 space-y-1' : 'hidden'}>
-              {incaTrail.map((item, i) => (
-                <li className='flex' key={i}>
-                  <Link
-                    href={`/${item.category}/${item.slug}`}
-                    onClick={() => setGender(!gender)}
-                    className='py-2.5 pr-4 text-sm text-white/70 w-full rounded-md flex items-center group'>
-                    <span className='w-2 h-2 rounded-full bg-secondary mx-2'></span>
-                    {capitalizeWords(item.title)}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </li>
-          <li className='accordion mb-2'>
-            <Link
-              href='#'
-              onClick={toggle1}
-              className={
-                isShowing1
-                  ? 'py-3 px-4 flex text-white rounded-xl shadow-lg justify-between items-center transition-all duration-300 border-2 border-secondary'
-                  : 'py-3 px-4 flex justify-between items-center rounded-xl transition-all duration-300 hover:bg-white/5 border-2 border-transparent hover:border-secondary/30 text-white/90 hover:text-white'
-              }
-              style={
-                isShowing1
-                  ? {
-                      background:
-                        'linear-gradient(135deg, rgba(230, 194, 0, 0.2) 0%, rgba(230, 194, 0, 0.1) 100%)',
-                    }
-                  : {}
-              }>
-              <span className='font-semibold'>{t.salkantay}</span>
-              {isShowing1 ? (
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  strokeWidth='2'
-                  stroke='currentColor'
-                  className='h-5 w-5 transition-transform duration-300 text-secondary'>
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    d='m4.5 15.75 7.5-7.5 7.5 7.5'
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  strokeWidth='2'
-                  stroke='currentColor'
-                  className='h-5 w-5 transition-transform duration-300 text-white/60'>
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    d='m19.5 8.25-7.5 7.5-7.5-7.5'
-                  />
-                </svg>
-              )}
-            </Link>
-            <ul className={isShowing1 ? 'block mt-2 space-y-1' : 'hidden'}>
-              {salkantay.map((item, i) => (
-                <li className='flex' key={i}>
-                  <Link
-                    href={`/${item.category}/${item.slug}`}
-                    onClick={() => setGender(!gender)}
-                    className='py-2.5 pr-4 text-sm text-white/70 w-full rounded-md flex items-center group'>
-                    <span className='w-2 h-2 rounded-full bg-secondary mx-2'></span>
-                    {capitalizeWords(item.title)}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </li>
+          {mobileTourCategories.map((category) => {
+            const isOpen = openMobileCategory === category.slug;
 
-          <li className='accordion mb-2'>
-            <Link
-              href='#'
-              onClick={toggle2}
-              className={
-                isShowing2
-                  ? 'py-3 px-4 flex text-white rounded-xl shadow-lg justify-between items-center transition-all duration-300 border-2 border-secondary'
-                  : 'py-3 px-4 flex justify-between items-center rounded-xl transition-all duration-300 hover:bg-white/5 border-2 border-transparent hover:border-secondary/30 text-white/90 hover:text-white'
-              }
-              style={
-                isShowing2
-                  ? {
-                      background:
-                        'linear-gradient(135deg, rgba(230, 194, 0, 0.2) 0%, rgba(230, 194, 0, 0.1) 100%)',
-                    }
-                  : {}
-              }>
-              <span className='font-semibold'>{t.ausangate}</span>
-              {isShowing2 ? (
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  strokeWidth='2'
-                  stroke='currentColor'
-                  className='h-5 w-5 transition-transform duration-300 text-secondary'>
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    d='m4.5 15.75 7.5-7.5 7.5 7.5'
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  strokeWidth='2'
-                  stroke='currentColor'
-                  className='h-5 w-5 transition-transform duration-300 text-white/60'>
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    d='m19.5 8.25-7.5 7.5-7.5-7.5'
-                  />
-                </svg>
-              )}
-            </Link>
-            <ul className={isShowing2 ? 'block mt-2 space-y-1' : 'hidden'}>
-              {ausangate.map((item, i) => (
-                <li className='flex' key={i}>
-                  <Link
-                    href={`/${item.category}/${item.slug}`}
-                    onClick={() => setGender(!gender)}
-                    className='py-2.5 pr-4 text-sm text-white/70 w-full rounded-md flex items-center group'>
-                    <span className='w-2 h-2 rounded-full bg-secondary mx-2'></span>
-                    {capitalizeWords(item.title)}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </li>
+            return (
+              <li className='accordion mb-2' key={category.slug}>
+                <button
+                  type='button'
+                  onClick={() => handleMobileCategoryToggle(category.slug)}
+                  aria-expanded={isOpen}
+                  aria-controls={`mobile-category-${category.slug}`}
+                  className={`${mobileAccordionTriggerBaseClass} ${
+                    isOpen
+                      ? mobileAccordionTriggerActiveClass
+                      : mobileAccordionTriggerInactiveClass
+                  }`}
+                  style={isOpen ? mobileAccordionActiveStyle : undefined}>
+                  <span className='font-semibold'>{category.label}</span>
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                    strokeWidth='2'
+                    stroke='currentColor'
+                    className={`h-5 w-5 transition-transform duration-300 ${
+                      isOpen ? 'text-secondary' : 'text-white/60'
+                    }`}>
+                    <path
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      d={
+                        isOpen
+                          ? 'm4.5 15.75 7.5-7.5 7.5 7.5'
+                          : 'm19.5 8.25-7.5 7.5-7.5-7.5'
+                      }
+                    />
+                  </svg>
+                </button>
 
-          <li className='accordion mb-2'>
-            <Link
-              href='#'
-              onClick={toggle4}
-              className={
-                isShowing4
-                  ? 'py-3 px-4 flex text-white rounded-xl shadow-lg justify-between items-center transition-all duration-300 border-2 border-secondary'
-                  : 'py-3 px-4 flex justify-between items-center rounded-xl transition-all duration-300 hover:bg-white/5 border-2 border-transparent hover:border-secondary/30 text-white/90 hover:text-white'
-              }
-              style={
-                isShowing4
-                  ? {
-                      background:
-                        'linear-gradient(135deg, rgba(230, 194, 0, 0.2) 0%, rgba(230, 194, 0, 0.1) 100%)',
-                    }
-                  : {}
-              }>
-              <span className='font-semibold'>{t.peru}</span>
-              {isShowing4 ? (
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  strokeWidth='2'
-                  stroke='currentColor'
-                  className='h-5 w-5 transition-transform duration-300 text-secondary'>
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    d='m4.5 15.75 7.5-7.5 7.5 7.5'
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  strokeWidth='2'
-                  stroke='currentColor'
-                  className='h-5 w-5 transition-transform duration-300 text-white/60'>
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    d='m19.5 8.25-7.5 7.5-7.5-7.5'
-                  />
-                </svg>
-              )}
-            </Link>
-            <ul className={isShowing4 ? 'block mt-2 space-y-1' : 'hidden'}>
-              {perupackages.map((item, i) => (
-                <li className='flex' key={i}>
-                  <Link
-                    href={`/${item.category}/${item.slug}`}
-                    onClick={() => setGender(!gender)}
-                    className='py-2.5 pr-4 text-sm text-white/70 w-full rounded-md flex items-center group'>
-                    <span className='w-2 h-2 rounded-full bg-secondary mx-2'></span>
-                    {capitalizeWords(item.title)}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </li>
+                <ul
+                  id={`mobile-category-${category.slug}`}
+                  className={isOpen ? 'block mt-2 space-y-1' : 'hidden'}>
+                  {category.data.map((item) => (
+                    <li className='flex' key={item.slug}>
+                      <Link
+                        href={`/${item.category}/${item.slug}`}
+                        onClick={closeSideMenu}
+                        className='py-2.5 pr-4 text-sm text-white/70 w-full rounded-md flex items-center group'>
+                        <span className='w-2 h-2 rounded-full bg-secondary mx-2'></span>
+                        {capitalizeWords(item.title)}
+                      </Link>
+                    </li>
+                  ))}
+                  {category.data.length === 0 && (
+                    <li className='py-2.5 px-4 text-sm text-white/55'>
+                      {locale === 'en' ? 'Coming soon...' : 'Próximamente...'}
+                    </li>
+                  )}
+                </ul>
+              </li>
+            );
+          })}
 
-          <li className='accordion mb-2'>
-            <Link
-              href='#'
-              onClick={toggle5}
-              className={
-                isShowing5
-                  ? 'py-3 px-4 flex text-white rounded-xl shadow-lg justify-between items-center transition-all duration-300 border-2 border-secondary'
-                  : 'py-3 px-4 flex justify-between items-center rounded-xl transition-all duration-300 hover:bg-white/5 border-2 border-transparent hover:border-secondary/30 text-white/90 hover:text-white'
-              }
-              style={
-                isShowing5
-                  ? {
-                      background:
-                        'linear-gradient(135deg, rgba(230, 194, 0, 0.2) 0%, rgba(230, 194, 0, 0.1) 100%)',
-                    }
-                  : {}
-              }>
-              <span className='font-semibold'>{t.cusco}</span>
-              {isShowing5 ? (
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  strokeWidth='2'
-                  stroke='currentColor'
-                  className='h-5 w-5 transition-transform duration-300 text-secondary'>
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    d='m4.5 15.75 7.5-7.5 7.5 7.5'
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  strokeWidth='2'
-                  stroke='currentColor'
-                  className='h-5 w-5 transition-transform duration-300 text-white/60'>
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    d='m19.5 8.25-7.5 7.5-7.5-7.5'
-                  />
-                </svg>
-              )}
-            </Link>
-            <ul className={isShowing5 ? 'block mt-2 space-y-1' : 'hidden'}>
-              {cuscoTours.map((item, i) => (
-                <li className='flex' key={i}>
-                  <Link
-                    href={`/${item.category}/${item.slug}`}
-                    onClick={() => setGender(!gender)}
-                    className='py-2.5 pr-4 text-sm text-white/70 w-full rounded-md flex items-center group'>
-                    <span className='w-2 h-2 rounded-full bg-secondary mx-2'></span>
-                    {capitalizeWords(item.title)}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </li>
-
-          <li className='accordion mb-2'>
-            <Link
-              href='#'
-              onClick={toggle7}
-              className={
-                isShowing7
-                  ? 'py-3 px-4 flex text-white rounded-xl shadow-lg justify-between items-center transition-all duration-300 border-2 border-secondary'
-                  : 'py-3 px-4 flex justify-between items-center rounded-xl transition-all duration-300 hover:bg-white/5 border-2 border-transparent hover:border-secondary/30 text-white/90 hover:text-white'
-              }
-              style={
-                isShowing7
-                  ? {
-                      background:
-                        'linear-gradient(135deg, rgba(230, 194, 0, 0.2) 0%, rgba(230, 194, 0, 0.1) 100%)',
-                    }
-                  : {}
-              }>
-              <span className='font-semibold'>{t.rainbowmountain}</span>
-              {isShowing7 ? (
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  strokeWidth='2'
-                  stroke='currentColor'
-                  className='h-5 w-5 transition-transform duration-300 text-secondary'>
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    d='m4.5 15.75 7.5-7.5 7.5 7.5'
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  strokeWidth='2'
-                  stroke='currentColor'
-                  className='h-5 w-5 transition-transform duration-300 text-white/60'>
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    d='m19.5 8.25-7.5 7.5-7.5-7.5'
-                  />
-                </svg>
-              )}
-            </Link>
-            <ul className={isShowing7 ? 'block mt-2 space-y-1' : 'hidden'}>
-              {raimbow.map((item, i) => (
-                <li className='flex' key={i}>
-                  <Link
-                    href={`/${item.category}/${item.slug}`}
-                    onClick={() => setGender(!gender)}
-                    className='py-2.5 pr-4 text-sm text-white/70 w-full rounded-md flex items-center group'>
-                    <span className='w-2 h-2 rounded-full bg-secondary mx-2'></span>
-                    {capitalizeWords(item.title)}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </li>
-
-          <li className='accordion mb-2'>
-            <Link
-              href='#'
-              onClick={toggle6}
-              className={
-                isShowing6
-                  ? 'py-3 px-4 flex text-white rounded-xl shadow-lg justify-between items-center transition-all duration-300 border-2 border-secondary'
-                  : 'py-3 px-4 flex justify-between items-center rounded-xl transition-all duration-300 hover:bg-white/5 border-2 border-transparent hover:border-secondary/30 text-white/90 hover:text-white'
-              }
-              style={
-                isShowing6
-                  ? {
-                      background:
-                        'linear-gradient(135deg, rgba(230, 194, 0, 0.2) 0%, rgba(230, 194, 0, 0.1) 100%)',
-                    }
-                  : {}
-              }>
-              <span className='font-semibold'>{t.incajungle}</span>
-              {isShowing6 ? (
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  strokeWidth='2'
-                  stroke='currentColor'
-                  className='h-5 w-5 transition-transform duration-300 text-secondary'>
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    d='m4.5 15.75 7.5-7.5 7.5 7.5'
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  strokeWidth='2'
-                  stroke='currentColor'
-                  className='h-5 w-5 transition-transform duration-300 text-white/60'>
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    d='m19.5 8.25-7.5 7.5-7.5-7.5'
-                  />
-                </svg>
-              )}
-            </Link>
-
-            <div className={isShowing6 ? 'block mt-2 space-y-3' : 'hidden'}>
-              <ul className='space-y-1'>
-                {incaJungle.map((item, i) => (
-                  <li className='flex' key={i}>
-                    <Link
-                      href={`/${item.category}/${item.slug}`}
-                      onClick={() => setGender(!gender)}
-                      className='py-2.5 pr-4 text-sm text-white/70 w-full rounded-md flex items-center group'>
-                      <span className='w-2 h-2 rounded-full bg-secondary mx-2'></span>
-                      {capitalizeWords(item.title)}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </li>
-
-          {/* Separador decorativo antes de links */}
           <li className='my-6'>
             <div className='flex items-center gap-3'>
               <div className='flex-1 h-px bg-gradient-to-r from-transparent via-blue/30 to-transparent'></div>
@@ -1550,55 +1005,8 @@ export default function Navbar() {
 
           <li className='mb-2'>
             <Link
-              href='/travel-deals'
-              onClick={() => setGender(!gender)}
-              className='py-3 px-4 flex items-center rounded-xl transition-all duration-300 hover:bg-white/10 border-2 border-transparent hover:border-primary/50 text-white/90 hover:text-white font-semibold uppercase text-sm group'>
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 24 24'
-                strokeWidth='2'
-                stroke='currentColor'
-                className='w-5 h-5 mr-3 text-white/60 group-hover:text-primary transition-colors duration-200'>
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z'
-                />
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M6 6h.008v.008H6V6z'
-                />
-              </svg>
-              {t.deals}
-            </Link>
-          </li>
-          <li className='mb-2'>
-            <Link
-              href={blogUrl}
-              onClick={() => setGender(!gender)}
-              className='py-3 px-4 flex items-center rounded-xl transition-all duration-300 hover:bg-white/10 border-2 border-transparent hover:border-primary/50 text-white/90 hover:text-white font-semibold uppercase text-sm group'>
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 24 24'
-                strokeWidth='2'
-                stroke='currentColor'
-                className='w-5 h-5 mr-3 text-white/60 group-hover:text-primary transition-colors duration-200'>
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6v-3z'
-                />
-              </svg>
-              Blog
-            </Link>
-          </li>
-          <li className='mb-2'>
-            <Link
               href='/about-us'
-              onClick={() => setGender(!gender)}
+              onClick={closeSideMenu}
               className='py-3 px-4 flex items-center rounded-xl transition-all duration-300 hover:bg-white/10 border-2 border-transparent hover:border-primary/50 text-white/90 hover:text-white font-semibold uppercase text-sm group'>
               <svg
                 xmlns='http://www.w3.org/2000/svg'
@@ -1615,11 +1023,11 @@ export default function Navbar() {
               </svg>
               {t.about}
             </Link>
-          </li>
+          </li> 
           <li className='mb-2'>
             <Link
               href='/contact'
-              onClick={() => setGender(!gender)}
+              onClick={closeSideMenu}
               className='py-3 px-4 flex items-center rounded-xl transition-all duration-300 hover:bg-white/10 border-2 border-transparent hover:border-primary/50 text-white/90 hover:text-white font-semibold uppercase text-sm group'>
               <svg
                 xmlns='http://www.w3.org/2000/svg'
