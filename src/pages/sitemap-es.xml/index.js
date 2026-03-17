@@ -1,51 +1,34 @@
-import { BRAND } from '../../lib/brandConfig'
-import { API_URL } from "../../lib/constants";
+import { getCategoriesWithTours } from '@/modules/trips/service/trip.service';
+import { BRAND } from '../../lib/brandConfig';
+import {
+  createCategorySet,
+  createTourSet,
+  getTourSitemapEntries,
+  renderUrlSet,
+  writeXmlResponse,
+} from '../../lib/sitemap';
 
 export async function getServerSideProps({ res }) {
-    const baseUrl = BRAND.siteUrl;
+  const [spanishGroups, englishGroups] = await Promise.all([
+    getCategoriesWithTours('es'),
+    getCategoriesWithTours('en'),
+  ]);
 
-    let tours = [];
+  const sitemap = renderUrlSet(
+    getTourSitemapEntries({
+      groups: spanishGroups,
+      locale: 'es',
+      siteUrl: BRAND.siteUrl,
+      alternateCategorySet: createCategorySet(englishGroups),
+      alternateTourSet: createTourSet(englishGroups),
+    }),
+  );
 
-    try {
-        const res1 = await fetch(`${API_URL}/api/trip?locale=es&fields=slug,category`);
-        const data = await res1.json();
+  writeXmlResponse(res, sitemap);
 
-        // Verifica si data es un array válido
-        if (Array.isArray(data)) {
-            tours = data.filter((tour) => tour.slug && tour.category); // Filtra tours que no tengan 'slug' o 'category'
-        } else {
-            console.error("La respuesta no es un array:", data);
-        }
-
-    } catch (err) {
-        console.error("Error al obtener slugs:", err.message);
-    }
-
-    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">        
-        ${tours
-            .map((tour) => {
-                return `
-        <url>
-            <loc>${baseUrl}/es/${tour.category}/${tour.slug}</loc>
-            <lastmod>${new Date().toISOString()}</lastmod>
-            <changefreq>weekly</changefreq>
-            <priority>0.8</priority>
-        </url>`;
-            })
-            .join('')}
-    </urlset>`;
-
-    res.setHeader('Content-Type', 'application/xml');
-    res.write(sitemap);
-    res.end();
-
-    return { props: {} };
+  return { props: {} };
 }
 
-export default function Sitemap() {
-    return null;
+export default function SitemapEs() {
+  return null;
 }
-
-
-
