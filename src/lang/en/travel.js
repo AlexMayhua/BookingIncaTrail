@@ -1,0 +1,16 @@
+export default {
+  badge_category: 'Category',
+  home: 'Home',
+  explore_tours: 'Explore Tours',
+  group_size: 'Group Size',
+  group_size_value: 'Small & Private',
+  difficulty: 'Difficulty',
+  difficulty_value: 'All Levels',
+  available: 'Available',
+  adventure: 'Adventure',
+  tour: 'Tour',
+  tours: 'Tours',
+  from: 'FROM',
+  btn_viewtrip: 'VIEW TRIP',
+  no_tours: 'No tours available in this category.',
+};

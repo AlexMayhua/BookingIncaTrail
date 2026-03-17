@@ -125,7 +125,7 @@ export default {
     <p>Este contrato se rige por las leyes de la República del Perú. Cualquier controversia será resuelta por los tribunales competentes de la ciudad de Cusco.</p>
     <p>En caso de ambigüedad o vacío legal, el Cliente acepta que la interpretación del contrato se hará <strong>en favor del Operador</strong>, garantizando la continuidad y viabilidad del servicio.</p>
     <h2 className='text-lg'>12. Modificaciones a los Términos</h2>
-    <p>Life Expeditions podrá modificar estos Términos y Condiciones sin necesidad de aviso previo. Los cambios aplicarán a nuevas reservas. Se recomienda revisarlos periódicamente. La versión vigente estará siempre publicada en <a href="https://lifexpeditions.com/es/terms-conditions"><b className='text-primary hover:text-secondary'>https://lifexpeditions.com/es/terms-conditions</b></a></p>`,
+    <p>BookingIncatrail podrá modificar estos Términos y Condiciones sin necesidad de aviso previo. Los cambios aplicarán a nuevas reservas. Se recomienda revisarlos periódicamente. La versión vigente estará siempre publicada en <a href="https://bookingincatrail.com/es/terms-conditions"><b className='text-primary hover:text-secondary'>https://bookinginca trail.com/es/terms-conditions</b></a></p>`,
     meta_title: "Términos y Condiciones - BOOKINGINCATRAIL",
     meta_description: "Read the terms and conditions carefully before making your booking consider the difficulties that the hikes will entail.",
     bookComplaints: 'Libro de Reclamaciones',
