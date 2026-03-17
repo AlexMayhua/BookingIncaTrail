@@ -103,15 +103,30 @@ export default function FrontPage() {
 
   return (
     <section className='relative w-full h-[90vh] overflow-hidden flex flex-col'>
-      <Image
-        src='/img/hero/machu-imge.webp'
-        alt='Machu Picchu background'
-        fill
-        priority
-        fetchPriority='high'
-        className='object-cover object-center'
-        sizes='100vw'
-      />
+      <div className='absolute inset-0 md:hidden'>
+        <Image
+          src='/img/hero/img-hero-desktop.webp'
+          alt='Machu Picchu background'
+          fill
+          priority
+          fetchPriority='high'
+          quality={65}
+          sizes='100vw'
+          className='object-cover object-center'
+        />
+      </div>
+
+      <div className='absolute inset-0 hidden md:block'>
+        <Image
+          src='/img/hero/machu-imge.webp'
+          alt='Machu Picchu background'
+          fill
+          priority
+          quality={70}
+          sizes='100vw'
+          className='object-cover object-center'
+        />
+      </div>
       <div className='absolute inset-0 bg-black/50 z-[1]' />
 
       {cards.left.map((c, i) => (
@@ -220,7 +235,7 @@ export default function FrontPage() {
                 alt={c.alt}
                 loading='lazy'
                 fetchPriority='low'
-                sizes='(min-width: 768px) 128px, 96px'
+                sizes='(min-width: 96px) 96px, 96px'
                 className='w-full h-full object-cover'
               />
               <span className='absolute bottom-1 left-1 bg-white/90 text-primary text-[8px] md:text-[9px] font-bold px-1.5 py-0.5 rounded-full'>

@@ -16,8 +16,6 @@ import {
   getCategoryImagePath,
 } from '@/utils/categoryHelpers';
 import { BRAND, absoluteUrl, getLogoUrlAbsolute } from '@/lib/brandConfig';
-import { trackCustomEvent } from '@/lib/facebookPixel';
-import { trackCustomEventTiktok } from '@/lib/tiktokPixel';
 import { API_URL } from '@/lib/constants';
 import en from '@/lang/en/slug';
 import es from '@/lang/es/slug';
@@ -182,15 +180,6 @@ export default function TourPage({ tour, category, similarTours }) {
   const handleClose = () => setIsOpen(false);
   const handleBackdropClick = (e) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) handleClose();
-  };
-
-  const handleBook = () => {
-    trackCustomEvent('ButtonClick', {
-      content_name: 'Book Now',
-      content_category: 'User Actions',
-    });
-    trackCustomEventTiktok('ButtonClick', { buttonName: 'Book Now' });
-    router.push(`/book?tour=${tour?.slug || ''}&cantidadPeople=${count}`);
   };
 
   /* ─── Guards ─── */
