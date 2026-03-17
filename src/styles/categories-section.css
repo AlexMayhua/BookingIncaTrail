@@ -14,7 +14,6 @@
 .categories-section {
     position: relative;
     padding: 6rem 0;
-    background-color: #fcfcfc;
     overflow: hidden;
     isolation: isolate;
 }

@@ -441,6 +441,12 @@
   animation: fadeInDescription 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Evita que el contenido se encoja dentro de contenedores flex/grid */
+.mega-menu-description-content {
+  flex: 1 0 auto;
+  min-height: max-content;
+}
+
 @keyframes fadeInDescription {
   from {
     opacity: 0;
@@ -3243,17 +3249,7 @@ nav {
    ============================================ */
 
 /* Contenedor con overflow para scroll horizontal - limita cuántas categorías se ven */
-#navbarDesktop > div {
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-  max-width: 1400px;
-  margin: 0 auto;
-  /* Transición suave para scroll automático */
-  scroll-snap-type: x proximity;
-  scroll-padding: 0 1rem;
-}
+
 
 /* UL debe expandirse más allá del contenedor para habilitar scroll */
 #navbarDesktop ul {

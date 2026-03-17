@@ -4,19 +4,10 @@
    ============================================ */
 
 /* Variables de color del proyecto */
-:root {
-    --faq-primary: #005249;
-    --faq-gold: #e6c200;
-    --faq-gold-bright: #FFD500;
-    --faq-dark: #0d1117;
-    --faq-gray: #6b7280;
-}
-
 /* Sección principal */
 .faq-section {
     position: relative;
     padding: 3.5rem 0;
-    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 50%, #f8f9fa 100%);
     overflow: hidden;
 }
 
@@ -28,7 +19,6 @@
     right: -10%;
     width: 50%;
     height: 200%;
-    background: radial-gradient(ellipse, rgba(0, 82, 73, 0.04) 0%, transparent 70%);
     pointer-events: none;
 }
 
@@ -39,7 +29,6 @@
     left: -10%;
     width: 40%;
     height: 150%;
-    background: radial-gradient(ellipse, rgba(230, 194, 0, 0.05) 0%, transparent 70%);
     pointer-events: none;
 }
 

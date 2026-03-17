@@ -6,7 +6,7 @@
 html,
 body {
   width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
   position: relative;
 }
 
@@ -80,10 +80,6 @@ p {
     @apply text-stone-900;
   }
 
-  p {
-    @apply pb-4;
-    @apply text-stone-900;
-  }
 
   a {
     @apply tracking-tight;
@@ -164,7 +160,6 @@ strong.font-bold {
 @import url("./tours.css");
 @import url("./testimonials-new.css");
 @import url("./faq-new.css");
-@import url("./why-us.css");
 @import url("./achievements.css");
 @import url("./footer.css");
 @import url("./carrusel.css");

@@ -204,7 +204,6 @@
   align-items: stretch;
   min-height: 400px;
   max-height: 80vh;
-  scrollbar-width: thin;
   box-shadow:
     0 25px 50px -12px rgba(0, 0, 0, 0.2),
     0 12px 24px -8px rgba(0, 0, 0, 0.12),
@@ -1191,214 +1190,6 @@ nav {
   }
 }
 
-/* Header compacto al hacer scroll */
-.navbar-compact .nav-topbar {
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-.navbar-scrolled {
-  box-shadow:
-    0 4px 20px rgba(0, 0, 0, 0.25),
-    0 0 0 1px rgba(71, 85, 105, 0.1);
-  animation: slideDown 0.3s ease forwards;
-}
-
-@keyframes slideDown {
-  from {
-    transform: translateY(-10px);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-/* ============================================
-   BARRA DE PROGRESO DE SCROLL
-   ============================================ */
-
-.scroll-progress-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: rgba(255, 255, 255, 0.1);
-  z-index: 100;
-  overflow: hidden;
-}
-
-.scroll-progress-bar {
-  height: 100%;
-  background: linear-gradient(90deg, #e6c200, #ffd700, #e6c200);
-  background-size: 200% 100%;
-  animation: shimmer 2s linear infinite;
-  transition: width 0.1s ease-out;
-  box-shadow: 0 0 10px rgba(230, 194, 0, 0.5);
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-/* ============================================
-   HEADER COMPACTO AL HACER SCROLL
-   ============================================ */
-
-.navbar-compact-header {
-  padding: 0.5rem 1rem;
-  border-bottom: 1px solid rgba(71, 85, 105, 0.2);
-  background: linear-gradient(
-    180deg,
-    rgba(13, 17, 23, 0.98) 0%,
-    rgba(13, 17, 23, 0.95) 100%
-  );
-}
-
-.compact-header-content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-/* Logo compacto */
-.compact-logo {
-  display: flex;
-  align-items: center;
-  transition: all 0.3s ease;
-}
-
-.compact-logo:hover {
-  transform: scale(1.05);
-}
-
-.compact-logo img {
-  height: 2.25rem;
-  width: auto;
-}
-
-/* Acciones rápidas de contacto */
-.compact-quick-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.compact-action-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #e6c200 0%, #d4a600 100%);
-  border: 1px solid rgba(114, 25, 25, 0.12);
-  color: #2b5d96;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  text-decoration: none;
-}
-
-.compact-action-btn svg {
-  width: 18px;
-  height: 18px;
-}
-
-.compact-action-btn.email:hover {
-  background: linear-gradient(135deg, #487294 0%, #3a5c78 100%);
-  border-color: #487294;
-  color: #ffffff;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(72, 114, 148, 0.4);
-}
-
-/* Selector de idioma compacto */
-.compact-language-selector {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.25rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-}
-
-.compact-lang-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.35rem;
-  border: none;
-  background: transparent;
-  border-radius: 6px;
-  cursor: pointer;
-  opacity: 0.6;
-  transition: all 0.3s ease;
-}
-
-.compact-lang-btn:hover {
-  opacity: 1;
-  background: rgba(71, 85, 105, 0.15);
-}
-
-.compact-lang-btn.active {
-  opacity: 1;
-  background: rgba(71, 85, 105, 0.2);
-  box-shadow: 0 0 0 2px rgba(71, 85, 105, 0.3);
-}
-
-.language-flag-mini {
-  width: 20px;
-  height: 14px;
-  border-radius: 2px;
-}
-
-/* Botón CTA compacto */
-.compact-cta-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1.25rem;
-  background: linear-gradient(135deg, #e6c200 0%, #d4a600 100%);
-  color: #0d1117;
-  font-size: 0.8rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  border-radius: 20px;
-  text-decoration: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 8px rgba(230, 194, 0, 0.3);
-}
-
-.compact-cta-btn:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 6px 20px rgba(230, 194, 0, 0.5);
-  background: linear-gradient(135deg, #ffd700 0%, #e6c200 100%);
-}
-
-.compact-cta-arrow {
-  width: 14px;
-  height: 14px;
-  transition: transform 0.3s ease;
-}
-
-.compact-cta-btn:hover .compact-cta-arrow {
-  transform: translateX(4px);
-}
-
 /* Top bar mejorado con glassmorphism - PALETA ACTUALIZADA */
 .nav-topbar {
   background: linear-gradient(
@@ -1626,12 +1417,12 @@ nav {
 .language-flag:hover {
   opacity: 1;
   transform: scale(1.1);
-  box-shadow: 0 2px 8px rgba(71, 85, 105, 0.4);
+  box-shadow: 0 2px 8px rgba(230, 194, 0, 0.4);
 }
 
 .language-flag.active {
   opacity: 1;
-  border-color: #64748b;
+  border-color: #e6c200;
   box-shadow:
     0 0 8px rgba(71, 85, 105, 0.5),
     0 2px 6px rgba(0, 0, 0, 0.3);
@@ -2163,29 +1954,6 @@ nav {
   }
 }
 
-/* Mejora de scroll en el panel móvil */
-.nav-panel ul {
-  scrollbar-width: thin;
-  scrollbar-color: #e6c200 transparent;
-}
-
-.nav-panel ul::-webkit-scrollbar {
-  width: 6px;
-}
-
-.nav-panel ul::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.nav-panel ul::-webkit-scrollbar-thumb {
-  background-color: #e6c200;
-  border-radius: 3px;
-}
-
-.nav-panel ul::-webkit-scrollbar-thumb:hover {
-  background-color: #d4b000;
-}
-
 /* Animación de bounce suave para acordeones */
 @keyframes accordionExpand {
   0% {
@@ -2682,145 +2450,6 @@ nav {
 /* Responsive adjustments */
 
 /* ============================================
-   SCROLL HORIZONTAL SIN BARRA VISIBLE
-   ============================================ */
-
-/* Ocultar scrollbar en todos los navegadores y asegurar scroll suave */
-.scrollbar-hide {
-  scrollbar-width: none;
-  /* Firefox */
-  -ms-overflow-style: none;
-  /* IE y Edge */
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-  /* Chrome, Safari, Webkit */
-}
-
-/* ============================================
-   NAVBAR DESKTOP - SCROLL HORIZONTAL
-   ============================================ */
-
-/* Contenedor con overflow para scroll horizontal - limita cuántas categorías se ven */
-#navbarDesktop > div {
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-  max-width: 1400px;
-  margin: 0 auto;
-  /* Transición suave para scroll automático */
-  scroll-snap-type: x proximity;
-  scroll-padding: 0 1rem;
-}
-
-/* UL debe expandirse más allá del contenedor para habilitar scroll */
-#navbarDesktop ul {
-  display: flex;
-  width: max-content;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  gap: 1rem;
-}
-
-/* Cada item de categoría debe tener ancho mínimo y no encogerse */
-#navbarDesktop ul > li {
-  min-width: 140px;
-  max-width: 140px;
-  flex-shrink: 0;
-  flex-grow: 0;
-  padding: 0;
-  margin: 0;
-  scroll-snap-align: start;
-}
-
-/* Responsive - más ancho en pantallas grandes */
-
-/* ============================================
-   FLECHAS DE NAVEGACIÓN DEL NAVBAR
-   ============================================ */
-
-.navbar-scroll-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: linear-gradient(
-    135deg,
-    rgba(230, 194, 0, 0.1),
-    rgba(230, 194, 0, 0.03)
-  );
-  border: 1px solid rgba(230, 194, 0, 0.2);
-  color: rgba(230, 194, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  opacity: 0;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 100;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-}
-
-.navbar-scroll-arrow svg {
-  width: 14px;
-  height: 14px;
-  transition: transform 0.3s ease;
-}
-
-/* Posicionamiento */
-.navbar-scroll-arrow-left {
-  left: 4px;
-}
-
-.navbar-scroll-arrow-right {
-  right: 4px;
-}
-
-/* Hover del navbar hace visibles las flechas */
-#navbarDesktop:hover .navbar-scroll-arrow {
-  opacity: 1;
-}
-
-/* Hover en la flecha misma */
-.navbar-scroll-arrow:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(230, 194, 0, 0.3),
-    rgba(230, 194, 0, 0.15)
-  );
-  border-color: rgba(230, 194, 0, 0.5);
-  transform: translateY(-50%) scale(1.08);
-  box-shadow: 0 2px 8px rgba(230, 194, 0, 0.25);
-}
-
-.navbar-scroll-arrow:hover svg {
-  color: #e6c200;
-}
-
-.navbar-scroll-arrow-left:hover svg {
-  transform: translateX(-2px);
-}
-
-.navbar-scroll-arrow-right:hover svg {
-  transform: translateX(2px);
-}
-
-/* Active state */
-.navbar-scroll-arrow:active {
-  transform: translateY(-50%) scale(0.95);
-}
-
-/* Responsive - sutilmente más grandes en pantallas grandes */
-
-/* ============================================
    NAVBAR MEGA MENU - LUXURY EDITORIAL SYSTEM
    Mega menú dinámico con diseño editorial de lujo
    ============================================ */
@@ -2937,27 +2566,7 @@ nav {
   overflow-y: auto !important;
   flex: 1 !important;
   min-height: 0 !important;
-  /* Scrollbar visible y personalizado */
-  scrollbar-width: thin !important;
-  scrollbar-color: rgba(230, 194, 0, 0.3) transparent !important;
   padding-right: 8px !important;
-}
-
-.mega-menu-container .mega-menu-services-list::-webkit-scrollbar {
-  width: 6px !important;
-}
-
-.mega-menu-container .mega-menu-services-list::-webkit-scrollbar-track {
-  background: transparent !important;
-}
-
-.mega-menu-container .mega-menu-services-list::-webkit-scrollbar-thumb {
-  background-color: rgba(230, 194, 0, 0.3) !important;
-  border-radius: 3px !important;
-}
-
-.mega-menu-container .mega-menu-services-list::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(230, 194, 0, 0.5) !important;
 }
 
 /* Service Items */
@@ -3083,27 +2692,8 @@ nav {
   border-right: 1px solid rgba(120, 113, 108, 0.1) !important;
   position: relative !important;
   overflow-y: auto !important;
-  scrollbar-width: thin !important;
-  scrollbar-color: rgba(230, 194, 0, 0.3) transparent !important;
   width: 280px !important;
   box-sizing: border-box !important;
-}
-
-.mega-menu-container .mega-menu-description::-webkit-scrollbar {
-  width: 4px !important;
-}
-
-.mega-menu-container .mega-menu-description::-webkit-scrollbar-track {
-  background: transparent !important;
-}
-
-.mega-menu-container .mega-menu-description::-webkit-scrollbar-thumb {
-  background-color: rgba(230, 194, 0, 0.3) !important;
-  border-radius: 2px !important;
-}
-
-.mega-menu-container .mega-menu-description::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(230, 194, 0, 0.5) !important;
 }
 
 .mega-menu-container .mega-menu-description::before {
@@ -3284,12 +2874,6 @@ nav {
   }
 }
 
-@media (min-width: 1280px) {
-  .navbar-compact-header {
-    padding: 0.5rem 3rem;
-  }
-}
-
 @media (min-width: 1400px) {
   .lang-label {
     display: inline;
@@ -3382,86 +2966,5 @@ nav {
   .footer-payment-label:last-child {
     border: none;
     padding: 0;
-  }
-}
-
-@media (min-width: 1280px) {
-  #navbarDesktop > div {
-    max-width: 1600px;
-  }
-
-  #navbarDesktop ul {
-    gap: 1.25rem;
-  }
-
-  #navbarDesktop ul > li {
-    min-width: 160px;
-    max-width: 160px;
-  }
-}
-
-@media (min-width: 1536px) {
-  #navbarDesktop > div {
-    max-width: 1800px;
-  }
-
-  #navbarDesktop ul {
-    gap: 1.5rem;
-  }
-
-  #navbarDesktop ul > li {
-    min-width: 180px;
-    max-width: 180px;
-  }
-}
-
-@media (min-width: 1920px) {
-  #navbarDesktop > div {
-    max-width: 2000px;
-  }
-
-  #navbarDesktop ul > li {
-    min-width: 200px;
-    max-width: 200px;
-  }
-}
-
-@media (min-width: 1280px) {
-  .navbar-scroll-arrow {
-    width: 26px;
-    height: 26px;
-  }
-
-  .navbar-scroll-arrow svg {
-    width: 15px;
-    height: 15px;
-  }
-
-  .navbar-scroll-arrow-left {
-    left: 6px;
-  }
-
-  .navbar-scroll-arrow-right {
-    right: 6px;
-  }
-}
-
-@media (min-width: 1536px) {
-  .navbar-scroll-arrow {
-    width: 28px;
-    height: 28px;
-  }
-
-  .navbar-scroll-arrow svg {
-    width: 16px;
-    height: 16px;
-  }
-
-  .navbar-scroll-arrow-left {
-    left: 8px;
-  }
-
-  .navbar-scroll-arrow-right {
-    right: 8px;
   }
 }

@@ -72,16 +72,6 @@
     gap: 1.25rem;
 }
 
-.footer-logo img {
-    height: 3.5rem;
-    width: auto;
-    transition: opacity 0.3s ease;
-}
-
-.footer-logo:hover img {
-    opacity: 0.85;
-}
-
 .footer-description {
     color: #8B949E;
     font-size: 0.9rem;
