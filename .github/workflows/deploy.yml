@@ -21,6 +21,6 @@ jobs:
             echo "🚀 Clonando repositorio..."
 
             # Clonar repo privado usando token
-            git clone https://${{ secrets.TOKEN_DEPLOY_BOOKING }}@github.com/AlexMayhua/BookingIncaTrail.git /root/projects/BookingIncaTRail
+            git clone https://${{ secrets.TOKEN_DEPLOY_BOOKING }}@github.com/AlexMayhua/BookingIncaTrail.git /root/projects/BookingIncaTrail
 
             echo "✅ Repo clonado correctamente"
