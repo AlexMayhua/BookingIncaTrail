@@ -1,60 +1,35 @@
-import Users from '../../../models/userModel'
-import bcrypt from 'bcrypt'
-import { createAccessToken, createRefreshToken } from '../../../utils/generateToken'
-import { dbConnect } from "../../../utils/db";
-import { applyCors } from '../../../utils/cors';
+import { loginUser } from '@/modules/auth/service/auth.service';
+import { setRefreshTokenCookie } from '@/modules/auth/utils/cookies';
+import { applyCors } from '@/utils/cors';
 
-dbConnect();
+export default async function handler(req, res) {
+  await applyCors(req, res);
 
-export default async (req, res) => {
-    // Aplicar CORS seguro
-    await applyCors(req, res);
+  if (req.method !== 'POST') {
+    return res.status(405).json({ err: 'Method not allowed' });
+  }
 
-    // Validar método HTTP
-    if (req.method !== 'POST') {
-        return res.status(405).json({ err: 'Method not allowed' });
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ err: 'Email and password are required.' });
+  }
+
+  try {
+    const result = await loginUser(email, password);
+
+    if (result.error) {
+      return res.status(result.status).json({ err: result.error });
     }
 
-    try {
-        const { email, password } = req.body;
+    // Set refresh token as HttpOnly cookie
+    setRefreshTokenCookie(res, result.refreshToken);
 
-        // Validar entrada
-        if (!email || !password) {
-            return res.status(400).json({ err: 'Email and password are required.' });
-        }
-
-        // Buscar usuario
-        const user = await Users.findOne({ email }).select('+password');
-        if (!user) {
-            return res.status(401).json({ err: 'Invalid email or password.' });
-        }
-
-        // Verificar password
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(401).json({ err: 'Invalid email or password.' });
-        }
-
-        // Generar tokens
-        const access_token = createAccessToken({ id: user._id });
-        const refresh_token = createRefreshToken({ id: user._id });
-
-        // Enviar respuesta
-        res.json({
-            msg: "Login Success!",
-            refresh_token,
-            access_token,
-            user: {
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                avatar: user.avatar,
-                root: user.root
-            }
-        });
-
-    } catch (err) {
-        console.error('Login error:', err);
-        return res.status(500).json({ err: 'Authentication failed. Please try again.' });
-    }
+    // Return access token + user info (access token stored in memory on client)
+    return res.json({
+      access_token: result.accessToken,
+      user: result.user,
+    });
+  } catch (err) {
+    return res.status(500).json({ err: 'Authentication failed.' });
+  }
 }
