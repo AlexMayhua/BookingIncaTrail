@@ -1,26 +1,16 @@
-import { dbConnect } from "../../../utils/db";
-import Trips from '../../../models/tripModel'
 import NextCors from 'nextjs-cors';
-
-dbConnect();
+import { handleGetDeals } from '../../../modules/trips/api/trip.controller';
 
 export default async (req, res) => {
+  await NextCors(req, res, {
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+    origin: '*',
+    optionsSuccessStatus: 200,
+  });
 
-    // Run the cors middleware
-    await NextCors(req, res, {
-        // Options
-        methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
-        origin: '*',
-        optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-    })
+  if (req.method === 'GET') {
+    return handleGetDeals(req, res);
+  }
 
-    const { locale } = req.query
-    const lang = locale
-    try {
-        const packages = await Trips.find({ lang: `${lang}`, isDeals: true })
-        return res.status(200).json(packages)
-    } catch (error) {
-        return res.status(400).json({ msg: error.message })
-    }
-}
-
+  return res.status(405).json({ err: 'Method not allowed' });
+};
