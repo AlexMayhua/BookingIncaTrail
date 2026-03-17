@@ -7,3 +7,6 @@ Host: https://bookingincatrail.com
 
 # Sitemaps
 Sitemap: https://bookingincatrail.com/sitemap.xml
+Sitemap: https://bookingincatrail.com/sitemap-base.xml
+Sitemap: https://bookingincatrail.com/sitemap-en.xml
+Sitemap: https://bookingincatrail.com/sitemap-es.xml
