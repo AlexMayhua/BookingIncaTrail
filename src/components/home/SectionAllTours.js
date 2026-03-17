@@ -1,9 +1,10 @@
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useKeenSlider } from 'keen-slider/react';
 import 'keen-slider/keen-slider.min.css';
 import Link from 'next/link';
 import Image from 'next/image';
+
 import {
   FILTER_CATEGORIES,
   getTourAlt,
@@ -15,55 +16,55 @@ import {
 
 function AutoplayPlugin(slider) {
   let timeout;
-  let mouseOver = false;
+  let isHovered = false;
 
-  const clearNextTimeout = () => clearTimeout(timeout);
-
-  const nextTimeout = () => {
+  const clearAutoplay = () => {
     clearTimeout(timeout);
-    if (mouseOver) return;
+  };
+
+  const startAutoplay = () => {
+    clearAutoplay();
+
+    if (isHovered || !slider?.track?.details) return;
 
     timeout = setTimeout(() => {
-      if (slider?.track?.details) {
-        slider.next();
-      }
-    }, 4000);
+      slider.next();
+    }, 4500);
+  };
+
+  const onMouseEnter = () => {
+    isHovered = true;
+    clearAutoplay();
+  };
+
+  const onMouseLeave = () => {
+    isHovered = false;
+    startAutoplay();
   };
 
   slider.on('created', () => {
-    const onMouseOver = () => {
-      mouseOver = true;
-      clearNextTimeout();
-    };
-
-    const onMouseOut = () => {
-      mouseOver = false;
-      nextTimeout();
-    };
-
-    slider.container.addEventListener('mouseover', onMouseOver);
-    slider.container.addEventListener('mouseout', onMouseOut);
-
-    nextTimeout();
-
-    slider.on('destroyed', () => {
-      slider.container.removeEventListener('mouseover', onMouseOver);
-      slider.container.removeEventListener('mouseout', onMouseOut);
-      clearNextTimeout();
-    });
+    slider.container.addEventListener('mouseenter', onMouseEnter);
+    slider.container.addEventListener('mouseleave', onMouseLeave);
+    startAutoplay();
   });
 
-  slider.on('dragStarted', clearNextTimeout);
-  slider.on('animationEnded', nextTimeout);
-  slider.on('updated', nextTimeout);
+  slider.on('dragStarted', clearAutoplay);
+  slider.on('animationEnded', startAutoplay);
+  slider.on('updated', startAutoplay);
+
+  slider.on('destroyed', () => {
+    clearAutoplay();
+    slider.container.removeEventListener('mouseenter', onMouseEnter);
+    slider.container.removeEventListener('mouseleave', onMouseLeave);
+  });
 }
 
 export default function SectionAllTours({
   tours = [],
   sectionId = 'alltours',
 }) {
-  const router = useRouter();
-  const { locale } = router;
+  const { locale } = useRouter();
+  const isEn = locale === 'en';
 
   const [activeFilter, setActiveFilter] = useState('inca-trail');
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -72,38 +73,41 @@ export default function SectionAllTours({
     return getToursByCategory(tours, activeFilter);
   }, [tours, activeFilter]);
 
-  const handleFilterChange = useCallback((key) => {
-    setActiveFilter(key);
-    setCurrentSlide(0);
-  }, []);
+  const hasSlides = filteredTours.length > 0;
+  const canSlide = filteredTours.length > 1;
 
-  const [windowWidth, setWindowWidth] = useState(0);
+  const sliderKey = `${locale || 'default'}-${activeFilter}-${filteredTours.length}`;
 
-  useEffect(() => {
-    const updateWidth = () => setWindowWidth(window.innerWidth);
-
-    updateWidth();
-    window.addEventListener('resize', updateWidth);
-
-    return () => window.removeEventListener('resize', updateWidth);
-  }, []);
-
-  const visibleSlides = useMemo(() => {
-    if (windowWidth >= 1024) return Math.min(filteredTours.length, 3);
-    if (windowWidth >= 640) return Math.min(filteredTours.length, 2);
-    return 1;
-  }, [windowWidth, filteredTours.length]);
-
-  const sliderOptions = useMemo(() => {
-    return {
-      loop: filteredTours.length > visibleSlides,
-      renderMode: 'performance',
+  const [sliderRef, instanceRef] = useKeenSlider(
+    {
+      loop: canSlide,
       mode: 'snap',
-      rubberband: false,
+      renderMode: 'performance',
+      drag: canSlide,
+      defaultAnimation: {
+        duration: 850,
+        easing: (t) => 1 - Math.pow(1 - t, 3),
+      },
       slides: {
-        perView: visibleSlides || 1,
-        spacing: windowWidth >= 1024 ? 20 : windowWidth >= 640 ? 16 : 14,
-        origin: 0,
+        perView: 1.15,
+        spacing: 20,
+        origin: 'center',
+      },
+      breakpoints: {
+        '(min-width: 640px)': {
+          slides: {
+            perView: 2,
+            spacing: 24,
+            origin: 'center',
+          },
+        },
+        '(min-width: 1024px)': {
+          slides: {
+            perView: 3,
+            spacing: 24,
+            origin: 'center',
+          },
+        },
       },
       created(slider) {
         setCurrentSlide(slider.track.details?.rel ?? 0);
@@ -111,59 +115,38 @@ export default function SectionAllTours({
       slideChanged(slider) {
         setCurrentSlide(slider.track.details?.rel ?? 0);
       },
-      updated(slider) {
-        setCurrentSlide(slider.track.details?.rel ?? 0);
-      },
-    };
-  }, [filteredTours.length, visibleSlides, windowWidth]);
+    },
+    canSlide ? [AutoplayPlugin] : [],
+  );
 
-  const [sliderRef, instanceRef] = useKeenSlider(sliderOptions, [
-    AutoplayPlugin,
-  ]);
-
-  useEffect(() => {
-    if (!instanceRef.current) return;
-
-    const id = requestAnimationFrame(() => {
-      instanceRef.current?.update();
-      instanceRef.current?.moveToIdx(0, true);
-      setCurrentSlide(0);
-    });
-
-    return () => cancelAnimationFrame(id);
-  }, [activeFilter, locale, filteredTours.length, visibleSlides]);
-
-  const totalDots = filteredTours.length;
-  const realIndex = totalDots > 0 ? currentSlide % totalDots : 0;
+  const realIndex = hasSlides ? currentSlide % filteredTours.length : 0;
 
   return (
     <section
       id={sectionId}
-      className='relative w-full overflow-hidden py-10'
+      className='relative w-full overflow-hidden py-12'
       aria-roledescription='carousel'
-      aria-label={
-        locale === 'en' ? 'Featured Adventures' : 'Aventuras Destacadas'
-      }>
-      <div className='mx-auto px-4'>
-        <div className='mb-4 flex flex-col items-center gap-2 text-center'>
+      aria-label={isEn ? 'Featured Adventures' : 'Aventuras Destacadas'}>
+      <div className='mx-auto max-w-7xl lg:px-8'>
+        <div className='mb-3 flex flex-col items-center gap-2 text-center'>
           <span className='inline-flex items-center rounded-full bg-[#E6C20026] px-4 py-1 text-xs font-semibold uppercase tracking-widest text-[#0d1117]'>
-            {locale === 'en' ? 'Explore Peru' : 'Explora Perú'}
+            {isEn ? 'Explore Peru' : 'Explora Perú'}
           </span>
 
-          <h2 className='m-0 text-2xl font-semibold tracking-tight text-neutral-900'>
-            {locale === 'en'
+          <h2 className='m-0 text-3xl font-semibold tracking-tight text-neutral-900 lg:text-4xl'>
+            {isEn
               ? 'Unforgettable Experiences in Peru'
               : 'Experiencias Inolvidables en Perú'}
           </h2>
 
-          <p className='text-sm text-neutral-600'>
-            {locale === 'en'
+          <p className='max-w-2xl text-base text-neutral-600'>
+            {isEn
               ? 'A selection of routes, culture and adventure that reveal the best of Peru. Hike among ancestral mountains, discover cities full of history and experience landscapes that seem painted by the Andes.'
               : 'Una selección de rutas, cultura y aventura que revelan lo mejor del Perú. Camina entre montañas ancestrales, descubre ciudades llenas de historia y vive paisajes que parecen pintados por la cordillera.'}
           </p>
 
           <span className='inline-flex items-center rounded-full bg-[#E6C20026] px-4 py-1 text-xs font-semibold uppercase tracking-widest text-[#0d1117]'>
-            {locale === 'en'
+            {isEn
               ? 'Find Your Perfect Category'
               : 'Encuentra tu Categoría Ideal'}
           </span>
@@ -176,13 +159,16 @@ export default function SectionAllTours({
                 <button
                   key={cat.key}
                   type='button'
-                  onClick={() => handleFilterChange(cat.key)}
-                  className={`rounded-full px-4 py-2 text-xs font-semibold ${
+                  onClick={() => {
+                    setActiveFilter(cat.key);
+                    setCurrentSlide(0);
+                  }}
+                  className={`rounded-full px-5 py-2 text-sm font-semibold transition-all duration-300 ${
                     isActive
-                      ? 'bg-[#E6C200] text-[#0d1117]'
-                      : 'border border-neutral-300 bg-white text-neutral-600'
+                      ? 'scale-105 bg-[#E6C200] text-[#0d1117] shadow-md'
+                      : 'border border-neutral-300 bg-white text-neutral-600 hover:border-[#E6C200] hover:text-[#E6C200]'
                   }`}>
-                  {locale === 'en' ? cat.labelEn : cat.labelEs}
+                  {isEn ? cat.labelEn : cat.labelEs}
                 </button>
               );
             })}
@@ -190,57 +176,53 @@ export default function SectionAllTours({
         </div>
 
         <div className='relative w-full'>
-          {filteredTours.length > 0 ? (
+          {hasSlides ? (
             <div className='overflow-hidden'>
               <div
-                key={`${activeFilter}-${filteredTours.length}-${visibleSlides}-${locale}`}
+                key={sliderKey}
                 ref={sliderRef}
-                className='keen-slider section-all-tours-slider'
-                style={{ cursor: 'grab' }}>
+                className='keen-slider section-all-tours-slider cursor-grab active:cursor-grabbing'>
                 {filteredTours.map((tour, idx) => {
                   const tourImage = getTourImage(tour);
                   const tourAlt = getTourAlt(tour);
                   const tourCategory = getTourTag(tour, locale);
                   const discountedPrice = getTourPrice(tour);
-                  const href = `/${tour.category}/${tour.slug}`;
 
                   return (
                     <div
-                      className='keen-slider__slide'
                       key={tour._id || tour.slug || idx}
+                      className='keen-slider__slide'
                       style={{ minWidth: 0 }}
-                      aria-label={`Tour ${idx + 1} ${locale === 'en' ? 'of' : 'de'} ${filteredTours.length}`}>
-                      <article className='relative overflow-hidden rounded-2xl bg-black shadow-md'>
-                        <div className='relative h-[360px] w-full'>
-                          <Image
-                            src={tourImage}
-                            alt={tourAlt}
-                            fill
-                            className='object-cover'
-                            sizes='(max-width: 640px) 90vw, (max-width: 1024px) 50vw, 360px'
-                            quality={70}
-                            priority={idx === 0}
-                          />
-                        </div>
+                      aria-label={`Tour ${idx + 1} ${isEn ? 'of' : 'de'} ${filteredTours.length}`}>
+                      <div className='group relative overflow-hidden rounded-2xl bg-black shadow-md'>
+                        <Image
+                          src={tourImage}
+                          alt={tourAlt}
+                          width={400}
+                          height={380}
+                          loading='lazy'
+                          sizes='(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 85vw'
+                          className='h-[380px] w-full object-cover transition-transform duration-700 group-hover:scale-105'
+                        />
 
                         <div className='absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent' />
 
                         {tour.discount > 0 && (
                           <Link
-                            href={href}
+                            href={`/${tour.category}/${tour.slug}`}
                             locale={locale}
                             className='absolute left-4 top-4 z-20 rounded-full bg-amber-400 px-3 py-1 text-xs font-bold text-neutral-900 transition-colors hover:bg-amber-300'
-                            aria-label={`${locale === 'en' ? 'See trip with discount' : 'Ver viaje con descuento'}: ${tour.title}`}>
+                            aria-label={`${isEn ? 'See trip with discount' : 'Ver viaje con descuento'}: ${tour.title}`}>
                             -{tour.discount}%
                           </Link>
                         )}
 
                         <Link
-                          href={href}
+                          href={`/${tour.category}/${tour.slug}`}
                           locale={locale}
-                          className='absolute right-4 top-4 z-20 inline-flex items-center rounded-full border border-white/60 bg-black/40 px-4 py-2 text-xs font-semibold text-white backdrop-blur-sm'
-                          aria-label={`${locale === 'en' ? 'View trip' : 'Ver viaje'}: ${tour.title}`}>
-                          {locale === 'en' ? 'View Trip' : 'Ver Viaje'}
+                          className='absolute right-4 top-4 z-20 inline-flex items-center rounded-full border border-white/60 bg-black/40 px-4 py-2 text-xs font-semibold text-white backdrop-blur-sm transition-colors hover:bg-black/60'
+                          aria-label={`${isEn ? 'View trip' : 'Ver viaje'}: ${tour.title}`}>
+                          {isEn ? 'View Trip' : 'Ver Viaje'}
                         </Link>
 
                         <div className='absolute bottom-0 w-full p-6 text-white'>
@@ -255,26 +237,26 @@ export default function SectionAllTours({
                           <div className='flex items-center justify-between text-sm text-neutral-200'>
                             <span>{tour.duration}</span>
                             <span className='font-bold text-amber-400'>
-                              {locale === 'en' ? 'From' : 'Desde'} $
-                              {discountedPrice}
+                              {isEn ? 'From' : 'Desde'} ${discountedPrice}
                             </span>
                           </div>
                         </div>
-                      </article>
+                      </div>
                     </div>
                   );
                 })}
               </div>
             </div>
           ) : (
-            <div className='mx-2 rounded-[1.5rem] border border-neutral-200 bg-white p-6 text-center shadow-sm'>
+            <div className='mx-6 rounded-[2rem] border border-neutral-200 bg-white p-8 text-center shadow-sm'>
               <h3 className='text-xl font-semibold text-neutral-900'>
-                {locale === 'en'
+                {isEn
                   ? 'No tours available in this category yet'
                   : 'Aún no hay tours disponibles en esta categoría'}
               </h3>
+
               <p className='mt-3 text-neutral-600'>
-                {locale === 'en'
+                {isEn
                   ? 'Choose another category to explore more experiences in Peru.'
                   : 'Selecciona otra categoría para explorar más experiencias en Perú.'}
               </p>
@@ -282,17 +264,19 @@ export default function SectionAllTours({
           )}
         </div>
 
-        {totalDots > 1 && (
-          <div className='mt-4 flex justify-center gap-4'>
-            {Array.from({ length: totalDots }).map((_, idx) => (
+        {canSlide && (
+          <div className='mt-10 flex justify-center gap-3'>
+            {filteredTours.map((_, idx) => (
               <button
                 key={idx}
                 type='button'
                 onClick={() => instanceRef.current?.moveToIdx(idx)}
-                className={`h-4 w-4 rounded-full ${
-                  realIndex === idx ? 'bg-amber-400' : 'bg-neutral-300'
+                className={`h-3 w-3 rounded-full transition-all duration-300 ${
+                  realIndex === idx
+                    ? 'scale-125 bg-amber-400'
+                    : 'bg-neutral-300 hover:bg-neutral-400'
                 }`}
-                aria-label={`${locale === 'en' ? 'Go to slide' : 'Ir al slide'} ${idx + 1}`}
+                aria-label={`${isEn ? 'Go to slide' : 'Ir al slide'} ${idx + 1}`}
               />
             ))}
           </div>
