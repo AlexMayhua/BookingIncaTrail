@@ -23,6 +23,8 @@ export default function CachedImage({
   className = '',
   onError,
   onLoad,
+  width = 200,
+  height = 56,
   ...rest
 }) {
   // Agregar cache busting a la URL
@@ -33,6 +35,8 @@ export default function CachedImage({
     if (onError) onError(e);
   };
 
+  const { style: customStyle, ...otherProps } = rest;
+
   return (
     <Image
       src={cachedSrc}
@@ -40,7 +44,10 @@ export default function CachedImage({
       className={className}
       onError={handleError}
       onLoad={onLoad}
-      {...rest}
+      width={width}
+      height={height}
+      style={{ width: 'auto', height: 'auto', ...customStyle }}
+      {...otherProps}
     />
   );
 }
