@@ -77,19 +77,45 @@ export default function SectionAllTours({
     setCurrentSlide(0);
   }, []);
 
-  const sliderOptions = useMemo(
-    () => ({
-      loop: filteredTours.length > 1,
-      slides: { perView: 1.12, spacing: 14, origin: 'center' },
+  const [windowWidth, setWindowWidth] = useState(0);
+
+  useEffect(() => {
+    const updateWidth = () => setWindowWidth(window.innerWidth);
+
+    updateWidth();
+    window.addEventListener('resize', updateWidth);
+
+    return () => window.removeEventListener('resize', updateWidth);
+  }, []);
+
+  const visibleSlides = useMemo(() => {
+    if (windowWidth >= 1024) return Math.min(filteredTours.length, 3);
+    if (windowWidth >= 640) return Math.min(filteredTours.length, 2);
+    return 1;
+  }, [windowWidth, filteredTours.length]);
+
+  const sliderOptions = useMemo(() => {
+    return {
+      loop: filteredTours.length > visibleSlides,
+      renderMode: 'performance',
+      mode: 'snap',
+      rubberband: false,
+      slides: {
+        perView: visibleSlides || 1,
+        spacing: windowWidth >= 1024 ? 20 : windowWidth >= 640 ? 16 : 14,
+        origin: 0,
+      },
       created(slider) {
         setCurrentSlide(slider.track.details?.rel ?? 0);
       },
       slideChanged(slider) {
         setCurrentSlide(slider.track.details?.rel ?? 0);
       },
-    }),
-    [filteredTours.length],
-  );
+      updated(slider) {
+        setCurrentSlide(slider.track.details?.rel ?? 0);
+      },
+    };
+  }, [filteredTours.length, visibleSlides, windowWidth]);
 
   const [sliderRef, instanceRef] = useKeenSlider(sliderOptions, [
     AutoplayPlugin,
@@ -98,14 +124,14 @@ export default function SectionAllTours({
   useEffect(() => {
     if (!instanceRef.current) return;
 
-    const rafId = window.requestAnimationFrame(() => {
+    const id = requestAnimationFrame(() => {
       instanceRef.current?.update();
       instanceRef.current?.moveToIdx(0, true);
       setCurrentSlide(0);
     });
 
-    return () => window.cancelAnimationFrame(rafId);
-  }, [locale, activeFilter, filteredTours.length, instanceRef]);
+    return () => cancelAnimationFrame(id);
+  }, [activeFilter, locale, filteredTours.length, visibleSlides]);
 
   const totalDots = filteredTours.length;
   const realIndex = totalDots > 0 ? currentSlide % totalDots : 0;
@@ -167,6 +193,7 @@ export default function SectionAllTours({
           {filteredTours.length > 0 ? (
             <div className='overflow-hidden'>
               <div
+                key={`${activeFilter}-${filteredTours.length}-${visibleSlides}-${locale}`}
                 ref={sliderRef}
                 className='keen-slider section-all-tours-slider'
                 style={{ cursor: 'grab' }}>

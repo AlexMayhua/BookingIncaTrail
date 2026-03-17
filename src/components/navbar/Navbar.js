@@ -443,10 +443,7 @@ export default function Navbar() {
       )}
       {!isSmallScreen && (
         <div className='bg-primary w-full print:hidden lg:block hidden'>
-          <div
-            className={`transition-all duration-300 ease-in-out overflow-hidden ${
-              scrolled ? 'max-h-0 opacity-0' : 'max-h-[120px] opacity-100'
-            }`}>
+          
           <div className='2xl:container 2xl:mx-auto xl:mx-12 mx-3 nav-topbar'>
             <div className='header-topbar-row'>
               <div className='header-logo-section py-2'>
@@ -622,13 +619,13 @@ export default function Navbar() {
               </div>
             </div>
           </div>
-          </div>
+          
 
           {!isSmallScreen && (
             <div
               id='navbarDesktop'
               ref={navbarDesktopRef}
-              className={`border-t border-stone-700/30 transition-all duration-300 ${scrolled ? 'shadow-lg shadow-black/40' : ''}`}>
+              className={`border-t border-stone-700/30 transition-all duration-300 `}>
               <div className='max-w-7xl mx-auto px-4'>
                 <div className='w-full py-3 relative'>
                   <ul className='flex flex-nowrap items-center justify-center gap-2 whitespace-nowrap'>
