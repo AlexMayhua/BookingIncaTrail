@@ -11,6 +11,7 @@ import {
   FiSliders,
 } from 'react-icons/fi';
 import Image from 'next/image';
+import { renderHighlightedText } from './tour1/renderHighlightedText';
 
 const FEATURE_ITEMS = {
   en: [
@@ -21,7 +22,8 @@ const FEATURE_ITEMS = {
     },
     {
       title: 'FIELD EXPERIENCE',
-      description: 'Years guiding real routes with on-the-ground local expertise.',
+      description:
+        'Years guiding real routes with on-the-ground local expertise.',
       Icon: FiMapPin,
     },
     {
@@ -31,12 +33,14 @@ const FEATURE_ITEMS = {
     },
     {
       title: 'SUSTAINABLE AND RESPONSIBLE TRAVEL',
-      description: 'Responsible operations that support communities and nature.',
+      description:
+        'Responsible operations that support communities and nature.',
       Icon: FiMap,
     },
     {
       title: 'SMALL AND PERSONALIZED GROUPS',
-      description: 'Small groups for better pacing, care, and personalized support.',
+      description:
+        'Small groups for better pacing, care, and personalized support.',
       Icon: FiSliders,
     },
     {
@@ -48,12 +52,14 @@ const FEATURE_ITEMS = {
   es: [
     {
       title: 'TARIFAS DIRECTAS Y JUSTAS',
-      description: 'Precios transparentes, sin intermediarios ni cargos ocultos.',
+      description:
+        'Precios transparentes, sin intermediarios ni cargos ocultos.',
       Icon: FiGlobe,
     },
     {
       title: 'EXPERIENCIA EN EL CAMPO',
-      description: 'Anos guiando rutas reales con conocimiento local en terreno.',
+      description:
+        'Años guiando rutas reales con conocimiento local en terreno.',
       Icon: FiMapPin,
     },
     {
@@ -63,17 +69,19 @@ const FEATURE_ITEMS = {
     },
     {
       title: 'VIAJES SOSTENIBLES Y RESPONSABLES',
-      description: 'Operamos de forma responsable con las comunidades y el entorno.',
+      description:
+        'Operamos de forma responsable con las comunidades y el entorno.',
       Icon: FiMap,
     },
     {
-      title: 'GRUPOS PEQUENOS Y PERSONALIZADOS',
-      description: 'Grupos reducidos para una mejor experiencia y atencion cercana.',
+      title: 'GRUPOS PEQUEÑOS Y PERSONALIZADOS',
+      description:
+        'Grupos reducidos para una mejor experiencia y atención cercana.',
       Icon: FiSliders,
     },
     {
       title: 'VIAJES E ITINERARIOS EXCLUSIVOS',
-      description: 'Itinerarios disenados a medida segun tu estilo de viaje.',
+      description: 'Itinerarios diseñados a medida según tu estilo de viaje.',
       Icon: FiAward,
     },
   ],
@@ -98,8 +106,8 @@ export default function Section1() {
 
   return (
     <section className='relative overflow-hidden '>
-      <div className='relative mx-auto max-w-7xl px-5 lg:px-8'>
-        <div className='mx-auto max-w-2xl text-center '>
+      <div className='relative mx-auto max-w-7xl px-5 lg:px-8 space-y-3'>
+        <div className='mx-auto max-w-2xl text-center'>
           <span className='inline-flex rounded-full bg-[#E6C20026] px-4 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[#0d1117]'>
             {isEnglish ? 'Your Trusted Partner' : 'Tu Socio de Confianza'}
           </span>
@@ -107,7 +115,7 @@ export default function Section1() {
             {t.h2_title_why}
           </h2>
           <p className='mt-3 text-sm leading-relaxed text-gray-400 md:text-base'>
-            {t.h3_subtitle}
+            {renderHighlightedText(t.h3_subtitle)}
           </p>
         </div>
 
@@ -227,7 +235,7 @@ export default function Section1() {
               />
             </div>
 
-            <p className='mt-4 text-sm font-semibold uppercase text-[#F4B400]'>
+            <p className='mt-4 text-sm font-semibold uppercase text-[#685300]'>
               {currentFeature?.title}
             </p>
             <p className='mt-2 text-base leading-relaxed text-slate-600'>
