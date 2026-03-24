@@ -8,8 +8,8 @@ import es from '../lang/es/home';
 import FrontPage from '../components/home/FrontPage';
 import { BRAND, absoluteUrl, getLogoUrlAbsolute } from '../lib/brandConfig';
 import SectionAllTours from '../components/home/SectionAllTours';
-import { listTrips } from '@/modules/trips/service/trip.service'
-import SimpleCategoryLayout from '@/components/home/SimpleCategoryLayout';
+import { listTrips } from '@/modules/trips/service/trip.service';
+import Tour1 from '@/components/home/Tour1';
 
 const Section1 = dynamic(() => import('../components/home/Section1'), {
   loading: () => <div className='min-h-[400px]' />,
@@ -164,12 +164,7 @@ export default function Index({ topTreks = [], allServices = [] }) {
       <FrontPage />
 
       <section id='alltours'>
-        <div className='xl:hidden'>
-          <SectionAllTours tours={allServices} sectionId={undefined} />
-        </div>
-        <div className='hidden xl:block'>
-          <SimpleCategoryLayout tours={allServices} />
-        </div>
+        <Tour1 tours={allServices} />
       </section>
 
       <div className='2xl:container mx-auto'>
@@ -191,11 +186,13 @@ export async function getStaticProps({ locale }) {
       listTrips({
         locale,
         isDeals: true,
-        fields: 'title,slug,gallery,price,discount,category,quickstats,duration,meta_title,meta_description,isDeals',
+        fields:
+          'title,slug,gallery,price,discount,category,quickstats,duration,meta_title,meta_description,highlight',
       }),
       listTrips({
         locale,
-        fields: 'title,slug,gallery,price,discount,category,quickstats,duration',
+        fields:
+          'title,slug,gallery,price,discount,category,quickstats,duration,highlight',
       }),
     ]);
 
