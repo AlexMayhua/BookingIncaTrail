@@ -48,16 +48,6 @@ const reviews = [
         url: 'https://www.tripadvisor.com/ShowUserReviews-g294314-d12614123-r988452390-Life_Expeditions-Cusco_Cusco_Region.html'
     },
     {
-        user: 'Ruth Ester P',
-        avatar: 'RP',
-        title: 'The best decision, travel with Life Expedition',
-        comment: 'Peru stole our hearts, and Life Expeditions was the best decision to be our intermediary on our trip. Mr Abraham with his passion and deep knowledge made us feel like family.',
-        date: 'Dec 2024',
-        type: 'Family',
-        rating: 5,
-        url: 'https://www.tripadvisor.com/ShowUserReviews-g294314-d12614123-r988225429-Life_Expeditions-Cusco_Cusco_Region.html'
-    },
-    {
         user: 'Adi A',
         avatar: 'AA',
         title: 'Best experience ever',
