@@ -12,8 +12,8 @@ const cards = {
       alt: 'Inca Trail trek group',
       badge: 'Inca Trail',
       position:
-        'top-[3%] left-[15%] 2xl:top-[5%] 2xl:left-[13%] 3xl:top-[5%] 3xl:left-[13%]',
-      w: 'w-28 xl:w-44 2xl:w-52 3xl:w-72',
+        'top-[3%] left-[12%] xl:top-[5%] xl:left-[10%] 2xl:top-[5%] 2xl:left-[10%] 3xl:top-[5%] 3xl:left-[10%]',
+      w: 'w-28 xl:w-40 2xl:w-52 3xl:w-72',
       sizes:
         '(min-width: 1920px) 216px, (min-width: 1536px) 216px, (min-width: 1280px) 194px, 130px',
     },
@@ -23,8 +23,8 @@ const cards = {
       alt: 'salkantay trek',
       badge: 'Salkantay',
       position:
-        'top-[31%] left-[20%] xl:top-[35%] 2xl:top-[32%] 2xl:left-[28%] 3xl:top-[35%] 3xl:left-[30%]',
-      w: 'w-36 xl:w-36 2xl:w-36 3xl:w-44',
+        'top-[31%] left-[15%] xl:top-[38%] 2xl:top-[32%] 2xl:left-[25%] 3xl:top-[35%] 3xl:left-[27%]',
+      w: 'w-36 xl:w-48 2xl:w-36 3xl:w-44',
       sizes: '(min-width: 1536px) 260px, (min-width: 1280px) 128px, 116px',
     },
     {
@@ -33,8 +33,8 @@ const cards = {
       alt: 'Ausangate Trek',
       badge: 'Ausangate Trek',
       position:
-        'bottom-[4%] left-[17%] xl:bottom-[10%] xl:left-[12%] 2xl:bottom-[9%] 2xl:left-[15%] 3xl:bottom-[10%] 3xl:left-[20%]',
-      w: 'w-32 xl:w-40 2xl:w-52 3xl:w-60',
+        'bottom-[4%] left-[13%] xl:bottom-[18%] xl:left-[32%] 2xl:bottom-[9%] 2xl:left-[15%] 3xl:bottom-[9%] 3xl:left-[20%]',
+      w: 'w-32 xl:w-28 2xl:w-52 3xl:w-60',
       sizes:
         '(min-width: 1920px) 320px, (min-width: 1536px) 208px, (min-width: 1280px) 144px, 112px',
     },
@@ -46,7 +46,7 @@ const cards = {
       alt: 'Inca Jungle adventure',
       badge: 'Inca Jungle',
       position:
-        'top-[7%] right-[15%] 2xl:top-[3%] 2xl:right-[15%] 3xl:top-[5%] 3xl:right-[20%]',
+        'top-[7%] right-[12%] 2xl:top-[3%] 2xl:right-[12%] 3xl:top-[5%] 3xl:right-[15%]',
       w: 'w-36 xl:w-40 2xl:w-44 3xl:w-56',
       sizes:
         '(min-width: 1920px) 300px, (min-width: 1536px) 202px, (min-width: 1280px) 144px, 112px',
@@ -57,7 +57,7 @@ const cards = {
       alt: 'Cusco Tours',
       badge: 'Day Tours',
       position:
-        'top-[44%] right-[25%] xl:top-[38%] xl:right-[22%] 2xl:top-[38%] 2xl:right-[25%] 3xl:top-[38%] 3xl:right-[24%]',
+        'top-[44%] right-[22%] xl:top-[38%] xl:right-[18%] 2xl:top-[38%] 2xl:right-[25%] 3xl:top-[38%] 3xl:right-[21%]',
       w: 'w-32 xl:w-48 2xl:w-40 3xl:w-64',
       sizes:
         '(min-width: 1920px) 240px, (min-width: 1536px) 192px, (min-width: 1280px) 144px, 112px',
@@ -68,7 +68,7 @@ const cards = {
       alt: 'Rainbow Mountain',
       badge: 'Rainbow Mountain',
       position:
-        'bottom-[5%] right-[13%] xl:bottom-[14%] xl:right-[10%] 2xl:bottom-[10%] 2xl:right-[8%] 3xl:bottom-[15%] 3xl:right-[12%]',
+        'bottom-[5%] right-[9%] xl:bottom-[14%] xl:right-[7%] 2xl:bottom-[10%] 2xl:right-[8%] 3xl:bottom-[15%] 3xl:right-[9%]',
       w: 'w-28 xl:w-32 2xl:w-56 3xl:w-48',
       sizes:
         '(min-width: 1920px) 280px, (min-width: 1536px) 292px, (min-width: 1280px) 144px, 112px',
@@ -137,22 +137,22 @@ export default function FrontPage() {
       ))}
 
       <div className='relative z-10 flex-1 flex flex-col items-center justify-center text-center px-5 max-w-2xl md:max-w-3xl mx-auto gap-3 md:gap-5 lg:gap-4 xl:gap-6'>
-        <h1 className='text-white font-extrabold text-3xl md:text-3xl lg:text-4xl xl:text-6xl leading-[0.95] tracking-tight'>
+        <h1 className='text-white font-extrabold text-3xl md:text-3xl lg:text-4xl 2xl:text-6xl leading-[0.95] tracking-tight'>
           {locale === 'en' ? (
             <>
-              Trek the Inca Trail
+              Experience the <span className='text-secondary'>Inca Trail</span>
               <br />
-              powered by
+              with unforgettable routes to
               <br />
-              <span className='text-secondary'>local experts</span>
+              <span className='text-secondary'>Machu Picchu</span>
             </>
           ) : (
             <>
-              Camino Inca
+              Vive el <span className='text-secondary'>Camino Inca</span>
               <br />
-              impulsado por
+              con rutas inolvidables a
               <br />
-              <span className='text-secondary'>expertos locales</span>
+              <span className='text-secondary'>Machu Picchu</span>
             </>
           )}
         </h1>
@@ -174,11 +174,11 @@ export default function FrontPage() {
           </svg>
         </Link>
 
-        <div className='flex flex-col items-center gap-1 md:gap-2'>
+        <div className='flex flex-col items-center gap-1 md:gap-2 max-w-md'>
           <p className='text-white text-sm'>
             {locale === 'en'
-              ? 'Official government permits · Small groups only'
-              : 'Permisos oficiales del gobierno · Solo grupos pequeños'}
+              ? 'Inca Trail specialists, with well-organized routes and local support to Machu Picchu.'
+              : 'Especialistas en Camino Inca, con rutas bien organizadas y acompañamiento local hacia Machu Picchu.'}
           </p>
           <Link
             href='#alltours'
