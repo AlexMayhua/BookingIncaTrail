@@ -237,6 +237,15 @@ export function getTourTag(tour, locale) {
   );
 }
 
+export function getTourDesc(tour, locale) {
+  return (
+    tour?.highlight ||
+    (locale === 'en'
+      ? 'Explore this amazing tour and discover unforgettable experiences.'
+      : 'Explora este increíble tour y descubre experiencias inolvidables.')
+  );
+}
+
 export function getCategoryCopy(activeFilter, locale) {
   const category = FILTER_CATEGORIES.find((item) => item.key === activeFilter);
 
