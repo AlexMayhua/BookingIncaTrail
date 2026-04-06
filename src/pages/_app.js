@@ -6,6 +6,7 @@ import '../styles/hero.css';
 import '../styles/tours.css';
 import '../styles/categories-section.css';
 import 'keen-slider/keen-slider.min.css';
+import 'react-quill-new/dist/quill.snow.css';
 import { GoogleTagManager } from '@next/third-parties/google';
 
 import { useEffect } from 'react';

@@ -3,17 +3,16 @@ import Footer from '../components/navbar/Footer';
 import Head from 'next/head';
 import Notify from '../components/Notify';
 import Modal from '../components/Modal';
-import Navbar from '../components/navbar/Navbar';
 import ScrollToTop from '../components/ScrollToTop';
 import WhatsAppChat from '../components/whatsapp';
 import Image from 'next/image';
+import Header from '@/components/navbar/Header';
 
 export default function Layout({ children }) {
   return (
     <>
       <Head />
-
-      <Navbar />
+      <Header />
 
       <div className='fixed inset-0 -z-10 w-screen h-screen'>
         <Image
@@ -26,7 +25,7 @@ export default function Layout({ children }) {
         />
       </div>
 
-      <main className='relative lg:text-justify layoud-spacing'>
+      <main className='relative lg:text-justify '>
         <Notify />
         <Modal />
         {children}
