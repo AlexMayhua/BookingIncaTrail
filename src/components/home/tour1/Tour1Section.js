@@ -27,9 +27,6 @@ export default function Tour1Section({ section, locale }) {
 
   const activeFilter =
     filters.find((filter) => filter.key === activeFilterKey) || filters[0];
-  const activeFilterLabel =
-    locale === 'en' ? activeFilter?.labelEn : activeFilter?.labelEs;
-
   const filteredTours = useMemo(() => {
     if (!activeFilter?.terms?.length) {
       return section.tours;
@@ -54,7 +51,7 @@ export default function Tour1Section({ section, locale }) {
       {filters.length > 1 && (
         <div className='flex py-2 px-2 z-0'>
           <div className='w-full'>
-            <p className='lg:hidden text-center py-1 text-xs font-semibold uppercase tracking-[0.08em] text-green-600 bg-primary/10'>
+            <p className='lg:hidden text-center py-1 text-xs font-semibold uppercase tracking-[0.08em] text-[#2a9d8f] bg-[#2a9d8f1f] rounded-md'>
               {locale === 'en' ? 'Pick your category!' : '¡Elige tu categoría!'}
             </p>
             <div className='flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between'>
@@ -78,7 +75,7 @@ export default function Tour1Section({ section, locale }) {
                       aria-pressed={isActive}
                       className={cn(
                         'rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200 ease-out',
-                        'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40',
+                        'focus:outline-none focus-visible:ring-2 focus-visible:ring-[#e6c20066]',
                         isActive
                           ? 'bg-primary text-white shadow-md'
                           : 'text-black/65 hover:bg-black/5 hover:text-black',
@@ -89,7 +86,7 @@ export default function Tour1Section({ section, locale }) {
                 })}
               </div>
 
-              <p className='hidden lg:flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.08em] text-green-600 bg-primary/10 px-2 py-1 rounded-md'>
+              <p className='hidden lg:flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.08em] text-[#2a9d8f] bg-[#2a9d8f1f] px-2 py-1 rounded-md'>
                 {locale === 'en'
                   ? 'Pick your category!'
                   : '¡Elige tu categoría!'}

@@ -1,6 +1,10 @@
-import { Fragment } from 'react';
-
-export function renderHighlightedText(text = '') {
+export function renderHighlightedText(
+  text = '',
+  {
+    highlightClassName = 'font-bold text-black/80',
+    textClassName = 'font-normal text-black/75',
+  } = {},
+) {
   const parts = String(text).split(/(\*\*[^*]+\*\*)/g);
 
   return parts.map((part, index) => {
@@ -8,14 +12,14 @@ export function renderHighlightedText(text = '') {
 
     if (isHighlighted) {
       return (
-        <span key={`${part}-${index}`} className='font-bold text-black/80'>
+        <span key={`${part}-${index}`} className={highlightClassName}>
           {part.slice(2, -2)}
         </span>
       );
     }
 
     return (
-      <span key={`${part}-${index}`} className='font-normal text-black/75'>
+      <span key={`${part}-${index}`} className={textClassName}>
         {part}
       </span>
     );
