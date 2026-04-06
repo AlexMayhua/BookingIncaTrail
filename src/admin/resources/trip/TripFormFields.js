@@ -105,7 +105,7 @@ export default function TripFormFields() {
       {/* ── 4. DESCRIPTION (HTML) ──────────────────────────── */}
       <SectionTitle label='Description' />
 
-      <TextInput
+      <HtmlEditorInput
         source='description'
         label='Description'
         fullWidth
@@ -145,7 +145,7 @@ export default function TripFormFields() {
       <ArrayInput source='information'>
         <SimpleFormIterator>
           <TextInput source='title' label='Tab Title' fullWidth />
-          <TextInput
+          <HtmlEditorInput
             source='content'
             label='Tab Content (HTML)'
             fullWidth
