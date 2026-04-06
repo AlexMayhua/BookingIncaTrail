@@ -28,6 +28,9 @@ export default function TourMainContent({
 }) {
   const descriptionImage = tour.gallery?.[tour.gallery.length - 1];
   const descriptionImageAlt = descriptionImage?.alt || tour.title || 'Tour image';
+  const activeGalleryImage = tour.gallery?.[tab];
+  const activeGalleryImageAlt =
+    activeGalleryImage?.alt || tour.title || 'Tour gallery image';
 
   return (
     <div className='2xl:container mx-auto'>
@@ -150,12 +153,18 @@ export default function TourMainContent({
 
           {tour.gallery?.length > 1 && (
             <div className='col-md-6 px-4'>
-              <img
-                src={tour.gallery[tab].url}
-                alt={tour.gallery[tab].alt}
-                title={tour.gallery[tab].alt}
-                className='rounded mt-4 w-full lg:h-[35rem] h-56 object-cover'
-              />
+              {activeGalleryImage?.url && (
+                <div className='relative mt-4 h-56 w-full overflow-hidden rounded lg:h-[35rem]'>
+                  <Image
+                    src={activeGalleryImage.url}
+                    alt={activeGalleryImageAlt}
+                    title={activeGalleryImageAlt}
+                    fill
+                    sizes='(min-width: 1024px) 80vw, 100vw'
+                    className='object-cover'
+                  />
+                </div>
+              )}
               <div
                 className='flex py-2 pr-8 md:pr-0'
                 style={{ cursor: 'pointer', gap: '8px' }}>
@@ -163,15 +172,26 @@ export default function TourMainContent({
                   ? tour.gallery.slice(0, -1)
                   : tour.gallery
                 ).map((img, index) => (
-                  <img
+                  <button
                     key={index}
-                    src={img.url}
-                    alt={img.alt}
-                    title={img.alt}
-                    className={`${tab === index ? 'active' : ''} rounded object-cover justify-center`}
-                    style={{ height: '90px', width: '20%' }}
+                    type='button'
                     onClick={() => setTab(index)}
-                  />
+                    aria-label={`${locale === 'en' ? 'View image' : 'Ver imagen'} ${index + 1}`}
+                    className={[
+                      'relative block h-[90px] w-[20%] overflow-hidden rounded border-0 bg-transparent p-0',
+                      tab === index
+                        ? 'ring-2 ring-[#e6c200]'
+                        : 'opacity-80 transition-opacity hover:opacity-100',
+                    ].join(' ')}>
+                    <Image
+                      src={img.url}
+                      alt={img.alt || `${tour.title || 'Tour'} ${index + 1}`}
+                      title={img.alt || `${tour.title || 'Tour'} ${index + 1}`}
+                      fill
+                      sizes='(min-width: 768px) 20vw, 25vw'
+                      className='object-cover'
+                    />
+                  </button>
                 ))}
               </div>
             </div>
