@@ -18,7 +18,9 @@ export default function TourPanel({ items, title }) {
     <div className='grid grid-cols-1 lg:grid-cols-3 gap-6 bg-white rounded-xl p-6 max-w-7xl mx-auto'>
       <div className='space-y-2 2xl:space-y-3'>
         <div>
-          <p className='text-sm 2xl:text-lg font-bold text-primary uppercase'>{title}</p>
+          <p className='text-sm 2xl:text-lg font-bold text-primary uppercase'>
+            {title}
+          </p>
         </div>
         {items.map((item, i) => (
           <button
