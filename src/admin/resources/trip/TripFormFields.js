@@ -7,6 +7,8 @@ import {
   ArrayInput,
   SimpleFormIterator,
   FormDataConsumer,
+  ImageInput,
+  ImageField,
   useInput,
   required,
   minValue,
@@ -119,10 +121,18 @@ export default function TripFormFields() {
 
       <ArrayInput source='gallery'>
         <SimpleFormIterator inline>
+          <ImageInput
+            source='file'
+            label='Upload image'
+            accept={{
+              'image/*': [],
+            }}>
+            <ImageField source='src' title='title' />
+          </ImageInput>
           <TextInput
             source='url'
-            label='Image URL'
-            helperText='Cloudinary URL'
+            label='Image URL (optional)'
+            helperText='Si subes archivo, este campo se reemplaza con /storage/...'
           />
           <TextInput source='alt' label='Alt Text' />
         </SimpleFormIterator>

@@ -1,4 +1,5 @@
 import * as tripRepository from '../repository/trip.repository';
+import { materializeGalleryInLocalStorage } from './tripGalleryStorage.service';
 import {
   getNavbarCategoryMeta,
   NAVBAR_CATEGORY_KEYS,
@@ -212,7 +213,16 @@ export async function createTrip(data) {
     throw { status: 400, message: 'Price must be a positive number.' };
   }
 
-  return tripRepository.createTrip(data);
+  const payload = { ...data };
+
+  if (Array.isArray(payload.gallery) && payload.gallery.length > 0) {
+    payload.gallery = await materializeGalleryInLocalStorage({
+      gallery: payload.gallery,
+      category: payload.category,
+    });
+  }
+
+  return tripRepository.createTrip(payload);
 }
 
 /**
@@ -231,7 +241,16 @@ export async function updateTrip(id, data) {
     throw { status: 400, message: 'Price must be a positive number.' };
   }
 
-  return tripRepository.updateTripById(id, data);
+  const payload = { ...data };
+
+  if (Array.isArray(payload.gallery) && payload.gallery.length > 0) {
+    payload.gallery = await materializeGalleryInLocalStorage({
+      gallery: payload.gallery,
+      category: payload.category,
+    });
+  }
+
+  return tripRepository.updateTripById(id, payload);
 }
 
 /**

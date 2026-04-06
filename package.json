@@ -10,7 +10,9 @@
     "postbuild": "node -e \"console.log('Runtime sitemap routes enabled')\"",
     "backup": "node scripts/backup-mongodb.js",
     "db:backup": "node scripts/backup-mongodb.js",
-    "check-favicons": "node scripts/generate-favicons.js"
+    "check-favicons": "node scripts/generate-favicons.js",
+    "trip:migrate-gallery:dry": "node scripts/migrate-trip-gallery-local.mjs",
+    "trip:migrate-gallery": "node scripts/migrate-trip-gallery-local.mjs --apply"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",

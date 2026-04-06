@@ -1,4 +1,5 @@
 import * as tripService from '../service/trip.service';
+import { saveBase64ImageToLocalStorage } from '../service/tripGalleryStorage.service';
 
 // ── Handlers públicos ─────────────────────────────────────────
 
@@ -216,5 +217,34 @@ export async function handleAdminDeleteTrip(req, res) {
     return res
       .status(500)
       .json({ err: 'Sorry. Please Login Again or Contact Us!' });
+  }
+}
+
+/**
+ * POST /api/admin/trip/upload — Sube una imagen (base64) y devuelve su URL local.
+ */
+export async function handleAdminUploadTripImage(req, res) {
+  try {
+    const { base64Data, category, fileName, mimeType, alt } = req.body || {};
+
+    if (!base64Data || !category) {
+      return res
+        .status(400)
+        .json({ err: "'base64Data' y 'category' son requeridos." });
+    }
+
+    const url = await saveBase64ImageToLocalStorage({
+      base64Data,
+      category,
+      fileName,
+      mimeType,
+    });
+
+    return res.status(201).json({
+      url,
+      alt: alt || '',
+    });
+  } catch (error) {
+    return res.status(400).json({ err: error.message });
   }
 }

@@ -8,12 +8,105 @@
 import { fetchWithAuth } from '../../fetchWithAuth';
 
 const API_URL = '/api/admin/trip';
+const UPLOAD_API_URL = '/api/admin/trip/upload';
+
+function fileToBase64(rawFile) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error('No se pudo leer el archivo'));
+    reader.readAsDataURL(rawFile);
+  });
+}
+
+async function uploadGalleryItem(item, category) {
+  if (!item || typeof item !== 'object') {
+    return null;
+  }
+
+  const alt = String(item.alt || '').trim();
+  const rawFile = item.file?.rawFile;
+
+  if (rawFile instanceof File) {
+    const base64Data = await fileToBase64(rawFile);
+
+    const uploadRes = await fetchWithAuth(UPLOAD_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        base64Data,
+        category,
+        fileName: rawFile.name,
+        mimeType: rawFile.type,
+        alt,
+      }),
+    });
+
+    const uploadJson = await uploadRes.json();
+
+    return {
+      url: uploadJson.url,
+      alt,
+    };
+  }
+
+  const currentUrl = String(item.url || item.file?.src || '').trim();
+  if (!currentUrl) {
+    return null;
+  }
+
+  return {
+    url: currentUrl,
+    alt,
+  };
+}
+
+async function prepareTripPayload(data) {
+  const payload = { ...data };
+
+  if (Array.isArray(payload.gallery)) {
+    const uploadedGallery = await Promise.all(
+      payload.gallery.map((item) => uploadGalleryItem(item, payload.category)),
+    );
+
+    payload.gallery = uploadedGallery.filter(Boolean);
+  }
+
+  return payload;
+}
 
 /** Normaliza _id → id para react-admin */
 function normalizeTrip(trip) {
   if (!trip) return trip;
   const { _id, ...rest } = trip;
-  return { id: _id || trip.id, ...rest };
+
+  const normalizedGallery = Array.isArray(rest.gallery)
+    ? rest.gallery.map((item) => {
+        if (!item || typeof item !== 'object') {
+          return item;
+        }
+
+        const currentUrl = String(item.url || '').trim();
+
+        if (!currentUrl) {
+          return { ...item };
+        }
+
+        return {
+          ...item,
+          file: {
+            src: currentUrl,
+            title: item.alt || 'image',
+          },
+        };
+      })
+    : rest.gallery;
+
+  return {
+    id: _id || trip.id,
+    ...rest,
+    gallery: normalizedGallery,
+  };
 }
 
 const tripDataProvider = {
@@ -89,10 +182,12 @@ const tripDataProvider = {
 
   // ── CREATE ────────────────────────────────────────────────
   create: async (_resource, params) => {
+    const payload = await prepareTripPayload(params.data);
+
     const res = await fetchWithAuth(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(params.data),
+      body: JSON.stringify(payload),
     });
     const json = await res.json();
     return { data: normalizeTrip(json.trip) };
@@ -100,10 +195,12 @@ const tripDataProvider = {
 
   // ── UPDATE ────────────────────────────────────────────────
   update: async (_resource, params) => {
+    const payload = await prepareTripPayload(params.data);
+
     await fetchWithAuth(`${API_URL}/${params.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(params.data),
+      body: JSON.stringify(payload),
     });
 
     // La API no devuelve el trip actualizado, así que re-fetch
