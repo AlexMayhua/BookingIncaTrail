@@ -1346,7 +1346,7 @@ nav {
 /* Divisor entre elementos de contacto */
 .contact-divider {
   width: 1px;
-  height: 1.25rem;
+  height: auto;
   background: linear-gradient(
     to bottom,
     transparent,
@@ -1366,9 +1366,8 @@ nav {
 /* Divisor genérico del header */
 .header-divider {
   width: 1px;
-  height: 1.5rem;
+  height: auto;
   background: #fff;
-  margin: 0 0.5rem;
 }
 
 /* Selector de idioma */
@@ -1727,11 +1726,11 @@ nav {
 }
 
 /* ============================================
-   NAVBAR COMPACTO - ESTILOS MEJORADOS
+   HEADER COMPACTO - ESTILOS MEJORADOS
    ============================================ */
 
-/* Estilo base del navbar desktop */
-#navbarDesktop {
+/* Estilo base del header desktop */
+.header-desktop-shell {
   background: linear-gradient(
     180deg,
     rgba(13, 17, 23, 0.98) 0%,
@@ -1741,8 +1740,8 @@ nav {
   position: relative;
 }
 
-/* Línea decorativa superior del navbar */
-#navbarDesktop::before {
+/* Línea decorativa superior del header */
+.header-desktop-shell::before {
   content: '';
   position: absolute;
   top: 0;
@@ -1759,8 +1758,8 @@ nav {
   opacity: 0.8;
 }
 
-/* Efecto de brillo sutil en el navbar */
-#navbarDesktop::after {
+/* Efecto de brillo sutil en el header */
+.header-desktop-shell::after {
   content: '';
   position: absolute;
   top: 0;
@@ -1789,11 +1788,11 @@ nav {
 }
 
 /* Items del menú con separador visual */
-#navbarDesktop li {
+.header-desktop-shell li {
   position: relative;
 }
 
-#navbarDesktop li:not(:last-child)::after {
+.header-desktop-shell li:not(:last-child)::after {
   content: '';
   position: absolute;
   right: 0;
@@ -1810,17 +1809,17 @@ nav {
 }
 
 /* Estilo mejorado para items del menú */
-#navbarDesktop .groups {
+.header-desktop-shell .groups {
   border-radius: 4px;
   transition: all 0.2s ease;
 }
 
-#navbarDesktop .groups:hover {
+.header-desktop-shell .groups:hover {
   background: rgba(230, 194, 0, 0.08);
 }
 
 /* Texto del menú más pequeño y limpio */
-#navbarDesktop .groups span:first-child {
+.header-desktop-shell .groups span:first-child {
   font-weight: 500;
   letter-spacing: 0.3px;
   text-transform: uppercase;
@@ -1828,19 +1827,19 @@ nav {
 }
 
 /* ============================================
-   NAVBAR MÓVIL - ESTILOS MEJORADOS
+   HEADER MÓVIL - ESTILOS MEJORADOS
    ============================================ */
 
-/* Navbar móvil con degradado moderno */
-#navbarMobile {
+/* Header móvil con degradado moderno */
+.header-mobile-bar {
   background: linear-gradient(135deg, #0d1117 0%, #1e2836 50%, #0d1117 100%);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   position: relative;
   overflow: hidden;
 }
 
-/* Efecto de brillo sutil en navbar móvil */
-#navbarMobile::before {
+/* Efecto de brillo sutil en header móvil */
+.header-mobile-bar::before {
   content: '';
   position: absolute;
   top: 0;
@@ -1851,8 +1850,8 @@ nav {
   opacity: 0.7;
 }
 
-/* Efecto de partículas en navbar móvil */
-#navbarMobile::after {
+/* Efecto de partículas en header móvil */
+.header-mobile-bar::after {
   content: '';
   position: absolute;
   top: 0;
@@ -1873,16 +1872,16 @@ nav {
   pointer-events: none;
 }
 
-/* Iconos del navbar móvil con efecto hover mejorado */
-#navbarMobile button,
-#navbarMobile a {
+/* Iconos del header móvil con efecto hover mejorado */
+.header-mobile-bar button,
+.header-mobile-bar a {
   position: relative;
   z-index: 1;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#navbarMobile button:active,
-#navbarMobile a:active {
+.header-mobile-bar button:active,
+.header-mobile-bar a:active {
   transform: scale(0.95);
 }
 
@@ -2881,13 +2880,13 @@ nav {
 }
 
 @media (min-width: 1280px) {
-  #navbarDesktop .groups span:first-child {
+  .header-desktop-shell .groups span:first-child {
     font-size: 0.75rem;
   }
 }
 
 @media (min-width: 1536px) {
-  #navbarDesktop .groups span:first-child {
+  .header-desktop-shell .groups span:first-child {
     font-size: 0.8rem;
   }
 }

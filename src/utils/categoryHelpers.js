@@ -1,14 +1,34 @@
 /**
- * Utilidades para manejo de categorías
- * Funciones que pueden ser usadas tanto en el cliente como en el servidor
+ * Utilidades para manejo de categorías.
+ * Estas funciones pueden ser usadas tanto en cliente como en servidor.
  *
  * ACTUALIZADO: Enero 2026 - Nueva estructura SEO-optimizada
  * - Eliminada: alternative-tours
  * - Agregadas: choquequirao, sacred-lakes, luxury-glamping, family-tours, sustainable-tours
  */
 
+export const CATEGORY_ALIASES = {
+  'peru-packajes': 'peru-packages',
+};
+
+export const NAVBAR_CATEGORY_KEYS = [
+  'inca-trail',
+  'salkantay',
+  'rainbow-mountain',
+  'ausangate',
+  'day-tours',
+  'peru-packages',
+  'inca-jungle',
+];
+
+export const normalizeCategorySlug = (category = '') => {
+  const normalized = `${category || ''}`.trim().toLowerCase();
+  return CATEGORY_ALIASES[normalized] || normalized;
+};
+
 // Función para obtener la descripción de una categoría
 export const getCategoryDescription = (category, locale = 'es') => {
+  const normalizedCategory = normalizeCategorySlug(category);
   const descriptionsES = {
     'inca-trail': 'Descubre el famoso Camino Inca hacia Machu Picchu con nuestros tours guiados. La ruta de trekking más icónica de Sudamérica con permisos limitados.',
     'salkantay': 'Aventúrate en el espectacular trek de Salkantay, una alternativa al Camino Inca. Paisajes glaciares impresionantes y naturaleza virgen.',
@@ -42,11 +62,15 @@ export const getCategoryDescription = (category, locale = 'es') => {
   };
 
   const descriptions = locale === 'en' ? descriptionsEN : descriptionsES;
-  return descriptions[category] || `Descubre los mejores tours de ${category.replace('-', ' ')} con BookingIncatrail.`;
+  return (
+    descriptions[normalizedCategory] ||
+    `Descubre los mejores tours de ${normalizedCategory.replace(/-/g, ' ')} con BookingIncatrail.`
+  );
 };
 
 // Función para obtener el título de una categoría
 export const getCategoryTitle = (category, locale = 'es') => {
+  const normalizedCategory = normalizeCategorySlug(category);
   const titlesES = {
     'inca-trail': 'Camino Inca',
     'salkantay': 'Salkantay Trek',
@@ -80,11 +104,16 @@ export const getCategoryTitle = (category, locale = 'es') => {
   };
 
   const titles = locale === 'en' ? titlesEN : titlesES;
-  return titles[category] || category.charAt(0).toUpperCase() + category.slice(1).replace(/-/g, ' ');
+  return (
+    titles[normalizedCategory] ||
+    normalizedCategory.charAt(0).toUpperCase() +
+      normalizedCategory.slice(1).replace(/-/g, ' ')
+  );
 };
 
 // Función para obtener la imagen de una categoría (usando imágenes existentes del proyecto)
 export const getCategoryImagePath = (category) => {
+  const normalizedCategory = normalizeCategorySlug(category);
   const images = {
     'inca-trail': '/img/hero/hero-slider-inca-trail.webp',
     'salkantay': '/img/hero/hero-slider-3.jpg',
@@ -100,14 +129,60 @@ export const getCategoryImagePath = (category) => {
     'family-tours': '/img/hero/hero-machu-picchu.webp', // Placeholder: Machu Picchu (familiar)
     'sustainable-tours': '/img/hero/hero-slider-2.jpg' // Placeholder: naturaleza andina
   };
-  return images[category] || '/img/hero/hero-machu-picchu.webp';
+  return images[normalizedCategory] || '/img/hero/hero-machu-picchu.webp';
 };
 
 // Función para obtener metadatos completos de una categoría
 export const getCategoryMetadata = (category) => {
+  const normalizedCategory = normalizeCategorySlug(category);
   return {
-    title: getCategoryTitle(category),
-    description: getCategoryDescription(category),
-    image: getCategoryImagePath(category)
+    slug: normalizedCategory,
+    title: getCategoryTitle(normalizedCategory),
+    description: getCategoryDescription(normalizedCategory),
+    image: getCategoryImagePath(normalizedCategory),
   };
+};
+
+export const getNavbarCategoryMeta = (category, locale = 'es') => {
+  const slug = normalizeCategorySlug(category);
+
+  return {
+    slug,
+    title: getCategoryTitle(slug, locale),
+  };
+};
+
+export const getHeaderCategoryMeta = getNavbarCategoryMeta;
+
+export const buildNavbarCategoryGroups = (
+  locale = 'es',
+  groups = [],
+) => {
+  const normalizedGroups = new Map(
+    (Array.isArray(groups) ? groups : []).map((group) => {
+      const meta = getNavbarCategoryMeta(group?.category, locale);
+
+      return [
+        meta.slug,
+        {
+          ...group,
+          category: meta.slug,
+          title: group?.title || meta.title,
+          trips: Array.isArray(group?.trips) ? group.trips : [],
+        },
+      ];
+    }),
+  );
+
+  return NAVBAR_CATEGORY_KEYS.map((category) => {
+    const meta = getNavbarCategoryMeta(category, locale);
+
+    return (
+      normalizedGroups.get(meta.slug) || {
+        category: meta.slug,
+        title: meta.title,
+        trips: [],
+      }
+    );
+  });
 };
