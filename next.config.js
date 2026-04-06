@@ -27,6 +27,9 @@ const nextConfig = {
       {
         pathname: '/home/**',
       },
+      {
+        pathname: '/storage/**',
+      },
     ],
     remotePatterns: [
       {
