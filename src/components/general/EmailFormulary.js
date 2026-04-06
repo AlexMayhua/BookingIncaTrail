@@ -3,6 +3,7 @@ import Select from 'react-select';
 import countryList from 'react-select-country-list';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { BRAND } from '../../lib/brandConfig';
+import Link from 'next/link';
 
 function EmailFormulary({ t = {}, tourName = '' }) {
   const [email, setEmail] = useState('');
@@ -419,21 +420,21 @@ function EmailFormulary({ t = {}, tourName = '' }) {
               </p>
 
               <div className='mt-6 flex flex-col items-center gap-3 sm:flex-row sm:items-center sm:justify-start'>
-                <a
+                <Link
                   href='https://api.whatsapp.com/send/?phone=51970811976'
                   className='inline-flex items-center justify-center rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-primary/90'>
                   {t.chat_whatsapp}
-                </a>
-                <a
+                </Link>
+                <Link
                   href={`tel:${BRAND.contactPhone}`}
                   className='inline-flex items-center justify-center rounded-full bg-secondary/10 px-5 py-2 text-sm font-semibold text-secondary transition hover:bg-secondary/20 hover:-translate-y-0.5'>
                   {t.call_now}
-                </a>
-                <a
+                </Link>
+                <Link
                   href={`mailto:${BRAND.contactEmail}`}
                   className='inline-flex items-center justify-center rounded-full border border-primary px-5 py-2 text-sm font-semibold text-primary transition hover:border-secondary hover:text-secondary hover:-translate-y-0.5'>
                   {t.send_email}
-                </a>
+                </Link>
               </div>
             </div>
           </div>

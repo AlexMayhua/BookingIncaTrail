@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import parse from 'html-react-parser';
 import DOMPurify from 'isomorphic-dompurify';
+import { getHeaderHeight } from '@/utils/headerOffset';
 
 // Icono de 3 huellas de pie - más estrechas y alargadas para mejor visibilidad
 const FootprintIcon = ({ isActive }) => (
@@ -60,16 +61,7 @@ export default function AccordionFromHtml({ htmlContent }) {
   const itemRefs = useRef([]);
 
   const getFixedOffset = () => {
-    const isMobile = window.matchMedia('(max-width: 1024px)').matches;
-    let offset = 0;
-    if (isMobile) {
-      const nav = document.getElementById('navbarMobile');
-      offset = nav?.offsetHeight || 0;
-    } else {
-      const desktopNav = document.getElementById('navbarDesktop');
-      const fullNav = desktopNav?.closest('nav');
-      offset = (fullNav?.offsetHeight || desktopNav?.offsetHeight || 0) + 15;
-    }
+    let offset = getHeaderHeight();
     // Add sticky tab bar height
     const stickyTabBar = document
       .querySelector('[role="tablist"]')

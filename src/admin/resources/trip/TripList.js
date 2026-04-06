@@ -31,7 +31,6 @@ const CATEGORY_CHOICES = [
 const LANG_CHOICES = [
   { id: 'en', name: 'English' },
   { id: 'es', name: 'Español' },
-  { id: 'all', name: 'All' },
 ];
 
 function TripFilters(props) {

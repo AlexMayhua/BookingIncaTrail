@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import {
   TextInput,
   NumberInput,
@@ -6,10 +7,14 @@ import {
   ArrayInput,
   SimpleFormIterator,
   FormDataConsumer,
+  useInput,
   required,
   minValue,
 } from 'react-admin';
+import dynamic from 'next/dynamic';
 import { CATEGORY_CHOICES, LANG_CHOICES } from './TripList';
+
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 
 /**
  * Campos reutilizables del formulario Trip para Create y Edit.
@@ -63,7 +68,7 @@ export default function TripFormFields() {
         multiline
         rows={3}
       />
-      <TextInput
+      <HtmlEditorInput
         source='navbar_description'
         label='Navbar Description (HTML)'
         fullWidth
@@ -102,7 +107,7 @@ export default function TripFormFields() {
 
       <TextInput
         source='description'
-        label='Description (HTML)'
+        label='Description'
         fullWidth
         multiline
         rows={8}
@@ -145,7 +150,7 @@ export default function TripFormFields() {
             label='Tab Content (HTML)'
             fullWidth
             multiline
-            rows={6}
+            rows={4}
           />
         </SimpleFormIterator>
       </ArrayInput>
@@ -186,5 +191,57 @@ function SectionTitle({ label }) {
       }}>
       {label}
     </h3>
+  );
+}
+
+function HtmlEditorInput({ source, label, helperText }) {
+  const { field } = useInput({ source });
+  const [editorValue, setEditorValue] = useState(field.value || '');
+
+  useEffect(() => {
+    setEditorValue(field.value || '');
+  }, [field.value]);
+
+  const handleChange = (content) => {
+    setEditorValue(content);
+    setTimeout(() => field.onChange(content), 0);
+  };
+
+  const handleBlur = () => {
+    setTimeout(() => field.onBlur(), 0);
+  };
+
+  return (
+    <div style={{ width: '100%', marginBottom: 16 }}>
+      <label
+        style={{
+          display: 'block',
+          fontSize: 14,
+          fontWeight: 600,
+          marginBottom: 6,
+          color: '#0d1117',
+        }}>
+        {label}
+      </label>
+
+      <ReactQuill
+        theme='snow'
+        value={editorValue}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        modules={{
+          toolbar: [
+            [{ header: [2, 3, false] }],
+            ['bold', 'italic', 'underline'],
+            [{ list: 'ordered' }, { list: 'bullet' }],
+            ['link', 'clean'],
+          ],
+        }}
+      />
+
+      <small style={{ display: 'block', marginTop: 8, color: '#5f6b7a' }}>
+        {helperText}
+      </small>
+    </div>
   );
 }
