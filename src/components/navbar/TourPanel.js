@@ -73,7 +73,7 @@ export default function TourPanel({ items, title }) {
         {active.category && active.slug && (
           <Link
             href={`/${active.category}/${active.slug}`}
-            className='absolute right-3 bottom-3 rounded-full bg-white/95 px-4 py-2 text-xs font-semibold text-primary shadow-sm transition hover:bg-white'>
+            className='absolute right-3 bottom-3 rounded-full bg-[#e6c200] px-4 py-2 text-xs font-extrabold uppercase tracking-[0.08em] text-[#0d1117] shadow-[0_8px_20px_rgba(230,194,0,0.5)] transition hover:scale-105 hover:bg-[#0d1117] hover:text-[#e6c200] animate-bounce [animation-duration:1.15s]'>
             {locale === 'en' ? 'View details' : 'Ver detalles'}
           </Link>
         )}
