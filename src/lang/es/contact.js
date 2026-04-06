@@ -36,7 +36,7 @@ export default {
   office_hours: 'Horario de atención',
   office_hours_value: 'Lun–Sáb 08:00–20:00 (GMT-5)',
   avg_response: 'Tiempo promedio de respuesta: menos de 12 horas.',
-  chat_whatsapp: 'Chatear por WhatsApp',
+  chat_whatsapp: 'WhatsApp',
   call_now: 'Llamar ahora',
   send_email: 'Enviar correo',
 
