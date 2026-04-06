@@ -30,6 +30,29 @@ export async function handleGetTrips(req, res) {
 }
 
 /**
+ * GET /api/trip/navbar — Flujo dedicado para trips por categorías específicas.
+ */
+export async function handleGetNavbarTrips(req, res) {
+  try {
+    const { category, locale } = req.query;
+
+    if (!category) {
+      return res
+        .status(400)
+        .json({ msg: "El parámetro 'category' es requerido" });
+    }
+
+    const groupedTrips = await tripService.listNavbarTripsByCategory({
+      category,
+      locale,
+    });
+    return res.status(200).json(groupedTrips);
+  } catch (error) {
+    return res.status(400).json({ msg: error.message });
+  }
+}
+
+/**
  * GET /api/trip/[id] — Obtiene un trip por slug e idioma.
  */
 export async function handleGetTripBySlug(req, res) {

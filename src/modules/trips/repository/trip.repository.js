@@ -43,6 +43,23 @@ export async function findDeals(lang) {
   return Trip.find({ lang, isDeals: true }).lean();
 }
 
+export async function findNavbarTripsByCategories(
+  categories = [],
+  locale = 'all',
+) {
+  await connectDB();
+
+  const filter = { category: { $in: categories } };
+
+  if (locale && locale !== 'all') {
+    filter.$or = [{ lang: locale }, { lang: 'all' }];
+  }
+
+  return Trip.find(filter)
+    .select('title sub_title navbar_description gallery category slug')
+    .lean();
+}
+
 // ── Queries admin ─────────────────────────────────────────────
 
 export async function findTripsWithPagination(filter, page, limit) {

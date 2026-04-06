@@ -1,4 +1,21 @@
 import * as tripRepository from '../repository/trip.repository';
+import {
+  getNavbarCategoryMeta,
+  NAVBAR_CATEGORY_KEYS,
+  normalizeCategorySlug,
+} from '@/utils/categoryHelpers';
+
+function parseCategoryInput(category) {
+  const values = Array.isArray(category)
+    ? category
+    : `${category || ''}`.split(',');
+
+  return values
+    .map((item) => normalizeCategorySlug(item))
+    .filter(Boolean)
+    .filter((value) => NAVBAR_CATEGORY_KEYS.includes(value))
+    .filter((value, index, array) => array.indexOf(value) === index);
+}
 
 // ── Servicios públicos ────────────────────────────────────────
 
@@ -34,6 +51,63 @@ export async function listTrips({ locale, category, isDeals, fields }) {
     fields && fields !== '' ? fields.split(',').join(' ') : null;
 
   return tripRepository.findTrips(filter, selectedFields);
+}
+
+/**
+ * Flujo dedicado para navbar: filtra solo por categorías permitidas,
+ * agrupa por categoría y devuelve campos mínimos por trip.
+ */
+export async function listNavbarTripsByCategory({ category, locale = 'all' }) {
+  const categories = parseCategoryInput(category);
+
+  if (!categories.length) {
+    throw new Error(
+      "El parámetro 'category' es requerido con valores permitidos",
+    );
+  }
+
+  const trips = await tripRepository.findNavbarTripsByCategories(
+    categories,
+    locale,
+  );
+
+  const grouped = {};
+
+  for (const requestedCategory of categories) {
+    grouped[requestedCategory] = [];
+  }
+
+  for (const trip of trips) {
+    const tripCategory = normalizeCategorySlug(trip.category);
+    if (!grouped[tripCategory]) continue;
+
+    const firstImage = Array.isArray(trip.gallery) ? trip.gallery[0] : null;
+
+    grouped[tripCategory].push({
+      title: trip.title || '',
+      subtitle: trip.sub_title || '',
+      category: tripCategory,
+      slug: trip.slug || '',
+      navbar_description: trip.navbar_description || '',
+      gallery: {
+        url: firstImage?.url || '',
+        alt: firstImage?.alt || '',
+      },
+    });
+  }
+
+  return categories.map((currentCategory) => {
+    const meta = getNavbarCategoryMeta(
+      currentCategory,
+      locale === 'en' ? 'en' : 'es',
+    );
+
+    return {
+      category: meta.slug,
+      title: meta.title,
+      trips: grouped[meta.slug],
+    };
+  });
 }
 
 /**
