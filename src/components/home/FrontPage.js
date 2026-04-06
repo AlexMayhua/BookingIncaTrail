@@ -110,7 +110,6 @@ export default function FrontPage() {
           fill
           priority
           fetchPriority='high'
-          quality={65}
           sizes='100vw'
           className='object-cover object-center'
         />
@@ -122,7 +121,6 @@ export default function FrontPage() {
           alt='Machu Picchu background'
           fill
           priority
-          quality={70}
           sizes='100vw'
           className='object-cover object-center'
         />
@@ -140,17 +138,17 @@ export default function FrontPage() {
         <h1 className='text-white font-extrabold text-3xl md:text-3xl lg:text-4xl 2xl:text-6xl leading-[0.95] tracking-tight'>
           {locale === 'en' ? (
             <>
-              Experience the <span className='text-secondary'>Inca Trail</span>
+              Experience the <span className='text-secondary'>Inca Trail</span>{' '}
               <br />
-              with unforgettable routes to
+              with unforgettable routes to{' '}
               <br />
               <span className='text-secondary'>Machu Picchu</span>
             </>
           ) : (
             <>
-              Vive el <span className='text-secondary'>Camino Inca</span>
+              Vive el <span className='text-secondary'>Camino Inca</span>{' '}
               <br />
-              con rutas inolvidables a
+              con rutas inolvidables a{' '}
               <br />
               <span className='text-secondary'>Machu Picchu</span>
             </>
