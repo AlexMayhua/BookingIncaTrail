@@ -47,3 +47,6 @@ backups/
 
 # null file
 nul
+
+# storage
+/public/storage/
