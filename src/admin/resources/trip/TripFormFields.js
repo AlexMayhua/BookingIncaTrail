@@ -107,7 +107,7 @@ export default function TripFormFields() {
       {/* ── 4. DESCRIPTION (HTML) ──────────────────────────── */}
       <SectionTitle label='Description' />
 
-      <TextInput
+      <HtmlEditorInput
         source='description'
         label='Description'
         fullWidth
