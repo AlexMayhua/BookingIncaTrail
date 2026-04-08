@@ -61,8 +61,36 @@ async function uploadGalleryItem(item, category) {
   };
 }
 
+function normalizeHtmlSpaces(value) {
+  if (typeof value !== 'string') {
+    return value;
+  }
+
+  return value.replace(/&nbsp;/gi, ' ').replace(/\u00A0/g, ' ');
+}
+
+function normalizeTripRichText(payload) {
+  payload.description = normalizeHtmlSpaces(payload.description);
+  payload.navbar_description = normalizeHtmlSpaces(payload.navbar_description);
+
+  if (Array.isArray(payload.information)) {
+    payload.information = payload.information.map((item) => {
+      if (!item || typeof item !== 'object') {
+        return item;
+      }
+
+      return {
+        ...item,
+        content: normalizeHtmlSpaces(item.content),
+      };
+    });
+  }
+
+  return payload;
+}
+
 async function prepareTripPayload(data) {
-  const payload = { ...data };
+  const payload = normalizeTripRichText({ ...data });
 
   if (Array.isArray(payload.gallery)) {
     const uploadedGallery = await Promise.all(
