@@ -145,7 +145,6 @@ export default function TripFormFields() {
         <SimpleFormIterator inline>
           <TextInput source='title' />
           <TextInput source='content' />
-          <TextInput source='icon' label='Icon URL' />
         </SimpleFormIterator>
       </ArrayInput>
 
@@ -173,9 +172,8 @@ export default function TripFormFields() {
               <SectionTitle label='Descuentos por Grupo' />
               <ArrayInput source='ardiscounts'>
                 <SimpleFormIterator inline>
-                  <TextInput source='people' label='People' />
-                  <NumberInput source='discount' label='Discount %' />
-                  <NumberInput source='price' label='Final Price' />
+                  <TextInput source='persons' label='People' />
+                  <NumberInput source='pdiscount' label='Discount %' />
                 </SimpleFormIterator>
               </ArrayInput>
             </>
