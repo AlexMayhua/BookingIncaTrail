@@ -51,7 +51,7 @@ const FootprintIcon = ({ isActive }) => (
   </svg>
 );
 
-export default function AccordionFromHtml({ htmlContent }) {
+export default function AccordionFromHtml({ htmlContent, renderHtmlContent }) {
   const blocks = htmlContent
     .split(/<h3>/i)
     .filter(Boolean)
@@ -216,7 +216,7 @@ export default function AccordionFromHtml({ htmlContent }) {
       <div className='relative py-4'>
         {/* Línea vertical del timeline */}
         <div
-          className='absolute left-7 top-10 bottom-10 w-1 rounded-full'
+          className='absolute left-5 top-8 bottom-12 w-1 rounded-full'
           style={{
             zIndex: 0,
             background:
@@ -241,9 +241,9 @@ export default function AccordionFromHtml({ htmlContent }) {
             <div
               key={index}
               ref={(el) => (itemRefs.current[index] = el)}
-              className='accordion-item-modern relative pl-16 pb-5 last:pb-0'>
+              className='accordion-item-modern relative pl-12 pb-5 last:pb-0'>
               <div
-                className={`absolute left-0 top-3 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-500 ${
+                className={`absolute left-0 top-3 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-500 ${
                   isActive
                     ? 'bg-gradient-to-br from-secondary to-yellow-400 border-3 border-primary icon-container-active'
                     : 'bg-white border-2 border-stone-200 hover:border-secondary hover:bg-secondary/10 hover:scale-105'
@@ -262,7 +262,7 @@ export default function AccordionFromHtml({ htmlContent }) {
                     : 'bg-stone-50/80 border-transparent hover:border-secondary/50'
                 }`}>
                 <div className='flex items-center justify-between '>
-                  <h3
+                  <p
                     className={`text-lg font-bold transition-colors duration-300 leading-tight ${
                       isActive ? 'text-primary' : 'text-stone-700'
                     }`}
@@ -295,9 +295,11 @@ export default function AccordionFromHtml({ htmlContent }) {
                 </div>
               </div>
               {isActive && (
-                <div className='content-animated mt-3 p-5 rounded-xl bg-white border border-stone-100 shadow-md'>
+                <div className='content-animated mt-3 p-3 rounded-xl bg-white border border-stone-100 shadow-md'>
                   <div className='text-stone-600 leading-relaxed prose prose-sm max-w-none'>
-                    {parse(contentHtml)}
+                    {renderHtmlContent
+                      ? renderHtmlContent(contentHtml)
+                      : parse(contentHtml)}
                   </div>
                 </div>
               )}

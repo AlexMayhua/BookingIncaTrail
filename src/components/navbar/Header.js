@@ -509,7 +509,7 @@ export default function Header() {
 
             {activeCategory && activePanelItems.length > 0 && (
               <div
-                className='absolute top-full w-full'
+                className='absolute top-full w-full mt-4'
                 onMouseEnter={() => setActiveCategory(activeCategory)}
                 onMouseLeave={() => setActiveCategory(null)}>
                 <TourPanel

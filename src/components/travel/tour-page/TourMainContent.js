@@ -38,61 +38,16 @@ export default function TourMainContent({
         <section className='col-span-12'>
           <div>
             {tour.sub_title && (
-              <h2 className='text-center text-3xl font-semibold text-[#B8860B] my-4 px-20'>
+              <h2 className='text-center text-3xl font-semibold text-[#B8860B] my-4 px-12 xl:px-20'>
                 {tour.sub_title}
               </h2>
             )}
-            <nav className='mb-3 flex flex-wrap items-center gap-2 px-4 text-center'>
-              <Link
-                href='/'
-                className='flex items-center gap-1.5 text-[0.8rem] font-medium text-stone-600 no-underline transition-colors duration-300 hover:text-[#e6c200]'>
-                <svg
-                  className='h-4 w-4'
-                  fill='currentColor'
-                  viewBox='0 0 20 20'>
-                  <path d='M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z' />
-                </svg>
-                {locale === 'en' ? 'Home' : 'Inicio'}
-              </Link>
-
-              <svg
-                className='h-4 w-4 text-stone-400'
-                fill='currentColor'
-                viewBox='0 0 20 20'>
-                <path
-                  fillRule='evenodd'
-                  d='M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z'
-                  clipRule='evenodd'
-                />
-              </svg>
-
-              <Link
-                href={`/${category}`}
-                className='flex items-center gap-1.5 text-[0.8rem] font-medium text-stone-600 no-underline transition-colors duration-300 hover:text-[#e6c200]'>
-                {categoryTitle}
-              </Link>
-
-              <svg
-                className='h-4 w-4 text-stone-400'
-                fill='currentColor'
-                viewBox='0 0 20 20'>
-                <path
-                  fillRule='evenodd'
-                  d='M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z'
-                  clipRule='evenodd'
-                />
-              </svg>
-
-              <span className='text-[0.8rem] font-semibold text-primary'>
-                {tour.title}
-              </span>
-            </nav>
           </div>
 
           {(tour.highlight || tour.url_brochure) && (
-            <div className='my-3 md:mx-5 max-w-5xl flex flex-wrap items-center gap-3'>
+            <div className='max-w-5xl flex flex-col mx-auto items-center justify-center gap-3 px-3'>
               {tour.highlight && (
-                <p className='m-0 italic'>
+                <p className='italic text-center'>
                   <strong>{tour.highlight}</strong>
                 </p>
               )}
@@ -109,6 +64,47 @@ export default function TourMainContent({
             </div>
           )}
 
+          <nav className='mb-3 flex flex-nowrap items-center px-4 text-xs'>
+            <Link
+              href='/'
+              className='flex items-center gap-1.5 font-medium text-stone-600 no-underline transition-colors duration-300 hover:text-[#e6c200]'>
+              <svg className='h-4 w-4' fill='currentColor' viewBox='0 0 20 20'>
+                <path d='M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z' />
+              </svg>
+              {locale === 'en' ? 'Home' : 'Inicio'}
+            </Link>
+
+            <svg
+              className='h-4 w-4 text-stone-400'
+              fill='currentColor'
+              viewBox='0 0 20 20'>
+              <path
+                fillRule='evenodd'
+                d='M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z'
+                clipRule='evenodd'
+              />
+            </svg>
+
+            <Link
+              href={`/${category}`}
+              className='flex items-center gap-1.5 font-medium text-stone-600 no-underline transition-colors duration-300 hover:text-[#e6c200]'>
+              {categoryTitle}
+            </Link>
+
+            <svg
+              className='h-4 w-4 text-stone-400'
+              fill='currentColor'
+              viewBox='0 0 20 20'>
+              <path
+                fillRule='evenodd'
+                d='M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z'
+                clipRule='evenodd'
+              />
+            </svg>
+
+            <span className='font-semibold text-primary'>{tour.title}</span>
+          </nav>
+
           {tour.description && (
             <div>
               {descriptionImage?.url && (
@@ -119,7 +115,7 @@ export default function TourMainContent({
                   width={1200}
                   height={900}
                   sizes='(min-width: 768px) 50vw, 100vw'
-                  className='float-none md:float-right md:ml-4 mb-2 w-full md:w-1/2 h-auto rounded cursor-zoom-in'
+                  className='float-none md:float-right md:ml-4 mb-2 w-full md:w-1/2 h-auto rounded cursor-zoom-in px-3'
                   onClick={() => setIsZoomed(true)}
                 />
               )}
