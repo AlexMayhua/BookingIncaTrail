@@ -33,7 +33,26 @@ const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 export default function TripFormFields() {
   return (
     <>
-      {/* ── 1. INFORMACIÓN BÁSICA ──────────────────────────── */}
+      {/* ── 1. SEO & METADATA ──────────────────────────────── */}
+      <SectionTitle label='SEO & Metadata' />
+
+      <TextInput source='meta_title' label='Meta Title' fullWidth />
+      <TextInput
+        source='meta_description'
+        label='Meta Description'
+        fullWidth
+        multiline
+        rows={3}
+      />
+      <HtmlEditorInput
+        source='navbar_description'
+        label='Navbar Description (HTML)'
+        fullWidth
+        multiline
+        rows={3}
+      />
+
+      {/* ── 2. INFORMACIÓN BÁSICA ──────────────────────────── */}
       <SectionTitle label='Información Básica' />
 
       <TextInput source='title' validate={required()} fullWidth />
@@ -58,25 +77,6 @@ export default function TripFormFields() {
           validate={required()}
         />
       </div>
-
-      {/* ── 2. SEO & METADATA ──────────────────────────────── */}
-      <SectionTitle label='SEO & Metadata' />
-
-      <TextInput source='meta_title' label='Meta Title' fullWidth />
-      <TextInput
-        source='meta_description'
-        label='Meta Description'
-        fullWidth
-        multiline
-        rows={3}
-      />
-      <HtmlEditorInput
-        source='navbar_description'
-        label='Navbar Description (HTML)'
-        fullWidth
-        multiline
-        rows={3}
-      />
 
       {/* ── 3. DETALLES DEL TOUR ───────────────────────────── */}
       <SectionTitle label='Detalles del Tour' />
@@ -116,7 +116,33 @@ export default function TripFormFields() {
         helperText='Accepts HTML content'
       />
 
-      {/* ── 5. GALLERY ─────────────────────────────────────── */}
+      {/* ── 5. QUICK STATS ─────────────────────────────────── */}
+      <SectionTitle label='Quick Stats' />
+
+      <ArrayInput source='quickstats'>
+        <SimpleFormIterator inline>
+          <TextInput source='title' />
+          <TextInput source='content' />
+        </SimpleFormIterator>
+      </ArrayInput>
+
+      {/* ── 6. INFORMATION TABS ────────────────────────────── */}
+      <SectionTitle label='Information Tabs' />
+
+      <ArrayInput source='information'>
+        <SimpleFormIterator>
+          <TextInput source='title' label='Tab Title' fullWidth />
+          <HtmlEditorInput
+            source='content'
+            label='Tab Content (HTML)'
+            fullWidth
+            multiline
+            rows={4}
+          />
+        </SimpleFormIterator>
+      </ArrayInput>
+
+      {/* ── 7. GALLERY ─────────────────────────────────────── */}
       <SectionTitle label='Gallery' />
 
       <ArrayInput source='gallery'>
@@ -135,32 +161,6 @@ export default function TripFormFields() {
             helperText='Si subes archivo, este campo se reemplaza con /storage/...'
           />
           <TextInput source='alt' label='Alt Text' />
-        </SimpleFormIterator>
-      </ArrayInput>
-
-      {/* ── 6. QUICK STATS ─────────────────────────────────── */}
-      <SectionTitle label='Quick Stats' />
-
-      <ArrayInput source='quickstats'>
-        <SimpleFormIterator inline>
-          <TextInput source='title' />
-          <TextInput source='content' />
-        </SimpleFormIterator>
-      </ArrayInput>
-
-      {/* ── 7. INFORMATION TABS ────────────────────────────── */}
-      <SectionTitle label='Information Tabs' />
-
-      <ArrayInput source='information'>
-        <SimpleFormIterator>
-          <TextInput source='title' label='Tab Title' fullWidth />
-          <HtmlEditorInput
-            source='content'
-            label='Tab Content (HTML)'
-            fullWidth
-            multiline
-            rows={4}
-          />
         </SimpleFormIterator>
       </ArrayInput>
 
