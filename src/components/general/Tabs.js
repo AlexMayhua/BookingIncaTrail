@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import parser, { domToReact } from 'html-react-parser';
 import AccordionFromHtml from './AccordionFromHtml';
 import { useRouter } from 'next/router';
@@ -56,7 +56,7 @@ function parseSectionContent(html = '', options = {}) {
   const { isItinerary = false } = options;
   let itineraryHeadingIndex = 0;
 
-  return parser(html, {
+  const transformOptions = {
     replace(domNode) {
       if (!domNode || domNode.type !== 'tag') return;
 
@@ -75,7 +75,7 @@ function parseSectionContent(html = '', options = {}) {
           <HeadingTag
             id={id}
             className='scroll-mt-[calc(var(--header-offset)+2.5rem)] mt-10 mb-4 text-2xl font-bold text-primary'>
-            {domToReact(domNode.children)}
+            {domToReact(domNode.children, transformOptions)}
           </HeadingTag>
         );
       }
@@ -94,23 +94,23 @@ function parseSectionContent(html = '', options = {}) {
               headingClasses[tagName] ||
               'text-lg font-semibold text-primary mt-5 mb-3'
             }>
-            {domToReact(domNode.children)}
+            {domToReact(domNode.children, transformOptions)}
           </HeadingTag>
         );
       }
 
       if (tagName === 'p') {
         return (
-          <p className='mb-5 leading-8 text-stone-700'>
-            {domToReact(domNode.children)}
+          <p className='mb-2 leading-8 text-stone-700'>
+            {domToReact(domNode.children, transformOptions)}
           </p>
         );
       }
 
       if (tagName === 'ul') {
         return (
-          <ul className='mb-6 space-y-3 list-disc pl-6 text-stone-700'>
-            {domToReact(domNode.children)}
+          <ul className='mb-4 space-y-1 list-disc pl-6 text-stone-700'>
+            {domToReact(domNode.children, transformOptions)}
           </ul>
         );
       }
@@ -118,18 +118,43 @@ function parseSectionContent(html = '', options = {}) {
       if (tagName === 'ol') {
         return (
           <ol className='mb-6 space-y-3 list-decimal pl-6 text-stone-700'>
-            {domToReact(domNode.children)}
+            {domToReact(domNode.children, transformOptions)}
           </ol>
         );
       }
 
       if (tagName === 'li') {
-        return <li className='leading-7'>{domToReact(domNode.children)}</li>;
+        const meaningfulChildren = (domNode.children || []).filter(
+          (child) =>
+            child.type !== 'text' || normalizeText(child.data || '') !== '',
+        );
+        const isNestedListWrapper =
+          meaningfulChildren.length === 1 &&
+          meaningfulChildren[0].type === 'tag' &&
+          ['ul', 'ol'].includes(
+            (meaningfulChildren[0].name || '').toLowerCase(),
+          );
+
+        if (isNestedListWrapper) {
+          return (
+            <React.Fragment>
+              {domToReact(meaningfulChildren, transformOptions)}
+            </React.Fragment>
+          );
+        }
+
+        return (
+          <li className='leading-7'>
+            {domToReact(domNode.children, transformOptions)}
+          </li>
+        );
       }
 
       return undefined;
     },
-  });
+  };
+
+  return parser(html, transformOptions);
 }
 
 export default function Tabs({ tabsQuery }) {

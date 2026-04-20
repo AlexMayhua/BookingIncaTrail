@@ -162,13 +162,11 @@ function splitIncludesSection(html = '') {
     const targetBlocks = blocks.filter((block) => block.type === targetType);
     if (!targetBlocks.length) return null;
 
+    const transformOptions = buildContentParserOptions();
+
     return targetBlocks.map((block, blockIndex) => (
       <React.Fragment key={`${targetType}-${blockIndex}`}>
-        {block.nodes.map((node, nodeIndex) => (
-          <React.Fragment key={`${targetType}-${blockIndex}-${nodeIndex}`}>
-            {domToReact([node])}
-          </React.Fragment>
-        ))}
+        {domToReact(block.nodes, transformOptions)}
       </React.Fragment>
     ));
   };
@@ -212,11 +210,11 @@ function buildSections(tourInformation = [], locale = 'en') {
   });
 }
 
-function parseSectionContent(html = '', options = {}) {
+function buildContentParserOptions(options = {}) {
   const { isItinerary = false } = options;
   let itineraryHeadingIndex = 0;
 
-  return parser(html, {
+  const transformOptions = {
     replace(domNode) {
       if (!domNode || domNode.type !== 'tag') return;
 
@@ -237,7 +235,7 @@ function parseSectionContent(html = '', options = {}) {
             className:
               'scroll-mt-[calc(var(--header-offset)+2.5rem)] mt-10 mb-4 text-2xl font-bold text-primary',
           },
-          domToReact(domNode.children),
+          domToReact(domNode.children, transformOptions),
         );
       }
 
@@ -255,22 +253,22 @@ function parseSectionContent(html = '', options = {}) {
               headingClasses[tagName] ||
               'text-lg font-semibold text-primary mt-5 mb-3',
           },
-          domToReact(domNode.children),
+          domToReact(domNode.children, transformOptions),
         );
       }
 
       if (tagName === 'p') {
         return (
-          <p className='mb-5 leading-8 text-stone-700'>
-            {domToReact(domNode.children)}
+          <p className='mb-2 leading-8 text-stone-700'>
+            {domToReact(domNode.children, transformOptions)}
           </p>
         );
       }
 
       if (tagName === 'ul') {
         return (
-          <ul className='mb-6 space-y-3 list-disc pl-6 text-stone-700'>
-            {domToReact(domNode.children)}
+          <ul className='mb-6 space-y-1 list-disc pl-6 text-stone-700'>
+            {domToReact(domNode.children, transformOptions)}
           </ul>
         );
       }
@@ -278,18 +276,47 @@ function parseSectionContent(html = '', options = {}) {
       if (tagName === 'ol') {
         return (
           <ol className='mb-6 space-y-3 list-decimal pl-6 text-stone-700'>
-            {domToReact(domNode.children)}
+            {domToReact(domNode.children, transformOptions)}
           </ol>
         );
       }
 
       if (tagName === 'li') {
-        return <li className='leading-7'>{domToReact(domNode.children)}</li>;
+        const meaningfulChildren = (domNode.children || []).filter(
+          (child) =>
+            child.type !== 'text' || normalizeText(child.data || '') !== '',
+        );
+        const isNestedListWrapper =
+          meaningfulChildren.length === 1 &&
+          meaningfulChildren[0].type === 'tag' &&
+          ['ul', 'ol'].includes(
+            (meaningfulChildren[0].name || '').toLowerCase(),
+          );
+
+        if (isNestedListWrapper) {
+          return (
+            <React.Fragment>
+              {domToReact(meaningfulChildren, transformOptions)}
+            </React.Fragment>
+          );
+        }
+
+        return (
+          <li className='leading-7'>
+            {domToReact(domNode.children, transformOptions)}
+          </li>
+        );
       }
 
       return undefined;
     },
-  });
+  };
+
+  return transformOptions;
+}
+
+function parseSectionContent(html = '', options = {}) {
+  return parser(html, buildContentParserOptions(options));
 }
 
 export default function TourContentDesktop({
@@ -465,12 +492,11 @@ export default function TourContentDesktop({
         {sections.map((section) => {
           if (section.type === 'itinerary') {
             return (
-            <section
-              key={section.id}
-              id={section.id}
-              className='scroll-mt-[calc(var(--header-offset)+2.5rem)]'>
-                <h2
-                  className='sticky top-[var(--header-offset)] z-20 mb-6 bg-white/95 py-2 text-3xl font-bold text-primary backdrop-blur-sm'>
+              <section
+                key={section.id}
+                id={section.id}
+                className='scroll-mt-[calc(var(--header-offset)+2.5rem)]'>
+                <h2 className='sticky top-[var(--header-offset)] z-20 mb-6 bg-white/95 py-2 text-3xl font-bold text-primary backdrop-blur-sm'>
                   {section.title}
                 </h2>
 
@@ -487,12 +513,11 @@ export default function TourContentDesktop({
             );
 
             return (
-            <section
-              key={section.id}
-              id={section.id}
-              className='scroll-mt-[calc(var(--header-offset)+2.5rem)]'>
-                <h2
-                  className='sticky top-[var(--header-offset)] z-20 mb-6 bg-white/95 py-2 text-3xl font-bold text-primary backdrop-blur-sm'>
+              <section
+                key={section.id}
+                id={section.id}
+                className='scroll-mt-[calc(var(--header-offset)+2.5rem)]'>
+                <h2 className='sticky top-[var(--header-offset)] z-20 mb-6 bg-white/95 py-2 text-3xl font-bold text-primary backdrop-blur-sm'>
                   {section.title}
                 </h2>
 
@@ -520,8 +545,7 @@ export default function TourContentDesktop({
               key={section.id}
               id={section.id}
               className='scroll-mt-[calc(var(--header-offset)+1rem)]'>
-              <h2
-                className='sticky top-[var(--header-offset)] z-20 mb-6 bg-white/95 py-2 text-3xl font-bold text-primary backdrop-blur-sm'>
+              <h2 className='sticky top-[var(--header-offset)] z-20 mb-6 bg-white/95 py-2 text-3xl font-bold text-primary backdrop-blur-sm'>
                 {section.title}
               </h2>
 
