@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   TextInput,
   NumberInput,
@@ -10,11 +10,22 @@ import {
   ImageInput,
   ImageField,
   useInput,
+  useRecordContext,
   required,
   minValue,
 } from 'react-admin';
+import { useFormContext, useFormState, useWatch } from 'react-hook-form';
 import dynamic from 'next/dynamic';
 import { CATEGORY_CHOICES, LANG_CHOICES } from './TripList';
+import {
+  TRIP_DRAFT_STATUS,
+  clearTripDraft,
+  formatTripDraftTimestamp,
+  getTripDraft,
+  hasTripDraftContent,
+  sanitizeTripDraftValues,
+  saveTripDraft,
+} from './tripDraftStorage';
 
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 
@@ -30,9 +41,11 @@ const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
  *   6. Information tabs (itinerario, incluye, etc.)
  *   7. Descuentos
  */
-export default function TripFormFields() {
+export default function TripFormFields({ mode }) {
   return (
     <>
+      <TripDraftManager mode={mode} />
+
       {/* ── 1. SEO & METADATA ──────────────────────────────── */}
       <SectionTitle label='SEO & Metadata' />
 
@@ -181,6 +194,192 @@ export default function TripFormFields() {
         }
       </FormDataConsumer>
     </>
+  );
+}
+
+function TripDraftManager({ mode }) {
+  const record = useRecordContext();
+  const tripId = mode === 'edit' ? record?.id : null;
+  const { control, setValue } = useFormContext();
+  const { isDirty, isReady } = useFormState({ control });
+  const formValues = useWatch({ control });
+  const saveTimeoutRef = useRef(null);
+  const restoredKeyRef = useRef(null);
+  const restoredSnapshotRef = useRef(null);
+  const [draftStatus, setDraftStatus] = useState(null);
+  const [draftUpdatedAt, setDraftUpdatedAt] = useState(null);
+
+  const canManageDraft = mode === 'create' || Boolean(tripId);
+  const sanitizedValues = useMemo(
+    () => sanitizeTripDraftValues(formValues),
+    [formValues],
+  );
+  const serializedValues = useMemo(
+    () => JSON.stringify(sanitizedValues),
+    [sanitizedValues],
+  );
+  const hasCreateDraftContent = useMemo(
+    () => hasTripDraftContent(sanitizedValues),
+    [sanitizedValues],
+  );
+
+  useEffect(() => {
+    if (!canManageDraft || !isReady) {
+      return;
+    }
+
+    const currentDraftKey = `${mode}:${tripId || 'create'}`;
+    if (restoredKeyRef.current === currentDraftKey) {
+      return;
+    }
+
+    restoredKeyRef.current = currentDraftKey;
+
+    const currentDraft = getTripDraft({ mode, tripId });
+    if (currentDraft?.values && Object.keys(currentDraft.values).length > 0) {
+      Object.entries(currentDraft.values).forEach(([fieldName, fieldValue]) => {
+        setValue(fieldName, fieldValue, {
+          shouldDirty: true,
+          shouldTouch: false,
+          shouldValidate: false,
+        });
+      });
+
+      restoredSnapshotRef.current = JSON.stringify(currentDraft.values);
+      setDraftStatus(TRIP_DRAFT_STATUS.TEMPORARY);
+      setDraftUpdatedAt(currentDraft.updatedAt || null);
+      return;
+    }
+
+    restoredSnapshotRef.current = null;
+    setDraftUpdatedAt(null);
+    setDraftStatus(mode === 'edit' ? TRIP_DRAFT_STATUS.SAVED : null);
+  }, [canManageDraft, isReady, mode, setValue, tripId]);
+
+  useEffect(() => {
+    if (!canManageDraft || !isReady) {
+      return undefined;
+    }
+
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+      saveTimeoutRef.current = null;
+    }
+
+    if (!isDirty || (mode === 'create' && !hasCreateDraftContent)) {
+      clearTripDraft({ mode, tripId });
+      restoredSnapshotRef.current = null;
+      setDraftUpdatedAt(null);
+      setDraftStatus(mode === 'edit' ? TRIP_DRAFT_STATUS.SAVED : null);
+      return undefined;
+    }
+
+    if (
+      restoredSnapshotRef.current &&
+      restoredSnapshotRef.current === serializedValues
+    ) {
+      restoredSnapshotRef.current = null;
+      setDraftStatus(TRIP_DRAFT_STATUS.TEMPORARY);
+      return undefined;
+    }
+
+    setDraftStatus(TRIP_DRAFT_STATUS.SAVING_LOCAL);
+
+    saveTimeoutRef.current = window.setTimeout(() => {
+      const savedDraft = saveTripDraft({
+        mode,
+        tripId,
+        values: sanitizedValues,
+      });
+
+      if (!savedDraft) {
+        return;
+      }
+
+      setDraftUpdatedAt(savedDraft.updatedAt);
+      setDraftStatus(TRIP_DRAFT_STATUS.TEMPORARY);
+      saveTimeoutRef.current = null;
+    }, 700);
+
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+        saveTimeoutRef.current = null;
+      }
+    };
+  }, [
+    canManageDraft,
+    hasCreateDraftContent,
+    isDirty,
+    isReady,
+    mode,
+    sanitizedValues,
+    serializedValues,
+    tripId,
+  ]);
+
+  return (
+    <TripDraftStatusBanner
+      status={draftStatus}
+      updatedAt={draftUpdatedAt}
+    />
+  );
+}
+
+function TripDraftStatusBanner({ status, updatedAt }) {
+  if (!status) {
+    return null;
+  }
+
+  const savedAtLabel = formatTripDraftTimestamp(updatedAt);
+  const statusConfig = {
+    [TRIP_DRAFT_STATUS.SAVED]: {
+      label: 'Version guardada',
+      message: 'Estas viendo la version persistida del trip.',
+      borderColor: '#3b82f6',
+      background: '#eff6ff',
+      color: '#1d4ed8',
+    },
+    [TRIP_DRAFT_STATUS.TEMPORARY]: {
+      label: 'Borrador temporal',
+      message: 'Estas viendo cambios restaurados desde storage local.',
+      borderColor: '#f59e0b',
+      background: '#fffbeb',
+      color: '#b45309',
+    },
+    [TRIP_DRAFT_STATUS.SAVING_LOCAL]: {
+      label: 'Guardando borrador...',
+      message: 'Guardando cambios locales para protegerte ante una recarga.',
+      borderColor: '#7c3aed',
+      background: '#f5f3ff',
+      color: '#6d28d9',
+    },
+  }[status];
+
+  if (!statusConfig) {
+    return null;
+  }
+
+  return (
+    <div
+      style={{
+        width: '100%',
+        marginBottom: 20,
+        padding: '12px 14px',
+        borderRadius: 10,
+        border: `1px solid ${statusConfig.borderColor}`,
+        background: statusConfig.background,
+        color: statusConfig.color,
+      }}>
+      <div style={{ fontSize: 14, fontWeight: 700 }}>{statusConfig.label}</div>
+      <div style={{ marginTop: 4, fontSize: 13 }}>{statusConfig.message}</div>
+
+      {savedAtLabel ? (
+        <small style={{ display: 'block', marginTop: 6, color: '#5f6b7a' }}>
+          Ultimo guardado local: {savedAtLabel}
+        </small>
+      ) : null}
+    </div>
   );
 }
 
