@@ -1,7 +1,15 @@
 # *
 User-agent: *
 Allow: /
-
+# AI crawlers
+User-agent: GPTBot
+Disallow: /
+User-agent: GPTBot-Images
+Disallow: /
+User-agent: ChatGPT-User
+Disallow: /
+User-agent: ClaudeBot
+Disallow: /
 # Host
 Host: https://bookingincatrail.com
 
