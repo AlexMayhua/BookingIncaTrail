@@ -47,6 +47,24 @@ function escapeXml(value) {
     .replace(/'/g, '&apos;');
 }
 
+function formatSitemapLastmod(value) {
+  if (value === undefined || value === null || value === '') {
+    return null;
+  }
+
+  const date = value instanceof Date ? value : new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+
+  return date.toISOString();
+}
+
+function normalizeSitemapLastmod(value) {
+  return formatSitemapLastmod(value) || DEFAULT_LASTMOD;
+}
+
 export function normalizeSiteUrl(siteUrl = BRAND.siteUrl) {
   return String(siteUrl || '').replace(/\/+$/, '');
 }
@@ -104,7 +122,7 @@ function renderAlternates(alternates = []) {
 }
 
 function renderUrlEntry(entry) {
-  const lastmod = entry.lastmod || DEFAULT_LASTMOD;
+  const lastmod = normalizeSitemapLastmod(entry.lastmod);
   const changefreq = entry.changefreq || 'weekly';
   const priority =
     typeof entry.priority === 'number' ? entry.priority.toFixed(1) : '0.5';
@@ -140,14 +158,16 @@ export function renderSitemapIndex(items) {
     XML_STYLESHEET,
     '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
     items
-      .map(({ loc, lastmod = DEFAULT_LASTMOD }) =>
-        [
+      .map(({ loc, lastmod }) => {
+        const normalizedLastmod = normalizeSitemapLastmod(lastmod);
+
+        return [
           '  <sitemap>',
           `    <loc>${escapeXml(loc)}</loc>`,
-          `    <lastmod>${escapeXml(lastmod)}</lastmod>`,
+          `    <lastmod>${escapeXml(normalizedLastmod)}</lastmod>`,
           '  </sitemap>',
-        ].join('\n'),
-      )
+        ].join('\n');
+      })
       .join('\n'),
     '</sitemapindex>',
   ].join('\n');
@@ -192,7 +212,7 @@ export function getTourSitemapEntries({
   return groups.flatMap(({ category, tours = [] }) => {
     const categoryLastmod =
       tours
-        .map((tour) => tour?.updatedAt)
+        .map((tour) => formatSitemapLastmod(tour?.updatedAt))
         .filter(Boolean)
         .sort()
         .at(-1) || DEFAULT_LASTMOD;
@@ -227,7 +247,7 @@ export function getTourSitemapEntries({
           `${localePrefix}/${category}/${tour.slug}`,
           siteUrl,
         ),
-        lastmod: tour?.updatedAt || DEFAULT_LASTMOD,
+        lastmod: normalizeSitemapLastmod(tour?.updatedAt),
         changefreq: 'weekly',
         priority: 0.8,
         alternates: buildLocaleAlternates({
