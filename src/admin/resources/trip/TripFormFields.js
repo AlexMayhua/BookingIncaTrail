@@ -42,6 +42,25 @@ const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
  *   7. Descuentos
  */
 export default function TripFormFields({ mode }) {
+  const inputLang = useTripSpellcheckLang();
+  const spellcheckTextProps = useMemo(
+    () => ({
+      inputProps: {
+        lang: inputLang,
+        spellCheck: true,
+      },
+    }),
+    [inputLang],
+  );
+  const noSpellcheckProps = useMemo(
+    () => ({
+      inputProps: {
+        spellCheck: false,
+      },
+    }),
+    [],
+  );
+
   return (
     <>
       <TripDraftManager mode={mode} />
@@ -49,17 +68,24 @@ export default function TripFormFields({ mode }) {
       {/* ── 1. SEO & METADATA ──────────────────────────────── */}
       <SectionTitle label='SEO & Metadata' />
 
-      <TextInput source='meta_title' label='Meta Title' fullWidth />
+      <TextInput
+        source='meta_title'
+        label='Meta Title'
+        fullWidth
+        {...spellcheckTextProps}
+      />
       <TextInput
         source='meta_description'
         label='Meta Description'
         fullWidth
         multiline
         rows={3}
+        {...spellcheckTextProps}
       />
       <HtmlEditorInput
         source='navbar_description'
         label='Navbar Description (HTML)'
+        inputLang={inputLang}
         fullWidth
         multiline
         rows={3}
@@ -68,13 +94,30 @@ export default function TripFormFields({ mode }) {
       {/* ── 2. INFORMACIÓN BÁSICA ──────────────────────────── */}
       <SectionTitle label='Información Básica' />
 
-      <TextInput source='title' validate={required()} fullWidth />
-      <TextInput source='sub_title' label='Subtitle' fullWidth />
-      <TextInput source='highlight' fullWidth multiline rows={2} />
+      <TextInput
+        source='title'
+        validate={required()}
+        fullWidth
+        {...spellcheckTextProps}
+      />
+      <TextInput
+        source='sub_title'
+        label='Subtitle'
+        fullWidth
+        {...spellcheckTextProps}
+      />
+      <TextInput
+        source='highlight'
+        fullWidth
+        multiline
+        rows={2}
+        {...spellcheckTextProps}
+      />
       <TextInput
         source='slug'
         fullWidth
         helperText='URL slug (e.g. inca-trail-4-days)'
+        {...noSpellcheckProps}
       />
 
       <div style={{ display: 'flex', gap: 16 }}>
@@ -96,20 +139,40 @@ export default function TripFormFields({ mode }) {
 
       <div style={{ display: 'flex', gap: 16 }}>
         <NumberInput source='price' validate={[required(), minValue(0)]} />
-        <TextInput source='duration' helperText='e.g. 4 Days / 3 Nights' />
+        <TextInput
+          source='duration'
+          helperText='e.g. 4 Days / 3 Nights'
+          {...spellcheckTextProps}
+        />
         <NumberInput source='discount' label='Discount %' min={0} max={100} />
       </div>
 
       <div style={{ display: 'flex', gap: 16 }}>
-        <TextInput source='wetravel' label='WeTravel URL' fullWidth />
-        <TextInput source='url_brochure' label='Brochure URL' fullWidth />
+        <TextInput
+          source='wetravel'
+          label='WeTravel URL'
+          fullWidth
+          {...noSpellcheckProps}
+        />
+        <TextInput
+          source='url_brochure'
+          label='Brochure URL'
+          fullWidth
+          {...noSpellcheckProps}
+        />
       </div>
 
-      <TextInput source='offer' label='Offer Text' fullWidth />
+      <TextInput
+        source='offer'
+        label='Offer Text'
+        fullWidth
+        {...spellcheckTextProps}
+      />
       <TextInput
         source='linkedTripId'
         label='Linked Trip ID (i18n)'
         fullWidth
+        {...noSpellcheckProps}
       />
 
       <div style={{ display: 'flex', gap: 16 }}>
@@ -123,6 +186,7 @@ export default function TripFormFields({ mode }) {
       <HtmlEditorInput
         source='description'
         label='Description'
+        inputLang={inputLang}
         fullWidth
         multiline
         rows={8}
@@ -134,8 +198,8 @@ export default function TripFormFields({ mode }) {
 
       <ArrayInput source='quickstats'>
         <SimpleFormIterator inline>
-          <TextInput source='title' />
-          <TextInput source='content' />
+          <TextInput source='title' {...spellcheckTextProps} />
+          <TextInput source='content' {...spellcheckTextProps} />
         </SimpleFormIterator>
       </ArrayInput>
 
@@ -144,10 +208,16 @@ export default function TripFormFields({ mode }) {
 
       <ArrayInput source='information'>
         <SimpleFormIterator>
-          <TextInput source='title' label='Tab Title' fullWidth />
+          <TextInput
+            source='title'
+            label='Tab Title'
+            fullWidth
+            {...spellcheckTextProps}
+          />
           <HtmlEditorInput
             source='content'
             label='Tab Content (HTML)'
+            inputLang={inputLang}
             fullWidth
             multiline
             rows={4}
@@ -172,8 +242,9 @@ export default function TripFormFields({ mode }) {
             source='url'
             label='Image URL (optional)'
             helperText='Si subes archivo, este campo se reemplaza con /storage/...'
+            {...noSpellcheckProps}
           />
-          <TextInput source='alt' label='Alt Text' />
+          <TextInput source='alt' label='Alt Text' {...spellcheckTextProps} />
         </SimpleFormIterator>
       </ArrayInput>
 
@@ -326,6 +397,24 @@ function TripDraftManager({ mode }) {
   );
 }
 
+function useTripSpellcheckLang() {
+  const { control } = useFormContext();
+  const selectedLang = useWatch({ control, name: 'lang' });
+
+  if (selectedLang === 'es' || selectedLang === 'en') {
+    return selectedLang;
+  }
+
+  if (
+    typeof navigator !== 'undefined' &&
+    navigator.language?.toLowerCase().startsWith('es')
+  ) {
+    return 'es';
+  }
+
+  return 'en';
+}
+
 function TripDraftStatusBanner({ status, updatedAt }) {
   if (!status) {
     return null;
@@ -401,13 +490,24 @@ function SectionTitle({ label }) {
   );
 }
 
-function HtmlEditorInput({ source, label, helperText }) {
+function HtmlEditorInput({ source, label, helperText, inputLang }) {
   const { field } = useInput({ source });
   const [editorValue, setEditorValue] = useState(field.value || '');
+  const quillRef = useRef(null);
 
   useEffect(() => {
     setEditorValue(field.value || '');
   }, [field.value]);
+
+  useEffect(() => {
+    const editorRoot = quillRef.current?.getEditor?.()?.root;
+    if (!editorRoot) {
+      return;
+    }
+
+    editorRoot.setAttribute('lang', inputLang || 'en');
+    editorRoot.setAttribute('spellcheck', 'true');
+  }, [inputLang]);
 
   const handleChange = (content) => {
     setEditorValue(content);
@@ -419,7 +519,7 @@ function HtmlEditorInput({ source, label, helperText }) {
   };
 
   return (
-    <div style={{ width: '100%', marginBottom: 16 }}>
+    <div style={{ width: '100%', marginBottom: 16 }} lang={inputLang || 'en'}>
       <label
         style={{
           display: 'block',
@@ -432,6 +532,7 @@ function HtmlEditorInput({ source, label, helperText }) {
       </label>
 
       <ReactQuill
+        ref={quillRef}
         theme='snow'
         value={editorValue}
         onChange={handleChange}
