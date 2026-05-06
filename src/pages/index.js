@@ -35,13 +35,10 @@ const SectionAlliances = dynamic(
   },
 );
 
-export default function Index({ topTreks = [], allServices = [] }) {
+export default function Index({ allServices = [] }) {
   const router = useRouter();
   const { locale } = router;
   const t = locale === 'en' ? en : es;
-
-  // Asegurar que topTreks sea un array
-  const treks = Array.isArray(topTreks) ? topTreks : [];
 
   const text =
     '<p>A professional local tour company -<strong>&nbsp;100% Peruvian</strong>. We offer&nbsp;<strong>trips to Machu Picchu</strong>, The original<strong>&nbsp;Classic Inca trail</strong>&nbsp;(no shortcuts!),&nbsp;<strong>Salkantay trekking, Lares trek, Choquequirao trek,</strong>&nbsp;as well as customized treks and hikes for professional hikers.<br /> We also offer approachable hikes for those unable to participate in the classical routes.<br /> <strong>Owned by Abraham Ocon Rojas, Official Tour guide of Machu Picchu with 17 years of experience</strong>&nbsp;in Peruvian treks, hikes and historical sites. We would gladly take you on your next unforgetable life changing expedition!</p>';
@@ -114,28 +111,6 @@ export default function Index({ topTreks = [], allServices = [] }) {
                   worstRating: '1',
                 },
               },
-              {
-                '@context': 'https://schema.org',
-                '@type': 'ItemList',
-                name: 'Featured Tours',
-                description: 'Top adventure tours in Peru',
-                numberOfItems: treks.length,
-                itemListElement: treks.slice(0, 10).map((trek, index) => ({
-                  '@type': 'ListItem',
-                  position: index + 1,
-                  item: {
-                    '@type': 'Product',
-                    name: trek.title,
-                    url: absoluteUrl(`/${trek.category}/${trek.slug}`),
-                    image: trek.gallery?.[0]?.url || '',
-                    offers: {
-                      '@type': 'Offer',
-                      price: trek.price?.toFixed(2) || '0.00',
-                      priceCurrency: 'USD',
-                    },
-                  },
-                })),
-              },
             ]),
           }}
         />
@@ -182,29 +157,20 @@ export default function Index({ topTreks = [], allServices = [] }) {
 
 export async function getStaticProps({ locale }) {
   try {
-    const [topTreks, allServices] = await Promise.all([
-      listTrips({
-        locale,
-        isDeals: true,
-        fields:
-          'title,slug,gallery,price,discount,category,quickstats,duration,meta_title,meta_description,highlight',
-      }),
-      listTrips({
-        locale,
-        fields:
-          'title,slug,gallery,price,discount,category,quickstats,duration,highlight',
-      }),
-    ]);
+    const allServices = await listTrips({
+      locale,
+      fields:
+        'title,slug,gallery,price,discount,category,quickstats,duration,highlight',
+    });
 
     return {
       props: {
-        topTreks: JSON.parse(JSON.stringify(topTreks)),
         allServices: JSON.parse(JSON.stringify(allServices)),
       },
       revalidate: 3600,
     };
   } catch (err) {
     console.error('getStaticProps: error fetching data', err);
-    return { props: { topTreks: [], allServices: [] }, revalidate: 3600 };
+    return { props: { allServices: [] }, revalidate: 3600 };
   }
 }

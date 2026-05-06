@@ -33,11 +33,11 @@ export default function Tour1Card({ tour, locale }) {
         <div className='pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 from-30% via-black/35 to-transparent' />
         <div className='absolute left-3 top-3 z-20 flex flex-wrap gap-2'>
           {isBestSeller && (
-            <span className='inline-flex items-center rounded-full bg-[#e6c200] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-[#0d1117]'>
+            <span className='inline-flex items-center rounded-full bg-[#f4c20d] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-[#0d1117]'>
               ⭐ {locale === 'en' ? 'Best Seller' : 'Mas vendido'}
             </span>
           )}
-          <span className='inline-flex items-center rounded-full bg-[#2a9d8f] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-white'>
+          <span className='inline-flex items-center rounded-full bg-[#1f6b3a] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-white'>
             🔥 {locale === 'en' ? 'Limited Spots' : 'Cupos limitados'}
           </span>
         </div>
@@ -52,8 +52,8 @@ export default function Tour1Card({ tour, locale }) {
       </div>
 
       <div className=' z-20 -mt-6 flex items-center justify-between px-6'>
-        <p className='flex items-center text-sm font-semibold text-[#2a9d8f]'>
-          <span className='mr-2 inline-block h-3 w-3 rounded-full bg-[#2a9d8f]' />
+        <p className='flex items-center text-sm font-semibold text-[#185229]'>
+          <span className='mr-2 inline-block h-3 w-3 rounded-full bg-[#1f6b3a]' />
           {locale === 'en' ? 'Available' : 'Disponible'}
         </p>
       </div>
@@ -77,7 +77,7 @@ export default function Tour1Card({ tour, locale }) {
           <p className='text-xs text-[#4E5665]'>
             {locale === 'en' ? 'Discount' : 'Descuento'}
           </p>
-          <p className='text-xl font-bold text-[#2a9d8f]'>
+          <p className='text-xl font-bold text-[#185229]'>
             {Number(tour.discount || 0) > 0 ? `${tour.discount}%` : '--'}
           </p>
         </div>
@@ -96,7 +96,6 @@ export default function Tour1Card({ tour, locale }) {
           className='inline-flex items-center justify-center rounded-md bg-[#e6c200] px-4 py-2 text-sm font-bold uppercase tracking-[0.08em] text-[#0d1117] transition hover:bg-[#0d1117] hover:text-[#e6c200]'>
           {locale === 'en' ? 'Book Now' : 'Reservar ahora'}
         </Link>
-
       </div>
     </article>
   );
