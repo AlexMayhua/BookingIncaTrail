@@ -105,8 +105,8 @@ export default function Index({ allServices = [] }) {
                 },
                 aggregateRating: {
                   '@type': 'AggregateRating',
-                  ratingValue: '4.9',
-                  reviewCount: '8900',
+                  ratingValue: '4.8',
+                  reviewCount: '148',
                   bestRating: '5',
                   worstRating: '1',
                 },
@@ -115,6 +115,7 @@ export default function Index({ allServices = [] }) {
           }}
         />
       </Head>
+
       <NextSeo
         title={t.meta_title}
         description={t.meta_description}

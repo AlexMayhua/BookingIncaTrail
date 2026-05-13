@@ -59,7 +59,7 @@ export default function TourSeo({
                 aggregateRating: {
                   '@type': 'AggregateRating',
                   ratingValue: '4.9',
-                  reviewCount: '8900',
+                  reviewCount: '150',
                   bestRating: '5',
                   worstRating: '1',
                 },

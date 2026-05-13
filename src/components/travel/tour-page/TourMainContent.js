@@ -6,6 +6,34 @@ import TravelSectionTitle from '@/components/travel/TravelSectionTitle';
 import Calendar from '@/components/Availability';
 import TourContentDesktop from './TourContentDesktop';
 
+function isEmptyDescriptionParagraph(domNode) {
+  if (!domNode || domNode.type !== 'tag' || domNode.name !== 'p') {
+    return false;
+  }
+
+  if (!Array.isArray(domNode.children) || domNode.children.length === 0) {
+    return true;
+  }
+
+  return domNode.children.every((child) => {
+    if (child.type === 'text') {
+      return (child.data || '').replace(/\u00A0/g, ' ').trim() === '';
+    }
+
+    return child.type === 'tag' && child.name === 'br';
+  });
+}
+
+const descriptionParserOptions = {
+  replace(domNode) {
+    if (isEmptyDescriptionParagraph(domNode)) {
+      return <div className='h-4' aria-hidden='true' />;
+    }
+
+    return undefined;
+  },
+};
+
 export default function TourMainContent({
   category,
   categoryTitle,
@@ -120,7 +148,9 @@ export default function TourMainContent({
                 />
               )}
 
-              <div className='px-4'>{parser(tour.description)}</div>
+              <div className='px-4'>
+                {parser(tour.description, descriptionParserOptions)}
+              </div>
 
               {isZoomed && descriptionImage?.url && (
                 <div
