@@ -4,6 +4,7 @@ import countryList from 'react-select-country-list';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { BRAND } from '../../lib/brandConfig';
 import Link from 'next/link';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 function EmailFormulary({ t = {}, tourName = '' }) {
   const [email, setEmail] = useState('');
@@ -97,6 +98,7 @@ function EmailFormulary({ t = {}, tourName = '' }) {
       hotelQuality,
       message,
       tour,
+      recaptchaToken,
     };
 
     try {
@@ -255,8 +257,10 @@ function EmailFormulary({ t = {}, tourName = '' }) {
                 <div className='flex justify-center overflow-x-auto py-1'>
                   <ReCAPTCHA
                     ref={recaptchaRef}
-                    sitekey='6LdP-BYqAAAAABjwvBwSlkGY3265CH2uzwLqkerc'
+                    sitekey={BRAND.recaptchaSiteKey}
                     onChange={(token) => setRecaptchaToken(token)}
+                    onExpired={() => setRecaptchaToken(null)}
+                    onErrored={() => setRecaptchaToken(null)}
                   />
                 </div>
 
@@ -327,7 +331,7 @@ function EmailFormulary({ t = {}, tourName = '' }) {
                         {BRAND.contactPhone}
                       </a>
                       <a
-                        href='https://api.whatsapp.com/send/?phone=51970811976'
+                        href='https://api.whatsapp.com/send/?phone=51940291818'
                         className='block text-xs font-medium text-secondary hover:text-primary'>
                         WhatsApp
                       </a>
@@ -421,7 +425,7 @@ function EmailFormulary({ t = {}, tourName = '' }) {
 
               <div className='mt-6 flex flex-col items-center gap-3 sm:flex-row sm:items-center sm:justify-start'>
                 <Link
-                  href='https://api.whatsapp.com/send/?phone=51970811976'
+                  href='https://api.whatsapp.com/send/?phone=51940291818'
                   className='inline-flex items-center justify-center rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-primary/90'>
                   {t.chat_whatsapp}
                 </Link>
@@ -445,3 +449,4 @@ function EmailFormulary({ t = {}, tourName = '' }) {
 }
 
 export default EmailFormulary;
+ 
