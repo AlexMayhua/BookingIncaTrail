@@ -28,6 +28,11 @@ export const BRAND = {
   recaptchaSiteKey: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || null,
   recaptchaSecretKey: process.env.RECAPTCHA_SECRET_KEY || null,
 
+  resendApiToken: process.env.RESEND_API_KEY || null,
+  resendWebhookSecret: process.env.RESEND_WEBHOOK_SECRET || null,
+  contactForwardTo: process.env.CONTACT_FORWARD_TO || null,
+
+
   // Redes sociales (rellena vía env para que sean reemplazables)
   social: {
     facebook:

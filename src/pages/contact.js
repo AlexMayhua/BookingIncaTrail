@@ -34,7 +34,7 @@ export default function ContactPage() {
       />
       <div className='flex justify-center'>
         <div className='mx-2 lg:mx-0'>
-          <EmailFormulary t={t} />
+          <EmailFormulary t={t} locale={locale} />
         </div>
       </div>
     </>

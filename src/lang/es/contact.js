@@ -17,7 +17,9 @@ export default {
   travelers_placeholder: 'Número de viajeros',
   tour: 'Tour',
   tour_info_help: '¿Cómo podemos ayudarte?',
-  tour_placeholder: 'Nombre del tour',
+  tour_placeholder: 'Busca y selecciona un tour',
+  tour_loading: 'Cargando tours...',
+  tour_no_options: 'No se encontraron tours',
   about_placeholder:
     'Comparte fechas, tours de interés, requisitos alimenticios o preguntas',
   question: 'Cuéntanos sobre tus planes de viaje',

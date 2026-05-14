@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
 import Select from 'react-select';
 import countryList from 'react-select-country-list';
 import ReCAPTCHA from 'react-google-recaptcha';
@@ -6,19 +6,35 @@ import { BRAND } from '../../lib/brandConfig';
 import Link from 'next/link';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
-function EmailFormulary({ t = {}, tourName = '' }) {
+function EmailFormulary({ t = {}, tourName = '', locale = 'en' }) {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [tour, setTour] = useState(tourName);
+  const [tourOptions, setTourOptions] = useState([]);
+  const [toursLoading, setToursLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [country, setCountry] = useState('');
   const [travelers, setTravelers] = useState('');
   const [hotelQuality, setHotelQuality] = useState('');
   const [submitStatus, setSubmitStatus] = useState('idle');
   const [recaptchaToken, setRecaptchaToken] = useState(null);
+  const countrySelectInstanceId = useId();
+  const tourSelectInstanceId = useId();
   const recaptchaRef = useRef(null);
 
+  const localeToUse = locale === 'en' ? 'en' : 'es';
   const countries = useMemo(() => countryList().getData(), []);
+  const selectedTourOption = useMemo(() => {
+    if (!tour) return null;
+
+    return (
+      tourOptions.find((option) => option.value === tour) || {
+        label: tour,
+        value: tour,
+      }
+    );
+  }, [tour, tourOptions]);
+
   const selectStyles = useMemo(
     () => ({
       control: (base, state) => ({
@@ -54,6 +70,53 @@ function EmailFormulary({ t = {}, tourName = '' }) {
     }),
     [],
   );
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function fetchTours() {
+      setToursLoading(true);
+
+      try {
+        const params = new URLSearchParams({
+          locale: localeToUse,
+          fields: 'title,-_id',
+        });
+        const response = await fetch(`/api/trip?${params.toString()}`, {
+          signal: controller.signal,
+        });
+
+        if (!response.ok) {
+          throw new Error('Could not load tours');
+        }
+
+        const tours = await response.json();
+        const tourNames = [
+          ...new Set(tours.map((item) => item?.title?.trim()).filter(Boolean)),
+        ];
+        const options = tourNames
+          .sort((a, b) => a.localeCompare(b, localeToUse))
+          .map((title) => ({
+            label: title,
+            value: title,
+          }));
+
+        setTourOptions(options);
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          setTourOptions([]);
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setToursLoading(false);
+        }
+      }
+    }
+
+    fetchTours();
+
+    return () => controller.abort();
+  }, [localeToUse]);
 
   const labelClass = 'mb-2 block text-sm font-semibold text-primary/85';
   const inputClass =
@@ -205,6 +268,7 @@ function EmailFormulary({ t = {}, tourName = '' }) {
                     </label>
                     <Select
                       inputId='country'
+                      instanceId={countrySelectInstanceId}
                       options={countries}
                       styles={selectStyles}
                       className='text-sm'
@@ -220,14 +284,24 @@ function EmailFormulary({ t = {}, tourName = '' }) {
                   <label htmlFor='tour' className={labelClass}>
                     {t.tour}
                   </label>
-                  <input
-                    type='text'
-                    id='tour'
-                    name='tour'
-                    className={inputClass}
+                  <Select
+                    inputId='tour'
+                    instanceId={tourSelectInstanceId}
+                    options={tourOptions}
+                    styles={selectStyles}
+                    className='text-sm'
                     placeholder={t.tour_placeholder}
-                    value={tour}
-                    onChange={(e) => setTour(e.target.value)}
+                    value={selectedTourOption}
+                    onChange={(selectedOption) =>
+                      setTour(selectedOption?.value || '')
+                    }
+                    isClearable
+                    isLoading={toursLoading}
+                    isSearchable
+                    loadingMessage={() => t.tour_loading || 'Loading tours...'}
+                    noOptionsMessage={() =>
+                      t.tour_no_options || 'No tours found'
+                    }
                     required
                   />
                 </div>
@@ -449,4 +523,3 @@ function EmailFormulary({ t = {}, tourName = '' }) {
 }
 
 export default EmailFormulary;
- 
