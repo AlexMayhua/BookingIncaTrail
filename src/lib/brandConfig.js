@@ -29,12 +29,6 @@ export const BRAND = {
   recaptchaSecretKey: process.env.RECAPTCHA_SECRET_KEY || null,
 
   resendApiToken: process.env.RESEND_API_KEY || null,
-  resendWebhookSecret: process.env.RESEND_WEBHOOK_SECRET || null,
-  resendFromEmail:
-    process.env.RESEND_FROM_EMAIL ||
-    process.env.NEXT_PUBLIC_CONTACT_EMAIL ||
-    'info@bookingincatrail.com',
-  contactForwardTo: process.env.CONTACT_FORWARD_TO || null,
 
 
   // Redes sociales (rellena vía env para que sean reemplazables)

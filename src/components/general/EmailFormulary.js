@@ -13,7 +13,7 @@ function EmailFormulary({ t = {}, tourName = '', locale = 'en' }) {
   const [toursLoading, setToursLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [country, setCountry] = useState('');
-  const [travelers, setTravelers] = useState('');
+  const [travelers, setTravelers] = useState('1');
   const [submitStatus, setSubmitStatus] = useState('idle');
   const [recaptchaToken, setRecaptchaToken] = useState(null);
   const countrySelectInstanceId = useId();
@@ -22,6 +22,11 @@ function EmailFormulary({ t = {}, tourName = '', locale = 'en' }) {
 
   const localeToUse = locale === 'en' ? 'en' : 'es';
   const countries = useMemo(() => countryList().getData(), []);
+  const selectedCountryOption = useMemo(() => {
+    if (!country) return null;
+
+    return countries.find((option) => option.label === country) || null;
+  }, [country, countries]);
   const selectedTourOption = useMemo(() => {
     if (!tour) return null;
 
@@ -126,7 +131,7 @@ function EmailFormulary({ t = {}, tourName = '', locale = 'en' }) {
     setTour(tourName);
     setMessage('');
     setCountry('');
-    setTravelers('');
+    setTravelers('1');
     setRecaptchaToken(null);
     recaptchaRef.current?.reset();
   };
@@ -265,9 +270,11 @@ function EmailFormulary({ t = {}, tourName = '', locale = 'en' }) {
                       styles={selectStyles}
                       className='text-sm'
                       placeholder={t.country_placeholder}
+                      value={selectedCountryOption}
                       onChange={(selectedOption) =>
                         setCountry(selectedOption?.label || '')
                       }
+                      isClearable
                     />
                   </div>
                 </div>

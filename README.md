@@ -1454,9 +1454,6 @@ NEXT_PUBLIC_PAYPAL_CLIENT_ID=tu_paypal_id
 
 # Email
 RESEND_API_KEY=tu_resend_api_key
-RESEND_FROM_EMAIL=inforedirect@tudominio.com
-RESEND_WEBHOOK_SECRET=tu_resend_webhook_secret
-CONTACT_FORWARD_TO=info@tudominio.com
 
 # Marca
 NEXT_PUBLIC_BRAND_NAME=BookingIncatrail

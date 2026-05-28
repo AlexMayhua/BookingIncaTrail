@@ -7,7 +7,7 @@ export default {
   tour_info_title: 'Sobre el tour que te interesa',
   location_title: 'Nuestra ubicación',
 
-  name: 'Nombre',
+  name: 'Nombre Completos',
   lasname: 'Apellidos',
   email: 'Correo electrónico',
   cell: 'Teléfono / Celular',
