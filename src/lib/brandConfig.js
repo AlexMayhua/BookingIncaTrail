@@ -24,7 +24,7 @@ export const BRAND = {
     alt: 'Logo BookingIncaTrail',
   },
 
-  // CAPTCHA (reCAPTCHA v3)
+  // CAPTCHA (reCAPTCHA v2)
   recaptchaSiteKey: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || null,
   recaptchaSecretKey: process.env.RECAPTCHA_SECRET_KEY || null,
 

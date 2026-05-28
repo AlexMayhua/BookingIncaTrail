@@ -4,7 +4,6 @@ import countryList from 'react-select-country-list';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { BRAND } from '../../lib/brandConfig';
 import Link from 'next/link';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 function EmailFormulary({ t = {}, tourName = '', locale = 'en' }) {
   const [email, setEmail] = useState('');
