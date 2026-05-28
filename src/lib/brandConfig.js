@@ -30,6 +30,10 @@ export const BRAND = {
 
   resendApiToken: process.env.RESEND_API_KEY || null,
   resendWebhookSecret: process.env.RESEND_WEBHOOK_SECRET || null,
+  resendFromEmail:
+    process.env.RESEND_FROM_EMAIL ||
+    process.env.NEXT_PUBLIC_CONTACT_EMAIL ||
+    'info@bookingincatrail.com',
   contactForwardTo: process.env.CONTACT_FORWARD_TO || null,
 
 

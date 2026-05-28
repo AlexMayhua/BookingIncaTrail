@@ -100,7 +100,7 @@ export default async function handler(req, res) {
     const safeMessage = formatValue(message);
 
     const response = await resend.emails.send({
-      from: `${BRAND.name} <${BRAND.contactEmail}>`,
+      from: `${BRAND.name} <${BRAND.resendFromEmail}>`,
       to: recipient,
       subject: `Nuevo mensaje desde formulario: ${safeName}`,
       replyTo: email,

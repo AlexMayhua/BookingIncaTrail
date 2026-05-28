@@ -891,7 +891,7 @@ export default async function handler(req, res) {
 ```javascript
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_TOKEN)
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 async function sendConfirmationEmail(reservation) {
   await resend.emails.send({
@@ -1453,7 +1453,10 @@ REFRESH_TOKEN_SECRET=tu_secret_refresh
 NEXT_PUBLIC_PAYPAL_CLIENT_ID=tu_paypal_id
 
 # Email
-RESEND_TOKEN=tu_resend_token
+RESEND_API_KEY=tu_resend_api_key
+RESEND_FROM_EMAIL=inforedirect@tudominio.com
+RESEND_WEBHOOK_SECRET=tu_resend_webhook_secret
+CONTACT_FORWARD_TO=info@tudominio.com
 
 # Marca
 NEXT_PUBLIC_BRAND_NAME=BookingIncatrail

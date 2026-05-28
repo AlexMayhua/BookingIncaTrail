@@ -64,6 +64,13 @@ function getHeaderValue(value) {
   return Array.isArray(value) ? value[0] : value;
 }
 
+function normalizeEmailAddress(value = '') {
+  const rawValue = String(value || '').trim();
+  const addressFromNameFormat = rawValue.match(/<([^>]+)>/)?.[1];
+
+  return (addressFromNameFormat || rawValue).trim().toLowerCase();
+}
+
 async function getForwardableAttachments(emailId) {
   const { data, error } = await resend.emails.receiving.attachments.list({
     emailId,
@@ -185,12 +192,31 @@ export default async function handler(req, res) {
       });
     }
 
+    const subject = email.subject || event.data?.subject || 'Sin asunto';
+    const forwardToAddress = normalizeEmailAddress(BRAND.contactForwardTo);
+    const inboundRecipients = [
+      ...(email.to || []),
+      ...(email.cc || []),
+      ...(email.bcc || []),
+    ].map(normalizeEmailAddress);
+
+    if (inboundRecipients.includes(forwardToAddress)) {
+      console.warn('Inbound email forwarding skipped to avoid a loop:', {
+        emailId,
+        forwardTo: BRAND.contactForwardTo,
+        recipients: inboundRecipients,
+        subject,
+      });
+
+      return res.status(200).json({
+        message: 'Email forwarding skipped to avoid a loop',
+      });
+    }
+
     const attachments = await getForwardableAttachments(emailId);
 
-    const subject = email.subject || event.data?.subject || 'Sin asunto';
-
     const { error: sendError } = await resend.emails.send({
-      from: `${BRAND.name} <${BRAND.contactEmail}>`,
+      from: `${BRAND.name} <${BRAND.resendFromEmail}>`,
       to: BRAND.contactForwardTo,
       subject: `Correo entrante: ${subject}`,
       replyTo: email.from,
