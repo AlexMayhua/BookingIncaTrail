@@ -15,7 +15,6 @@ function EmailFormulary({ t = {}, tourName = '', locale = 'en' }) {
   const [message, setMessage] = useState('');
   const [country, setCountry] = useState('');
   const [travelers, setTravelers] = useState('');
-  const [hotelQuality, setHotelQuality] = useState('');
   const [submitStatus, setSubmitStatus] = useState('idle');
   const [recaptchaToken, setRecaptchaToken] = useState(null);
   const countrySelectInstanceId = useId();
@@ -122,10 +121,6 @@ function EmailFormulary({ t = {}, tourName = '', locale = 'en' }) {
   const inputClass =
     'w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-secondary focus:ring-2 focus:ring-secondary/25';
 
-  const handleHotelQualityChange = (e) => {
-    setHotelQuality(e.target.value);
-  };
-
   const resetForm = () => {
     setName('');
     setEmail('');
@@ -133,7 +128,6 @@ function EmailFormulary({ t = {}, tourName = '', locale = 'en' }) {
     setMessage('');
     setCountry('');
     setTravelers('');
-    setHotelQuality('');
     setRecaptchaToken(null);
     recaptchaRef.current?.reset();
   };
@@ -158,7 +152,6 @@ function EmailFormulary({ t = {}, tourName = '', locale = 'en' }) {
       email,
       country,
       travelers,
-      hotelQuality,
       message,
       tour,
       recaptchaToken,

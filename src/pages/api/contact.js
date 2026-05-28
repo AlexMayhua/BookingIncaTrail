@@ -34,8 +34,6 @@ export default async function handler(req, res) {
     tour,
     travelers,
     country,
-    hotelQuality,
-    foodPreferences,
     recaptchaToken,
   } = req.body;
 
@@ -99,8 +97,6 @@ export default async function handler(req, res) {
     const safeTravelers = formatValue(travelers);
     const safeCountry = formatValue(country);
     const safeTour = formatValue(tour);
-    const safeHotelQuality = formatValue(hotelQuality);
-    const safeFoodPreferences = formatValue(foodPreferences);
     const safeMessage = formatValue(message);
 
     const response = await resend.emails.send({
@@ -114,8 +110,6 @@ Correo electrónico: ${safeEmail}
 Número de viajeros: ${safeTravelers}
 País: ${safeCountry}
 Tour seleccionado: ${safeTour}
-Calidad del hotel: ${safeHotelQuality}
-Preferencias alimenticias o restricciones: ${safeFoodPreferences}
 
 Mensaje:
 ${safeMessage}
@@ -128,8 +122,6 @@ ${safeMessage}
           <p><strong>Número de viajeros:</strong> ${escapeHtml(safeTravelers)}</p>
           <p><strong>País:</strong> ${escapeHtml(safeCountry)}</p>
           <p><strong>Tour seleccionado:</strong> ${escapeHtml(safeTour)}</p>
-          <p><strong>Calidad del hotel:</strong> ${escapeHtml(safeHotelQuality)}</p>
-          <p><strong>Preferencias alimenticias o restricciones:</strong> ${escapeHtml(safeFoodPreferences)}</p>
           <p><strong>Mensaje:</strong></p>
           <p>${escapeHtml(safeMessage)}</p>
         </div>
