@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import en from '../../lang/en/navbar';
 import es from '../../lang/es/navbar';
 import { BRAND } from '../../lib/brandConfig';
@@ -13,6 +13,17 @@ import {
   normalizeCategorySlug,
 } from '@/utils/categoryHelpers';
 
+const focusRingLight =
+  'focus-visible:!outline focus-visible:!outline-2 focus-visible:!outline-offset-2 focus-visible:!outline-secondary';
+const focusRingOnGold =
+  'focus-visible:!outline focus-visible:!outline-2 focus-visible:!outline-offset-2 focus-visible:!outline-white';
+
+const getDesktopCategoryButtonId = (category) =>
+  `desktop-category-button-${normalizeCategorySlug(category)}`;
+
+const getDesktopTourPanelId = (category) =>
+  `desktop-tour-panel-${normalizeCategorySlug(category)}`;
+
 export default function Header() {
   const router = useRouter();
   const { locale, asPath } = router;
@@ -21,6 +32,9 @@ export default function Header() {
   const [activeCategory, setActiveCategory] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openMobileCategory, setOpenMobileCategory] = useState(null);
+  const mobileMenuButtonRef = useRef(null);
+  const mobileMenuCloseButtonRef = useRef(null);
+  const mobileMenuPanelRef = useRef(null);
 
   const logoAlt =
     locale === 'en' ? 'Booking Inca Trail Logo' : 'Logo Booking Inca Trail';
@@ -90,6 +104,12 @@ export default function Header() {
   );
   const activeGroupMeta = getHeaderCategoryMeta(activeGroup?.category, locale);
   const activeCategoryTitle = activeGroup?.title || activeGroupMeta.title;
+  const activePanelId = activeCategory
+    ? getDesktopTourPanelId(activeCategory)
+    : undefined;
+  const activeButtonId = activeCategory
+    ? getDesktopCategoryButtonId(activeCategory)
+    : undefined;
 
   const activePanelItems = (activeGroup?.trips || []).map((trip, index) => ({
     id: `${activeGroupMeta.slug || 'tour'}-${trip.slug || index}`,
@@ -102,37 +122,25 @@ export default function Header() {
     image: trip.gallery?.url || null,
   }));
 
-  useEffect(() => {
-    setMobileMenuOpen(false);
-    setOpenMobileCategory(null);
-    setActiveCategory(null);
-  }, [asPath]);
-
-  useEffect(() => {
-    if (typeof document === 'undefined') return undefined;
-
-    const previousOverflow = document.body.style.overflow;
-
-    if (mobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = previousOverflow || '';
-    }
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [mobileMenuOpen]);
-
   const changeLanguage = (language) => {
     if (language !== locale) {
       router.push(router.pathname, router.asPath, { locale: language });
     }
   };
 
-  const closeMobileMenu = () => {
+  const closeMobileMenu = ({ restoreFocus = true } = {}) => {
     setMobileMenuOpen(false);
     setOpenMobileCategory(null);
+
+    if (restoreFocus && mobileMenuOpen && typeof window !== 'undefined') {
+      window.requestAnimationFrame(() => {
+        mobileMenuButtonRef.current?.focus();
+      });
+    }
+  };
+
+  const closeMobileMenuWithoutFocus = () => {
+    closeMobileMenu({ restoreFocus: false });
   };
 
   const toggleMobileCategory = (category) => {
@@ -141,11 +149,113 @@ export default function Header() {
     );
   };
 
+  const getMobileFocusableElements = () => {
+    if (!mobileMenuPanelRef.current) return [];
+
+    return Array.from(
+      mobileMenuPanelRef.current.querySelectorAll(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      ),
+    ).filter((element) => element.getClientRects().length > 0);
+  };
+
+  const handleMobilePanelKeyDown = (event) => {
+    if (event.key !== 'Tab') return;
+
+    const focusableElements = getMobileFocusableElements();
+    if (focusableElements.length === 0) return;
+
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    if (event.shiftKey && document.activeElement === firstElement) {
+      event.preventDefault();
+      lastElement.focus();
+      return;
+    }
+
+    if (!event.shiftKey && document.activeElement === lastElement) {
+      event.preventDefault();
+      firstElement.focus();
+    }
+  };
+
+  const handleDesktopNavBlur = (event) => {
+    if (!event.currentTarget.contains(event.relatedTarget)) {
+      setActiveCategory(null);
+    }
+  };
+
+  const focusFirstDesktopPanelLink = (category) => {
+    if (typeof document === 'undefined') return;
+
+    window.requestAnimationFrame(() => {
+      const panel = document.getElementById(getDesktopTourPanelId(category));
+      panel?.querySelector('a[href]')?.focus();
+    });
+  };
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return undefined;
+
+    if (!mobileMenuOpen) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [mobileMenuOpen]);
+
+  useEffect(() => {
+    if (!mobileMenuOpen || typeof window === 'undefined') return undefined;
+
+    const frameId = window.requestAnimationFrame(() => {
+      mobileMenuCloseButtonRef.current?.focus();
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+    };
+  }, [mobileMenuOpen]);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return undefined;
+    if (!mobileMenuOpen && !activeCategory) return undefined;
+
+    const handleEscape = (event) => {
+      if (event.key !== 'Escape') return;
+
+      if (mobileMenuOpen) {
+        event.preventDefault();
+        closeMobileMenu();
+        return;
+      }
+
+      setActiveCategory(null);
+    };
+
+    document.addEventListener('keydown', handleEscape);
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [activeCategory, mobileMenuOpen]);
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+    setOpenMobileCategory(null);
+    setActiveCategory(null);
+  }, [asPath]);
+
   return (
     <header id='headerDesktop' className='sticky top-0 z-40 w-full text-white'>
       <div className='header-mobile-bar border-b border-white/10 bg-primary lg:hidden'>
         <div className='flex items-center justify-between px-4 py-3'>
-          <Link href='/' aria-label={logoAlt}>
+          <Link
+            href='/'
+            aria-label={logoAlt}
+            className={`rounded-md ${focusRingLight}`}>
             <Image
               src='/assets/logo-Booking.svg'
               alt={logoAlt}
@@ -157,8 +267,9 @@ export default function Header() {
 
           <div className='flex items-center gap-2'>
             <button
+              type='button'
               onClick={() => changeLanguage('en')}
-              className='rounded-lg p-1.5 transition-colors hover:bg-white/10'
+              className={`rounded-lg p-1.5 transition-colors hover:bg-white/10 ${focusRingLight}`}
               aria-label='English'
               aria-pressed={router.locale === 'en'}>
               <USFlag
@@ -166,8 +277,9 @@ export default function Header() {
               />
             </button>
             <button
+              type='button'
               onClick={() => changeLanguage('es')}
-              className='rounded-lg p-1.5 transition-colors hover:bg-white/10'
+              className={`rounded-lg p-1.5 transition-colors hover:bg-white/10 ${focusRingLight}`}
               aria-label='Español'
               aria-pressed={router.locale === 'es'}>
               <ESFlag
@@ -175,12 +287,13 @@ export default function Header() {
               />
             </button>
             <button
+              ref={mobileMenuButtonRef}
               type='button'
               onClick={() => setMobileMenuOpen((current) => !current)}
               aria-expanded={mobileMenuOpen}
               aria-controls='mobile-menu-panel'
               aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
-              className='flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-secondary transition-colors hover:bg-white/10'>
+              className={`flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-secondary transition-colors hover:bg-white/10 ${focusRingLight}`}>
               <svg
                 xmlns='http://www.w3.org/2000/svg'
                 viewBox='0 0 24 24'
@@ -218,7 +331,13 @@ export default function Header() {
       />
 
       <aside
+        ref={mobileMenuPanelRef}
         id='mobile-menu-panel'
+        role='dialog'
+        aria-modal={mobileMenuOpen ? 'true' : undefined}
+        aria-hidden={!mobileMenuOpen}
+        inert={mobileMenuOpen ? undefined : ''}
+        onKeyDown={handleMobilePanelKeyDown}
         className={`fixed right-0 top-0 z-50 flex h-dvh w-[88vw] max-w-sm flex-col border-l border-white/10 bg-primary shadow-2xl transition-transform duration-300 lg:hidden ${
           mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}>
@@ -230,10 +349,11 @@ export default function Header() {
             <p className='mt-1 text-lg font-semibold text-white'>{t.slogan}</p>
           </div>
           <button
+            ref={mobileMenuCloseButtonRef}
             type='button'
             onClick={closeMobileMenu}
             aria-label='Close menu'
-            className='flex h-10 w-10 items-center justify-center rounded-full border border-secondary/50 bg-secondary/10 text-secondary transition-colors hover:bg-secondary/20'>
+            className={`flex h-10 w-10 items-center justify-center rounded-full border border-secondary/50 bg-secondary/10 text-secondary transition-colors hover:bg-secondary/20 ${focusRingLight}`}>
             <svg
               xmlns='http://www.w3.org/2000/svg'
               viewBox='0 0 24 24'
@@ -256,8 +376,8 @@ export default function Header() {
               <Link
                 key={link.label}
                 href={link.href}
-                onClick={closeMobileMenu}
-                className='rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold uppercase tracking-[0.12em] text-white/85 transition-colors hover:bg-white/10'>
+                onClick={closeMobileMenuWithoutFocus}
+                className={`rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold uppercase tracking-[0.12em] text-white/85 transition-colors hover:bg-white/10 ${focusRingLight}`}>
                 {link.label}
               </Link>
             ))}
@@ -290,7 +410,7 @@ export default function Header() {
                     onClick={() => toggleMobileCategory(categoryGroup.category)}
                     aria-expanded={isOpen}
                     aria-controls={`mobile-category-${categoryGroup.category}`}
-                    className='flex w-full items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-left uppercase tracking-[0.08em] text-white transition-colors hover:bg-white/10'>
+                    className={`flex w-full items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-left uppercase tracking-[0.08em] text-white transition-colors hover:bg-white/10 ${focusRingLight}`}>
                     <span className='text-sm font-semibold'>
                       {categoryLabel}
                     </span>
@@ -321,8 +441,8 @@ export default function Header() {
                             <li key={`${categoryGroup.category}-${trip.slug}`}>
                               <Link
                                 href={`/${normalizeCategorySlug(trip.category || categoryGroup.category)}/${trip.slug}`}
-                                onClick={closeMobileMenu}
-                                className='flex items-start gap-3 rounded-xl px-3 py-3 text-sm text-white/80 transition-colors hover:bg-white/10 hover:text-white'>
+                                onClick={closeMobileMenuWithoutFocus}
+                                className={`flex items-start gap-3 rounded-xl px-3 py-3 text-sm text-white/80 transition-colors hover:bg-white/10 hover:text-white ${focusRingLight}`}>
                                 <span className='mt-1 h-2 w-2 shrink-0 rounded-full bg-secondary' />
                                 <span>{trip.title}</span>
                               </Link>
@@ -351,7 +471,7 @@ export default function Header() {
                   href={social.href}
                   target='_blank'
                   rel='noopener noreferrer'
-                  className='flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/75 transition-colors hover:bg-white/10 hover:text-secondary'
+                  className={`flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/75 transition-colors hover:bg-white/10 hover:text-secondary ${focusRingLight}`}
                   aria-label={social.label}>
                   <span className='h-5 w-5'>{social.icon}</span>
                 </Link>
@@ -361,8 +481,8 @@ export default function Header() {
 
           <Link
             href='/contact'
-            onClick={closeMobileMenu}
-            className='block rounded-full bg-[#e6c200] px-4 py-3 text-center text-sm font-bold uppercase tracking-[0.14em] text-primary transition-colors hover:bg-[#e6c200]/90'>
+            onClick={closeMobileMenuWithoutFocus}
+            className={`block rounded-full bg-[#e6c200] px-4 py-3 text-center text-sm font-bold uppercase tracking-[0.14em] text-primary transition-colors hover:bg-[#e6c200]/90 ${focusRingOnGold}`}>
             {t.enquire}
           </Link>
         </div>
@@ -370,7 +490,10 @@ export default function Header() {
 
       <div className='header-desktop-shell hidden w-full bg-primary pt-4 text-white lg:block'>
         <div className='flex items-center justify-around'>
-          <Link href='/' aria-label={logoAlt}>
+          <Link
+            href='/'
+            aria-label={logoAlt}
+            className={`rounded-md ${focusRingLight}`}>
             <div>
               <Image
                 src='/assets/logo-Booking.svg'
@@ -386,7 +509,11 @@ export default function Header() {
             {secondaryLinks.map((link, index) => (
               <div key={link.label} className='flex items-center gap-4'>
                 {index > 0 && <div className='h-5 w-px bg-white/20' />}
-                <Link href={link.href}>{link.label}</Link>
+                <Link
+                  href={link.href}
+                  className={`rounded-sm transition-colors hover:text-white ${focusRingLight}`}>
+                  {link.label}
+                </Link>
               </div>
             ))}
           </div>
@@ -394,16 +521,22 @@ export default function Header() {
           <div className='flex gap-3'>
             <div className='flex gap-2'>
               <button
+                type='button'
                 onClick={() => changeLanguage('en')}
-                className='flex gap-2 items-center'>
+                aria-label='English'
+                aria-pressed={router.locale === 'en'}
+                className={`flex gap-2 items-center rounded-md p-1 ${focusRingLight}`}>
                 <USFlag
                   className={`w-6 2xl:w-8 rounded-sm ${router.locale === 'en' ? 'drop-shadow-[0px_0px_5px_white]' : ''}`}
                 />
               </button>
               <div className='contact-divider'></div>
               <button
+                type='button'
                 onClick={() => changeLanguage('es')}
-                className='flex gap-2 items-center'>
+                aria-label='Español'
+                aria-pressed={router.locale === 'es'}
+                className={`flex gap-2 items-center rounded-md p-1 ${focusRingLight}`}>
                 <ESFlag
                   className={`w-6 2xl:w-8 rounded-sm ${router.locale === 'es' ? 'drop-shadow-[0px_0px_5px_white]' : ''}`}
                 />
@@ -419,7 +552,7 @@ export default function Header() {
                     href={social.href}
                     target='_blank'
                     rel='noopener noreferrer'
-                    className='size-5 text-white/50 transition-colors duration-300 hover:text-secondary 2xl:size-7'
+                    className={`size-5 rounded-sm text-white/50 transition-colors duration-300 hover:text-secondary 2xl:size-7 ${focusRingLight}`}
                     aria-label={social.label}>
                     {social.icon}
                   </Link>
@@ -430,7 +563,7 @@ export default function Header() {
             <div className='flex items-center'>
               <Link
                 href='/contact'
-                className='bg-[#e6c200] px-4 py-2 rounded-full text-nowrap text-xs 2xl:text-sm font-bold uppercase text-primary hover:bg-[#e6c200]/90 transition-colors duration-300'>
+                className={`bg-[#e6c200] px-4 py-2 rounded-full text-nowrap text-xs 2xl:text-sm font-bold uppercase text-primary hover:bg-[#e6c200]/90 transition-colors duration-300 ${focusRingOnGold}`}>
                 {t.enquire}
               </Link>
             </div>
@@ -438,7 +571,7 @@ export default function Header() {
         </div>
         <div className='border-t border-white/10'></div>
         <div className='flex w-full p-4'>
-          <nav className='relative w-full'>
+          <nav className='relative w-full' onBlur={handleDesktopNavBlur}>
             <ul className='flex w-full items-center justify-center gap-2 px-8 text-xs font-medium 2xl:text-sm lg:gap-4 xl:gap-6 3xl:gap-8'>
               {categories.map((categoryGroup) => {
                 const hasTrips = Array.isArray(categoryGroup?.trips)
@@ -452,13 +585,25 @@ export default function Header() {
                 const categoryLabel =
                   categoryGroup?.title || categoryMeta.title;
                 const isActive = activeCategory === categoryGroup.category;
+                const buttonId = getDesktopCategoryButtonId(
+                  categoryGroup.category,
+                );
+                const panelId = getDesktopTourPanelId(categoryGroup.category);
 
                 return (
                   <li key={categoryGroup.category}>
                     <button
+                      id={buttonId}
                       type='button'
                       aria-disabled={!isInteractive}
+                      aria-expanded={isInteractive ? isActive : undefined}
+                      aria-controls={isInteractive ? panelId : undefined}
+                      aria-haspopup={isInteractive ? 'true' : undefined}
                       onMouseEnter={() => {
+                        if (!isInteractive) return;
+                        setActiveCategory(categoryGroup.category);
+                      }}
+                      onFocus={() => {
                         if (!isInteractive) return;
                         setActiveCategory(categoryGroup.category);
                       }}
@@ -470,8 +615,29 @@ export default function Header() {
                             : categoryGroup.category,
                         );
                       }}
+                      onKeyDown={(event) => {
+                        if (!isInteractive) return;
+
+                        if (event.key === 'Enter' || event.key === ' ') {
+                          event.preventDefault();
+                          setActiveCategory(categoryGroup.category);
+                          return;
+                        }
+
+                        if (event.key === 'ArrowDown') {
+                          event.preventDefault();
+                          setActiveCategory(categoryGroup.category);
+                          focusFirstDesktopPanelLink(categoryGroup.category);
+                          return;
+                        }
+
+                        if (event.key === 'Escape') {
+                          event.preventDefault();
+                          setActiveCategory(null);
+                        }
+                      }}
                       className={[
-                        'relative flex items-center gap-1 uppercase transition-opacity',
+                        `relative flex items-center gap-1 rounded-sm px-1 py-1 uppercase transition-opacity ${focusRingLight}`,
                         isInteractive ? 'group' : 'cursor-default opacity-90',
                       ].join(' ')}>
                       {categoryLabel}
@@ -509,12 +675,16 @@ export default function Header() {
 
             {activeCategory && activePanelItems.length > 0 && (
               <div
+                id={activePanelId}
+                role='group'
+                aria-labelledby={activeButtonId}
                 className='absolute top-full w-full mt-4'
                 onMouseEnter={() => setActiveCategory(activeCategory)}
                 onMouseLeave={() => setActiveCategory(null)}>
                 <TourPanel
                   items={activePanelItems}
                   title={activeCategoryTitle}
+                  onNavigate={() => setActiveCategory(null)}
                 />
               </div>
             )}
