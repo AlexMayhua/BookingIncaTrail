@@ -47,6 +47,10 @@ export async function handleGetNavbarTrips(req, res) {
       category,
       locale,
     });
+    res.setHeader(
+      'Cache-Control',
+      'public, s-maxage=1800, stale-while-revalidate=86400',
+    );
     return res.status(200).json(groupedTrips);
   } catch (error) {
     return res.status(400).json({ msg: error.message });

@@ -50,13 +50,18 @@ export default function TravelPage({
 }
 
 export async function getStaticPaths() {
-  const data = await getCategoriesWithTours('all');
-  const paths = [];
-  for (const { category } of data) {
-    paths.push({ params: { travel: category }, locale: 'en' });
-    paths.push({ params: { travel: category }, locale: 'es' });
+  try {
+    const data = await getCategoriesWithTours('all');
+    const paths = [];
+    for (const { category } of data) {
+      paths.push({ params: { travel: category }, locale: 'en' });
+      paths.push({ params: { travel: category }, locale: 'es' });
+    }
+    return { paths, fallback: 'blocking' };
+  } catch (error) {
+    console.error('[travel] getStaticPaths failed:', error.message);
+    return { paths: [], fallback: 'blocking' };
   }
-  return { paths, fallback: 'blocking' };
 }
 
 export async function getStaticProps({ params, locale }) {

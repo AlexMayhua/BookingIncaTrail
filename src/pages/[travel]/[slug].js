@@ -192,21 +192,26 @@ export default function TourPage({ tour, category, similarTours }) {
 }
 
 export async function getStaticPaths() {
-  const data = await getCategoriesWithTours('all');
-  const paths = [];
-  for (const { category, tours } of data) {
-    for (const tour of tours) {
-      paths.push({
-        params: { travel: category, slug: tour.slug },
-        locale: 'en',
-      });
-      paths.push({
-        params: { travel: category, slug: tour.slug },
-        locale: 'es',
-      });
+  try {
+    const data = await getCategoriesWithTours('all');
+    const paths = [];
+    for (const { category, tours } of data) {
+      for (const tour of tours) {
+        paths.push({
+          params: { travel: category, slug: tour.slug },
+          locale: 'en',
+        });
+        paths.push({
+          params: { travel: category, slug: tour.slug },
+          locale: 'es',
+        });
+      }
     }
+    return { paths, fallback: 'blocking' };
+  } catch (error) {
+    console.error('[travel/slug] getStaticPaths failed:', error.message);
+    return { paths: [], fallback: 'blocking' };
   }
-  return { paths, fallback: 'blocking' };
 }
 
 export async function getStaticProps({ params, locale }) {

@@ -5,9 +5,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3000",
-    "build": "next build",
+    "build": "npm run navbar:generate && next build",
     "start": "next start -H 0.0.0.0 -p 3000",
     "postbuild": "node -e \"console.log('Runtime sitemap routes enabled')\"",
+    "navbar:generate": "node scripts/generate-navbar-snapshot.mjs",
     "backup": "node scripts/backup-mongodb.js",
     "db:backup": "node scripts/backup-mongodb.js",
     "check-favicons": "node scripts/generate-favicons.js",
