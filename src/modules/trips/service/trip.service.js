@@ -144,6 +144,16 @@ export async function getCategoriesWithTours(locale) {
     .map(([category, tours]) => ({ category, tours }));
 }
 
+export async function getToursByCategory(category, locale) {
+  const normalizedCategory = normalizeCategorySlug(category);
+
+  if (!normalizedCategory) {
+    return [];
+  }
+
+  return tripRepository.findTripsByCategory(normalizedCategory, locale);
+}
+
 /**
  * Devuelve los trips marcados como deals para un idioma.
  */

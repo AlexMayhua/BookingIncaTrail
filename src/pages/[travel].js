@@ -1,9 +1,10 @@
 import { useRouter } from 'next/router';
-import { getCategoriesWithTours } from '@/modules/trips/service/trip.service';
+import { getToursByCategory } from '@/modules/trips/service/trip.service';
 import {
   getCategoryTitle,
   getCategoryDescription,
   getCategoryImagePath,
+  normalizeCategorySlug,
 } from '@/utils/categoryHelpers';
 import travelEN from '@/lang/en/travel';
 import travelES from '@/lang/es/travel';
@@ -50,30 +51,17 @@ export default function TravelPage({
 }
 
 export async function getStaticPaths() {
-  try {
-    const data = await getCategoriesWithTours('all');
-    const paths = [];
-    for (const { category } of data) {
-      paths.push({ params: { travel: category }, locale: 'en' });
-      paths.push({ params: { travel: category }, locale: 'es' });
-    }
-    return { paths, fallback: 'blocking' };
-  } catch (error) {
-    console.error('[travel] getStaticPaths failed:', error.message);
-    return { paths: [], fallback: 'blocking' };
-  }
+  return { paths: [], fallback: 'blocking' };
 }
 
 export async function getStaticProps({ params, locale }) {
   const lang = locale || 'es';
-  const allCategories = await getCategoriesWithTours(lang);
+  const category = normalizeCategorySlug(params.travel);
+  const tours = await getToursByCategory(category, lang);
 
-  const current = allCategories.find((c) => c.category === params.travel);
-  if (!current) {
+  if (!tours.length) {
     return { notFound: true };
   }
-
-  const category = current.category;
 
   return {
     props: {
@@ -81,7 +69,7 @@ export async function getStaticProps({ params, locale }) {
       categoryTitle: getCategoryTitle(category, lang),
       categoryDescription: getCategoryDescription(category, lang),
       categoryImagePath: getCategoryImagePath(category),
-      tours: JSON.parse(JSON.stringify(current.tours)),
+      tours: JSON.parse(JSON.stringify(tours)),
     },
     revalidate: 3600,
   };

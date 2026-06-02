@@ -38,6 +38,22 @@ export async function findTripsGroupedByCategory(lang) {
     .lean();
 }
 
+export async function findTripsByCategory(category, lang) {
+  await connectDB();
+
+  const filter = { category };
+
+  if (lang && lang !== 'all') {
+    filter.$or = [{ lang }, { lang: 'all' }];
+  }
+
+  return Trip.find(filter)
+    .select(
+      'title slug category meta_description gallery price duration discount quickstats updatedAt',
+    )
+    .lean();
+}
+
 export async function findDeals(lang) {
   await connectDB();
   return Trip.find({ lang, isDeals: true }).lean();

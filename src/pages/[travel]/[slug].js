@@ -3,11 +3,12 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import {
   getTripBySlug,
-  getCategoriesWithTours,
+  getToursByCategory,
 } from '@/modules/trips/service/trip.service';
 import {
   getCategoryTitle,
   getCategoryImagePath,
+  normalizeCategorySlug,
 } from '@/utils/categoryHelpers';
 import { BRAND } from '@/lib/brandConfig';
 import en from '@/lang/en/slug';
@@ -192,42 +193,21 @@ export default function TourPage({ tour, category, similarTours }) {
 }
 
 export async function getStaticPaths() {
-  try {
-    const data = await getCategoriesWithTours('all');
-    const paths = [];
-    for (const { category, tours } of data) {
-      for (const tour of tours) {
-        paths.push({
-          params: { travel: category, slug: tour.slug },
-          locale: 'en',
-        });
-        paths.push({
-          params: { travel: category, slug: tour.slug },
-          locale: 'es',
-        });
-      }
-    }
-    return { paths, fallback: 'blocking' };
-  } catch (error) {
-    console.error('[travel/slug] getStaticPaths failed:', error.message);
-    return { paths: [], fallback: 'blocking' };
-  }
+  return { paths: [], fallback: 'blocking' };
 }
 
 export async function getStaticProps({ params, locale }) {
-  const { travel, slug } = params;
+  const { slug } = params;
+  const travel = normalizeCategorySlug(params.travel);
   const lang = locale || 'es';
 
   const tour = await getTripBySlug(slug, lang);
-  if (!tour || tour.category !== travel) {
+  if (!tour || normalizeCategorySlug(tour.category) !== travel) {
     return { notFound: true };
   }
 
-  const allCategories = await getCategoriesWithTours(lang);
-  const currentCategory = allCategories.find((c) => c.category === travel);
-  const similarTours = currentCategory
-    ? currentCategory.tours.filter((t) => t.slug !== slug)
-    : [];
+  const categoryTours = await getToursByCategory(travel, lang);
+  const similarTours = categoryTours.filter((t) => t.slug !== slug);
 
   return {
     props: {

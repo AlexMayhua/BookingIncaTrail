@@ -31,4 +31,7 @@ const TripSchema = new mongoose.Schema(
   },
 );
 
+TripSchema.index({ slug: 1, lang: 1 });
+TripSchema.index({ category: 1, lang: 1 });
+
 export default mongoose.models.trip || mongoose.model('trip', TripSchema);
