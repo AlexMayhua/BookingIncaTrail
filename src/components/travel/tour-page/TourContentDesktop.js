@@ -341,6 +341,17 @@ export default function TourContentDesktop({
       ]),
     [sections],
   );
+  const itineraryDayIds = useMemo(
+    () =>
+      new Set(
+        sections.flatMap((section) =>
+          section.type === 'itinerary'
+            ? section.days.map((day) => day.id)
+            : [],
+        ),
+      ),
+    [sections],
+  );
   const stickyLayoutVars = useMemo(
     () => ({ '--header-offset': `${headerOffset}px` }),
     [headerOffset],
@@ -428,8 +439,18 @@ export default function TourContentDesktop({
     const target = document.getElementById(id);
     if (!target) return;
 
+    const sectionTitleHeight = itineraryDayIds.has(id)
+      ? target
+          .closest('[data-tour-content-section]')
+          ?.querySelector('[data-sticky-section-title]')
+          ?.getBoundingClientRect().height || 0
+      : 0;
+    const scrollGap = sectionTitleHeight + 36;
     const y =
-      target.getBoundingClientRect().top + window.scrollY - headerOffset - 36;
+      target.getBoundingClientRect().top +
+      window.scrollY -
+      headerOffset -
+      scrollGap;
     window.scrollTo({ top: y, behavior: 'smooth' });
   };
 
@@ -495,8 +516,11 @@ export default function TourContentDesktop({
               <section
                 key={section.id}
                 id={section.id}
+                data-tour-content-section
                 className='scroll-mt-[calc(var(--header-offset)+2.5rem)]'>
-                <h2 className='sticky top-[var(--header-offset)] z-20 mb-6 bg-white/95 py-2 text-3xl font-bold text-primary backdrop-blur-sm'>
+                <h2
+                  data-sticky-section-title
+                  className='sticky top-[var(--header-offset)] z-20 mb-6 bg-white/95 py-2 text-3xl font-bold text-primary backdrop-blur-sm'>
                   {section.title}
                 </h2>
 
@@ -516,8 +540,11 @@ export default function TourContentDesktop({
               <section
                 key={section.id}
                 id={section.id}
+                data-tour-content-section
                 className='scroll-mt-[calc(var(--header-offset)+2.5rem)]'>
-                <h2 className='sticky top-[var(--header-offset)] z-20 mb-6 bg-white/95 py-2 text-3xl font-bold text-primary backdrop-blur-sm'>
+                <h2
+                  data-sticky-section-title
+                  className='sticky top-[var(--header-offset)] z-20 mb-6 bg-white/95 py-2 text-3xl font-bold text-primary backdrop-blur-sm'>
                   {section.title}
                 </h2>
 
@@ -544,8 +571,11 @@ export default function TourContentDesktop({
             <section
               key={section.id}
               id={section.id}
+              data-tour-content-section
               className='scroll-mt-[calc(var(--header-offset)+1rem)]'>
-              <h2 className='sticky top-[var(--header-offset)] z-20 mb-6 bg-white/95 py-2 text-3xl font-bold text-primary backdrop-blur-sm'>
+              <h2
+                data-sticky-section-title
+                className='sticky top-[var(--header-offset)] z-20 mb-6 bg-white/95 py-2 text-3xl font-bold text-primary backdrop-blur-sm'>
                 {section.title}
               </h2>
 
