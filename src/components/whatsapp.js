@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const WhatsAppChat = () => {
   // Estado para controlar la visibilidad de la ventana de chat
@@ -12,7 +13,7 @@ const WhatsAppChat = () => {
         <button
           onClick={() => setShowChat(!showChat)}
           className='whatsapp-button group'>
-          <img
+          <Image
             src='/assets/whatsapp.svg'
             alt='WhatsApp'
             title='WhatsApp'
@@ -25,7 +26,7 @@ const WhatsAppChat = () => {
         <div className='fixed lg:bottom-20 bottom-16 lg:right-8 right-4 w-72 bg-white rounded shadow-lg border border-gray-200 overflow-hidden z-30'>
           {/* Encabezado del chat */}
           <div className='bg-green-600 text-white p-3 flex items-center'>
-            <img
+            <Image
               src='/assets/whatsapp.svg'
               alt='Contact Profile'
               className='w-10 h-10 rounded-full mr-3'
@@ -70,7 +71,7 @@ const WhatsAppChat = () => {
               href='https://api.whatsapp.com/send/?phone=51940291818&text&type=phone_number&app_absent'
               className='flex items-center justify-center bg-green-600 text-white py-2 rounded shadow-md hover:bg-green-500 mb-2 text-xs'
               target='_blank'>
-              <img
+              <Image
                 src='/assets/avatarHwhatsapp.webp'
                 alt='WhatsApp'
                 className='w-10 h-10 mr-2 rounded-full'
@@ -81,7 +82,7 @@ const WhatsAppChat = () => {
               href='https://api.whatsapp.com/send/?phone=51940291818&text&type=phone_number&app_absent'
               className='flex items-center justify-center bg-green-600 text-white py-2 rounded shadow-md hover:bg-green-500 text-xs'
               target='_blank'>
-              <img
+              <Image
                 src='/assets/avatarMwhatsapp.webp'
                 alt='WhatsApp'
                 className='w-10 h-10 mr-2 rounded-full'
