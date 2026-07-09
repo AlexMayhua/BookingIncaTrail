@@ -7,11 +7,10 @@ import '../styles/tours.css';
 import '../styles/categories-section.css';
 import 'keen-slider/keen-slider.min.css';
 import 'react-quill-new/dist/quill.snow.css';
-import { GoogleTagManager } from '@next/third-parties/google';
+import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google';
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Script from 'next/script';
 
 import { GTM_ID } from '../lib/gtm';
 import { DefaultSeo } from 'next-seo';
@@ -19,6 +18,8 @@ import { DefaultSeo as DefaultSeoConfig } from '../../next-seo.config.js';
 
 import { DataProvider } from '../store/GlobalState';
 import Layout from '../layout/Layout';
+
+const GOOGLE_ANALYTICS_ID = 'G-EYYY9SM2LN';
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
@@ -52,6 +53,7 @@ function MyApp({ Component, pageProps }) {
     <>
       <DefaultSeo {...DefaultSeoConfig} />
       <GoogleTagManager gtmId={GTM_ID} />
+      <GoogleAnalytics gaId={GOOGLE_ANALYTICS_ID} />
       <DataProvider>
         <LayoutComponent>
           <Component {...pageProps} />
