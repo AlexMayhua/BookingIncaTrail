@@ -285,9 +285,9 @@ export default function TourMainContent({
             <div>
               <h4>{t.call}</h4>
               <Link
-                href='https://api.whatsapp.com/send/?phone=51970811976'
+                href='https://api.whatsapp.com/send/?phone=51940291818'
                 className='no-underline hover:underline text-secondary text-base font-bold'>
-                +51 970811976
+                +51 940291818
               </Link>
             </div>
 
