@@ -136,6 +136,7 @@ export default function TourPage({ tour, category, similarTours }) {
         category={category}
         categoryTitle={categoryTitle}
         originalPrice={originalPrice}
+        locale={locale}
       />
       <TourHero
         category={category}

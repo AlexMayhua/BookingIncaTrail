@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 import en from '../lang/en/home';
 import es from '../lang/es/home';
 import FrontPage from '../components/home/FrontPage';
-import { BRAND, absoluteUrl, getLogoUrlAbsolute } from '../lib/brandConfig';
+import { BRAND, getLogoUrlAbsolute, publicUrl, seoLocale } from '../lib/brandConfig';
 import SectionAllTours from '../components/home/SectionAllTours';
 import { listTrips } from '@/modules/trips/service/trip.service';
 import Tour1 from '@/components/home/Tour1';
@@ -39,6 +39,7 @@ export default function Index({ allServices = [] }) {
   const router = useRouter();
   const { locale } = router;
   const t = locale === 'en' ? en : es;
+  const localeMetadata = seoLocale(locale);
 
   const text =
     '<p>A professional local tour company -<strong>&nbsp;100% Peruvian</strong>. We offer&nbsp;<strong>trips to Machu Picchu</strong>, The original<strong>&nbsp;Classic Inca trail</strong>&nbsp;(no shortcuts!),&nbsp;<strong>Salkantay trekking, Lares trek, Choquequirao trek,</strong>&nbsp;as well as customized treks and hikes for professional hikers.<br /> We also offer approachable hikes for those unable to participate in the classical routes.<br /> <strong>Owned by Abraham Ocon Rojas, Official Tour guide of Machu Picchu with 17 years of experience</strong>&nbsp;in Peruvian treks, hikes and historical sites. We would gladly take you on your next unforgetable life changing expedition!</p>';
@@ -119,9 +120,10 @@ export default function Index({ allServices = [] }) {
       <NextSeo
         title={t.meta_title}
         description={t.meta_description}
-        canonical={absoluteUrl('/')}
+        canonical={publicUrl('/', locale)}
         openGraph={{
-          url: absoluteUrl('/'),
+          url: publicUrl('/', locale),
+          locale: localeMetadata.og,
           title: t.meta_title,
           description: t.meta_description,
           images: [

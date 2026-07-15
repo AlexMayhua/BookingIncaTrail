@@ -1,11 +1,11 @@
 import { Html, Head, Main, NextScript } from 'next/document';
 
-export default function Document() {
+export default function Document({ __NEXT_DATA__: nextData }) {
   // Versión para cache busting del favicon
   const faviconVersion = '2.0.0';
 
   return (
-    <Html>
+    <Html lang={nextData?.locale === 'es' ? 'es' : 'en'}>
       <Head>
         {/* Preconnect para recursos externos - mejora performance */}
         <link rel='preconnect' href='https://res.cloudinary.com' />

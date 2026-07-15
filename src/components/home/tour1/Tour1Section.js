@@ -3,7 +3,7 @@ import Head from 'next/head';
 import Tour1Slider from './Tour1Slider';
 import { renderHighlightedText } from './renderHighlightedText';
 import { matchesStrictTerms } from './utils';
-import { absoluteUrl, BRAND } from '@/lib/brandConfig';
+import { absoluteUrl, BRAND, publicUrl } from '@/lib/brandConfig';
 
 function stripMarkdown(text = '') {
   return text.replace(/\*\*/g, '').replace(/\n/g, ' ').trim();
@@ -25,7 +25,7 @@ export default function Tour1Section({ section, locale }) {
     description: stripMarkdown(sectionDescription),
     numberOfItems: section.tours.length,
     itemListElement: section.tours.map((tour, index) => {
-      const tourUrl = absoluteUrl(`/${tour.category}/${tour.slug}`);
+      const tourUrl = publicUrl(`/${tour.category}/${tour.slug}`, locale);
       return {
         '@type': 'ListItem',
         position: index + 1,

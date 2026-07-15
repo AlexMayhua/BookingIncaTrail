@@ -3,22 +3,23 @@ import { useRouter } from 'next/router.js';
 import EmailFormulary from '../components/general/EmailFormulary.js';
 import en from '../lang/en/contact';
 import es from '../lang/es/contact';
-import { BRAND, absoluteUrl } from '../lib/brandConfig';
+import { BRAND, publicUrl, seoLocale } from '../lib/brandConfig';
 
 export default function ContactPage() {
   const router = useRouter();
   const { locale } = router;
   const t = locale === 'en' ? en : es;
-  const localizedPath = locale === 'es' ? '/es/contact' : '/contact';
+  const localeMetadata = seoLocale(locale);
 
   return (
     <>
       <NextSeo
         title={t.meta_title}
         description={t.meta_description}
-        canonical={absoluteUrl(localizedPath)}
+        canonical={publicUrl('/contact', locale)}
         openGraph={{
-          url: absoluteUrl(localizedPath),
+          url: publicUrl('/contact', locale),
+          locale: localeMetadata.og,
           title: t.meta_title,
           description: t.meta_description,
           images: [

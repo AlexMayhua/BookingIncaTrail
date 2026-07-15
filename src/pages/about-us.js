@@ -6,12 +6,13 @@ import parser from 'html-react-parser'
 import Hero from '../components/general/Hero'
 import { LazyLoadImage } from "react-lazy-load-image-component"
 import Section1 from "../components/home/Section1";
-import { BRAND, absoluteUrl } from '../lib/brandConfig';
+import { BRAND, publicPath, publicUrl, seoLocale } from '../lib/brandConfig';
 
 export default function aboutUs() {
   const router = useRouter()
   const { locale } = router;
   const t = locale === 'en' ? en : es;
+  const localeMetadata = seoLocale(locale);
 
   return (
     <>
@@ -19,10 +20,11 @@ export default function aboutUs() {
       <NextSeo
         title={t.meta_title}
         description={t.meta_description}
-        canonical={absoluteUrl('/about-us')}
+        canonical={publicUrl('/about-us', locale)}
 
         openGraph={{
-          url: absoluteUrl('/about-us'),
+          url: publicUrl('/about-us', locale),
+          locale: localeMetadata.og,
           title: t.meta_title,
           description: t.meta_description,
           images: [
@@ -94,9 +96,9 @@ export default function aboutUs() {
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <div className="mx-auto max-w-2xl text-center">
               <div className="flex items-center justify-center gap-x-6">
-                <a href="/contact"className="rounded-md bg-secondary px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime-600">{t.spmContactUs}
+                <a href={publicPath('/contact', locale)} className="rounded-md bg-secondary px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime-600">{t.spmContactUs}
                 </a>
-                <a href="/contact" className="text-sm font-semibold leading-6 text-gray-900">{t.spmMoreInfo}
+                <a href={publicPath('/contact', locale)} className="text-sm font-semibold leading-6 text-gray-900">{t.spmMoreInfo}
                   <span>→</span>
                 </a>
               </div>

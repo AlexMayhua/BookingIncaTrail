@@ -1,13 +1,23 @@
 import Head from 'next/head';
 import { NextSeo } from 'next-seo';
-import { BRAND, absoluteUrl, getLogoUrlAbsolute } from '@/lib/brandConfig';
+import {
+  BRAND,
+  absoluteUrl,
+  getLogoUrlAbsolute,
+  publicUrl,
+  seoLocale,
+} from '@/lib/brandConfig';
 
 export default function TourSeo({
   tour,
   category,
   categoryTitle,
   originalPrice,
+  locale,
 }) {
+  const tourUrl = publicUrl(`/${category}/${tour.slug}`, locale);
+  const localeMetadata = seoLocale(locale);
+
   return (
     <>
       <Head>
@@ -19,7 +29,7 @@ export default function TourSeo({
                 '@context': 'https://schema.org',
                 '@type': 'Organization',
                 name: BRAND.name,
-                url: absoluteUrl(`/${category}/${tour.slug}`),
+                url: absoluteUrl('/'),
                 logo: getLogoUrlAbsolute(),
                 sameAs: [
                   BRAND.social.facebook,
@@ -34,7 +44,7 @@ export default function TourSeo({
                 name: tour.title,
                 description: tour.meta_description,
                 image: tour.gallery?.map((img) => img.url) || [],
-                url: absoluteUrl(`/${category}/${tour.slug}`),
+                url: tourUrl,
                 touristType: 'Adventure Travelers',
               },
               {
@@ -49,7 +59,7 @@ export default function TourSeo({
                   price: originalPrice.toFixed(2),
                   priceCurrency: 'USD',
                   availability: 'https://schema.org/InStock',
-                  url: absoluteUrl(`/${category}/${tour.slug}`),
+                  url: tourUrl,
                   priceValidUntil: new Date(
                     new Date().setFullYear(new Date().getFullYear() + 1),
                   )
@@ -72,19 +82,19 @@ export default function TourSeo({
                     '@type': 'ListItem',
                     position: 1,
                     name: 'Home',
-                    item: absoluteUrl('/'),
+                    item: publicUrl('/', locale),
                   },
                   {
                     '@type': 'ListItem',
                     position: 2,
                     name: categoryTitle,
-                    item: absoluteUrl(`/${category}`),
+                    item: publicUrl(`/${category}`, locale),
                   },
                   {
                     '@type': 'ListItem',
                     position: 3,
                     name: tour.title,
-                    item: absoluteUrl(`/${category}/${tour.slug}`),
+                    item: tourUrl,
                   },
                 ],
               },
@@ -95,9 +105,10 @@ export default function TourSeo({
       <NextSeo
         title={tour.title || tour.meta_title}
         description={tour.meta_description || tour.sub_title}
-        canonical={absoluteUrl(`/${category}/${tour.slug}`)}
+        canonical={tourUrl}
         openGraph={{
-          url: absoluteUrl(`/${category}/${tour.slug}`),
+          url: tourUrl,
+          locale: localeMetadata.og,
           title: tour.meta_title || tour.title,
           description: tour.meta_description || tour.sub_title,
           images: tour.gallery?.[0]

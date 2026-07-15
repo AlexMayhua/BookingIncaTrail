@@ -65,3 +65,33 @@ export function absoluteUrl(path = '/') {
 export function getLogoUrlAbsolute() {
   return absoluteUrl(BRAND.logo.src);
 }
+
+function normalizePublicRoute(path = '/') {
+  const route = String(path || '/')
+    .split(/[?#]/, 1)[0]
+    .replace(/\\/g, '/')
+    .replace(/\/+/g, '/');
+  const normalizedRoute = route.startsWith('/') ? route : `/${route}`;
+
+  return normalizedRoute === '/' ? '/' : normalizedRoute.replace(/\/+$/, '');
+}
+
+export function publicPath(path = '/', locale = 'en') {
+  const route = normalizePublicRoute(path).replace(/^\/es(?=\/|$)/, '') || '/';
+
+  if (locale !== 'es') {
+    return route;
+  }
+
+  return route === '/' ? '/es' : `/es${route}`;
+}
+
+export function publicUrl(path = '/', locale = 'en') {
+  return absoluteUrl(publicPath(path, locale));
+}
+
+export function seoLocale(locale = 'en') {
+  return locale === 'es'
+    ? { lang: 'es', og: 'es_PE' }
+    : { lang: 'en', og: 'en_US' };
+}

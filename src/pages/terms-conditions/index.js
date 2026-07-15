@@ -4,21 +4,23 @@ import en from '../../lang/en/terms'
 import es from '../../lang/es/terms'
 import { useRouter } from 'next/router';
 import { NextSeo } from 'next-seo';
-import { BRAND, absoluteUrl } from '../../lib/brandConfig'
+import { BRAND, publicPath, publicUrl, seoLocale } from '../../lib/brandConfig'
 
 export default function TermsConditions() {
     const router = useRouter()
     const { locale } = router;
     const t = locale === 'en' ? en : es;
+    const localeMetadata = seoLocale(locale);
 
     return (
         <>
             <NextSeo
                 title={t.meta_title}
                 description={t.meta_description}
-                canonical={absoluteUrl('/terms-conditions')}
+                canonical={publicUrl('/terms-conditions', locale)}
                 openGraph={{
-                    url: absoluteUrl('/terms-conditions'),
+                    url: publicUrl('/terms-conditions', locale),
+                    locale: localeMetadata.og,
                     title: t.meta_title,
                     description: t.meta_description,
                     images: [
@@ -42,7 +44,7 @@ export default function TermsConditions() {
                                 <img src="/home/complaints-book.svg" alt="Foto del experto" className="rounded-full mx-auto w-48 h-48 object-cover"/>
                                 
                                 <button className="w-full h-10 rounded bg-white shadow group transition-all duration-300 mb-8 text-primary hover:text-secondary">
-                                    <a href='/terms-conditions/complaintsBook' className='flex items-center justify-center'>
+                                    <a href={publicPath('/terms-conditions/complaintsBook', locale)} className='flex items-center justify-center'>
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6 w-5 h-5">
                                             <path d="M11.25 4.533A9.707 9.707 0 0 0 6 3a9.735 9.735 0 0 0-3.25.555.75.75 0 0 0-.5.707v14.25a.75.75 0 0 0 1 .707A8.237 8.237 0 0 1 6 18.75c1.995 0 3.823.707 5.25 1.886V4.533ZM12.75 20.636A8.214 8.214 0 0 1 18 18.75c.966 0 1.89.166 2.75.47a.75.75 0 0 0 1-.708V4.262a.75.75 0 0 0-.5-.707A9.735 9.735 0 0 0 18 3a9.707 9.707 0 0 0-5.25 1.533v16.103Z" />
                                         </svg>&nbsp;

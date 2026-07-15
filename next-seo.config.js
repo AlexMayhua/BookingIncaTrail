@@ -28,8 +28,6 @@ const additionalLinkTags = [
 
 const openGraph = {
   type: 'website',
-  locale: 'es_PE',
-  url: BRAND.siteUrl,
   siteName: BRAND.name
 };
 

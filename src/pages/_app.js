@@ -7,7 +7,7 @@ import '../styles/tours.css';
 import '../styles/categories-section.css';
 import 'keen-slider/keen-slider.min.css';
 import 'react-quill-new/dist/quill.snow.css';
-import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google';
+import { GoogleTagManager } from '@next/third-parties/google';
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
@@ -15,23 +15,22 @@ import { useRouter } from 'next/router';
 import { GTM_ID } from '../lib/gtm';
 import { DefaultSeo } from 'next-seo';
 import { DefaultSeo as DefaultSeoConfig } from '../../next-seo.config.js';
+import { seoLocale } from '../lib/brandConfig';
 
 import { DataProvider } from '../store/GlobalState';
 import Layout from '../layout/Layout';
 
-const GOOGLE_ANALYTICS_ID = 'G-EYYY9SM2LN';
-
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
-  const { pathname } = router;
+  const { pathname, locale } = router;
 
-  const lang = pathname.startsWith('/es') ? 'es-ES' : 'en';
+  const localeMetadata = seoLocale(locale);
   const isAdminPage = pathname.startsWith('/admin');
   const LayoutComponent = isAdminPage ? ({ children }) => children : Layout;
 
   useEffect(() => {
-    document.documentElement.lang = lang;
-  }, [lang]);
+    document.documentElement.lang = localeMetadata.lang;
+  }, [localeMetadata.lang]);
 
   useEffect(() => {
     const handleRouteChange = (url) => {
@@ -51,9 +50,14 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <>
-      <DefaultSeo {...DefaultSeoConfig} />
+      <DefaultSeo
+        {...DefaultSeoConfig}
+        openGraph={{
+          ...DefaultSeoConfig.openGraph,
+          locale: localeMetadata.og,
+        }}
+      />
       <GoogleTagManager gtmId={GTM_ID} />
-      <GoogleAnalytics gaId={GOOGLE_ANALYTICS_ID} />
       <DataProvider>
         <LayoutComponent>
           <Component {...pageProps} />

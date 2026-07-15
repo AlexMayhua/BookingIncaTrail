@@ -1,5 +1,7 @@
 export default {
     h1title: 'Queremos Escucharte',
+    meta_title: 'Libro de Reclamaciones | Booking Inca Trail',
+    meta_description: 'Envía una queja o sugerencia a Booking Inca Trail.',
     tellUs: 'Por favor, cuéntanos qué ocurrió y cómo podemos mejorar. Estamos aquí para ayudarte.',
     expert: 'Experto:',
     h2Opinion: '¡Tu opinión nos importa!',

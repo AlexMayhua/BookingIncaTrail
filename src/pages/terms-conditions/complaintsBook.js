@@ -3,11 +3,14 @@ import { LazyLoadImage } from 'react-lazy-load-image-component';
 import en from '../../lang/en/complaints'
 import es from '../../lang/es/complaints'
 import { useRouter } from 'next/router'
+import { NextSeo } from 'next-seo';
+import { BRAND, publicUrl, seoLocale } from '../../lib/brandConfig';
 export default function ComplaintForm() {
 
   const router = useRouter()
   const { locale } = router;
   const t = locale === 'en' ? en : es;
+  const localeMetadata = seoLocale(locale);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -33,6 +36,20 @@ export default function ComplaintForm() {
   };
 
   return (
+    <>
+      <NextSeo
+        title={t.meta_title}
+        description={t.meta_description}
+        canonical={publicUrl('/terms-conditions/complaintsBook', locale)}
+        additionalMetaTags={[{ name: 'robots', content: 'index,follow' }]}
+        openGraph={{
+          url: publicUrl('/terms-conditions/complaintsBook', locale),
+          locale: localeMetadata.og,
+          title: t.meta_title,
+          description: t.meta_description,
+          site_name: BRAND.name,
+        }}
+      />
     <div className="2xl:container mx-auto">
       <section className='lg:mx-20 mx-2 my-8'>
         <h1 className="text-3xl font-bold mb-4 text-center">{t.h1title}</h1>
@@ -193,5 +210,6 @@ export default function ComplaintForm() {
       </div>
       </section>
     </div>
+    </>
   );
 }

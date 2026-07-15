@@ -1,5 +1,7 @@
 export default {
     h1title: 'We Want to Listen to You',
+    meta_title: 'Complaint Book | Booking Inca Trail',
+    meta_description: 'Submit a complaint or suggestion to Booking Inca Trail.',
     tellUs: 'Please tell us what happened and how we can improve. We are here to help you.',
     expert: 'Expert:',
     h2Opinion: 'Your opinion matters to us!',

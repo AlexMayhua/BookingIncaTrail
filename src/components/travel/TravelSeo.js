@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { NextSeo } from 'next-seo';
-import { absoluteUrl } from '@/lib/brandConfig';
+import { publicUrl, seoLocale } from '@/lib/brandConfig';
 
 export default function TravelSeo({
   categoryTitle,
@@ -10,6 +10,8 @@ export default function TravelSeo({
   locale,
   trips,
 }) {
+  const localeMetadata = seoLocale(locale);
+
   return (
     <>
       <Head>
@@ -25,13 +27,13 @@ export default function TravelSeo({
                     '@type': 'ListItem',
                     position: 1,
                     name: locale === 'en' ? 'Home' : 'Inicio',
-                    item: absoluteUrl('/'),
+                    item: publicUrl('/', locale),
                   },
                   {
                     '@type': 'ListItem',
                     position: 2,
                     name: categoryTitle,
-                    item: absoluteUrl(`/${category}`),
+                    item: publicUrl(`/${category}`, locale),
                   },
                 ],
               },
@@ -47,12 +49,13 @@ export default function TravelSeo({
                   item: {
                     '@type': 'Product',
                     name: trip.title,
-                    url: absoluteUrl(`/${category}/${trip.slug}`),
+                    url: publicUrl(`/${category}/${trip.slug}`, locale),
                     image: trip.gallery?.[0]?.url || '',
                     offers: {
                       '@type': 'Offer',
                       price: trip.price?.toFixed(2) || '0.00',
                       priceCurrency: 'USD',
+                      url: publicUrl(`/${category}/${trip.slug}`, locale),
                     },
                   },
                 })),
@@ -62,7 +65,7 @@ export default function TravelSeo({
                 '@type': 'TouristDestination',
                 name: categoryTitle,
                 description: categoryDescription,
-                url: absoluteUrl(`/${category}`),
+                url: publicUrl(`/${category}`, locale),
                 image: categoryImage,
               },
             ]),
@@ -72,9 +75,10 @@ export default function TravelSeo({
       <NextSeo
         title={`${categoryTitle} - Tours & Adventures | BookingIncatrail`}
         description={categoryDescription}
-        canonical={absoluteUrl(`/${category}`)}
+        canonical={publicUrl(`/${category}`, locale)}
         openGraph={{
-          url: absoluteUrl(`/${category}`),
+          url: publicUrl(`/${category}`, locale),
+          locale: localeMetadata.og,
           title: `${categoryTitle} - Tours & Adventures | BookingIncatrail`,
           description: categoryDescription,
           images: [
